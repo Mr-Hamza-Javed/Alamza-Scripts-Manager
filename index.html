@@ -162,33 +162,8 @@ Signing in…</div>
 Share</span>
 </sc-if>
 <span data-act="theme" title="Toggle theme" style="display:flex;align-items:center;justify-content:center;width:{{ iconBtn }};height:{{ iconBtn }};border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer;flex:none" style-hover="color:var(--ink)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M11.6 8.6A5 5 0 0 1 5.4 2.4a5 5 0 1 0 6.2 6.2z" fill="currentColor"/></svg></span>
-<sc-if value="{{ showHeadAccount }}" hint-placeholder-val="{{ false }}">
-<span data-act="account" title="{{ auth.email }}" style="display:flex;align-items:center;gap:7px;padding:3px 9px 3px 3px;border-radius:20px;border:1px solid var(--border);background:var(--panel);cursor:pointer;flex:none" style-hover="border-color:var(--muted)">
-<span style="width:21px;height:21px;border-radius:50%;flex:none;background:var(--accent) center/cover no-repeat url({{ auth.photo }});display:flex;align-items:center;justify-content:center;font:700 9px/1 var(--fUI);color:#fff">{{ auth.initial }}</span>
-<span style="font:500 11px/1.3 var(--fUI);color:var(--prose);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ auth.name }}</span>
-</span>
-</sc-if>
-<sc-if value="{{ showHeadSignIn }}" hint-placeholder-val="{{ false }}">
-<span data-act="showLogin" style="display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:7px;background:var(--accent);color:#fff;cursor:pointer;flex:none;font:600 11.5px/1.3 var(--fUI)">
-<svg width="12" height="12" viewBox="0 0 14 14"><circle cx="7" cy="4.6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.35"/><path d="M2.4 12c.6-2.4 2.4-3.6 4.6-3.6S11 9.6 11.6 12" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/></svg>
-Sign in</span>
-</sc-if>
 </div>
 
-<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-<div style="flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);z-index:19">
-<div style="display:flex;align-items:center;gap:7px;padding:8px 11px;border-radius:9px;background:var(--panel);border:1px solid var(--border);flex:1;min-width:0">
-<svg width="13" height="13" viewBox="0 0 14 14" style="flex:none;color:var(--faint)"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.2 9.2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search lines, tags, terms…" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 13px/1.4 var(--fUI)"/>
-<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" style="cursor:pointer;color:var(--faint);font:400 15px/1 var(--fUI);padding:0 3px">×</span></sc-if>
-</div>
-<sc-if value="{{ canShare }}" hint-placeholder-val="{{ false }}">
-<span data-act="openShare" title="Share" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--panel);color:var(--prose);cursor:pointer;flex:none">
-<svg width="14" height="14" viewBox="0 0 14 14"><path d="M5 7.6l4-2.2M5 6.4l4 2.2" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="4" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="3.4" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="10" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
-</span>
-</sc-if>
-</div>
-</sc-if>
 
 <sc-if value="{{ banner.show }}" hint-placeholder-val="{{ false }}">
 <div style="flex:none;display:flex;align-items:center;gap:10px;padding:8px 15px;background:{{ banner.bg }};border-bottom:1px solid {{ banner.bd }};z-index:19">
@@ -362,11 +337,10 @@ Sign in</span>
 <div data-section="{{ sec.id }}" data-sechead="{{ sec.id }}" style="position:{{ stickyPos }};top:0;z-index:9;display:flex;align-items:center;gap:10px;padding:var(--secHeadPad);margin-bottom:var(--secHeadMB);background:var(--secHeadBg);border:1px solid var(--border);border-radius:var(--secHeadR);cursor:pointer">
 <svg width="10" height="10" viewBox="0 0 10 10" style="flex:none;color:var(--faint);transform:{{ sec.chev }};transition:transform .15s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
 <span style="font:500 9.5px/1 'JetBrains Mono',monospace;letter-spacing:.13em;color:var(--faint);flex:none">{{ sec.kicker }}</span>
-<span style="font:600 14px/1.3 var(--fUI);color:var(--ink);flex:none">{{ sec.title }}</span>
+<span title="{{ sec.title }}" style="font:600 14px/1.3 var(--fUI);color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ sec.title }}</span>
 <sc-if value="{{ sec.hasBadge }}" hint-placeholder-val="{{ false }}">
 <span style="padding:2.5px 8px;border-radius:20px;background:var(--accentSoft);color:var(--accent);font:700 8.5px/1.3 'JetBrains Mono',monospace;letter-spacing:.1em;flex:none">{{ sec.badge }}</span>
 </sc-if>
-<span style="flex:1"></span>
 <sc-if value="{{ sec.hasLines }}" hint-placeholder-val="{{ true }}">
 <span data-marksec="{{ sec.id }}" title="{{ sec.markTitle }}" style="display:flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:6px;border:1px solid {{ sec.markBd }};background:{{ sec.markBg }};color:{{ sec.markColor }};cursor:pointer;flex:none;transition:color .12s,border-color .12s,background .12s" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg></span>
 <span style="font:400 9.5px/1 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ sec.count }} LINES</span>
@@ -487,16 +461,20 @@ Sign in</span>
 </sc-if>
 
 <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
-<div style="flex:1;min-height:0;display:flex">
-<div class="sc" style="width:206px;flex:none;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;padding:14px 10px">
+<div style="flex:1;min-height:0;display:flex;flex-direction:{{ setDir }}">
+<div class="sc" style="{{ setNavStyle }}">
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
 <div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 4px 9px">SETTINGS</div>
+</sc-if>
 <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="6">
-<div data-tab="{{ tb.id }}" style="padding:7px 9px;border-radius:7px;cursor:pointer;font:500 12px/1.3 var(--fUI);color:{{ tb.fg }};background:{{ tb.bg }};margin-bottom:1px" style-hover="background:var(--panel)">{{ tb.label }}</div>
+<div data-tab="{{ tb.id }}" style="{{ setTabStyle }};color:{{ tb.fg }};background:{{ tb.bg }}" style-hover="background:var(--panel)">{{ tb.label }}</div>
 </sc-for>
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
 <div style="height:1px;background:var(--border);margin:12px 4px"></div>
-<div data-act="resetSettings" style="padding:7px 9px;border-radius:7px;cursor:pointer;font:500 11.5px/1.3 var(--fUI);color:var(--muted)" style-hover="color:#D9451A">Reset to defaults</div>
+</sc-if>
+<div data-act="resetSettings" style="{{ setResetStyle }};color:var(--muted)" style-hover="color:#D9451A">Reset to defaults</div>
 </div>
-<div class="sc" id="setmain" style="flex:1;min-width:0;overflow-y:auto;padding:24px 30px 120px">
+<div class="sc" id="setmain" style="flex:1;min-width:0;overflow-y:auto;padding:{{ setMainPad }}">
 <div style="max-width:760px;margin:0 auto">
 <sc-if value="{{ isTagsTab }}" hint-placeholder-val="{{ false }}">
 <div style="margin-bottom:8px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">Tags &amp; labels</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">Har tag ka rendering type, rang aur split character yahan se badlein. Naya tag milne par app khud andaza laga kar yahan add kar deti hai — usay confirm ya badal dein. Ye registry save rehti hai, agli script me wahi tag pehchana jayega.</p></div>
@@ -556,8 +534,8 @@ Sign in</span>
 <div style="margin-bottom:16px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">{{ tabTitle }}</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">{{ tabHint }}</p></div>
 <div style="display:flex;flex-direction:column;gap:2px">
 <sc-for list="{{ fields }}" as="f" hint-placeholder-count="8">
-<div style="display:flex;align-items:center;gap:16px;padding:11px 13px;border-radius:var(--radius);background:{{ f.rowBg }}">
-<div style="flex:1;min-width:0">
+<div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;padding:11px 13px;border-radius:var(--radius);background:{{ f.rowBg }}">
+<div style="flex:1;min-width:140px">
 <div style="font:500 12.5px/1.4 var(--fUI);color:var(--ink)">{{ f.label }}</div>
 <sc-if value="{{ f.hasHint }}" hint-placeholder-val="{{ false }}"><div style="font:400 11px/1.5 var(--fUI);color:var(--muted);margin-top:2px">{{ f.hint }}</div></sc-if>
 </div>
@@ -2356,7 +2334,7 @@ class Component extends DCLogic {
 
   renderVals() {
     const S = this.effS(), dark = S.theme === 'dark';
-    const t = tokens({ ...S, _mobile: this.state.vw < 1080, _narrow: this.state.vw < 760 });
+    const t = tokens({ ...S, _mobile: this.state.vw < 760, _narrow: this.state.vw < 560 });
     const a = this.active(), doc = this.doc();
     const vis = this.visibleLines(), visIds = {}; vis.forEach(l => visIds[l.id] = 1);
     const allIds = this.allLines().map(l => l.id);
@@ -2688,7 +2666,7 @@ class Component extends DCLogic {
     const modeDefs = [['normal', 'Normal']].concat(canEditRaw ? [['raw', 'Raw']] : []).concat(viewing ? [] : [['settings', 'Settings']]);
 
     /* ---------- responsive ---------- */
-    const vw = this.state.vw, mob = vw < 1080, midW = vw >= 860 && vw < 1180;
+    const vw = this.state.vw, mob = vw < 760, midW = vw >= 860 && vw < 1180;
     const showLogin = this.state.loginOpen || (this.state.authReady && !this.state.cloud && !this.state.skippedLogin && !this.state.viewerToken && !viewing);
     const icon = (d, sw) => ({ __html: '<svg width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="' + (sw || 1.5) + '" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>' });
     const navDefs = [
@@ -2704,11 +2682,22 @@ class Component extends DCLogic {
 
     return {
       isMobile: mob, isDesktop: !mob,
-      minW: mob ? '0' : '1060px',
+      minW: mob ? '0' : '760px',
       headH: mob ? '56px' : '52px', headPad: mob ? '12px' : '14px',
       iconBtn: mob ? '38px' : '30px', avatarSz: mob ? '34px' : '30px',
       tabPad: mob ? '9px 4px' : '6px 4px',
       dialogW: mob ? '100%' : '520px',
+      setDir: mob ? 'column' : 'row',
+      setNavStyle: mob
+        ? 'flex:none;display:flex;gap:6px;align-items:center;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto;overflow-y:hidden;padding:8px 12px'
+        : 'width:206px;flex:none;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;padding:14px 10px',
+      setTabStyle: mob
+        ? 'flex:none;white-space:nowrap;padding:7px 13px;border-radius:20px;cursor:pointer;font:500 12px/1.3 var(--fUI)'
+        : 'padding:7px 9px;border-radius:7px;cursor:pointer;font:500 12px/1.3 var(--fUI);margin-bottom:1px',
+      setResetStyle: mob
+        ? 'flex:none;white-space:nowrap;padding:7px 13px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font:500 11.5px/1.3 var(--fUI)'
+        : 'padding:7px 9px;border-radius:7px;cursor:pointer;font:500 11.5px/1.3 var(--fUI)',
+      setMainPad: mob ? '18px 14px 100px' : '24px 30px 120px',
       jumpX: mob ? '14px' : '26px', jumpY: mob ? '78px' : '26px',
       sbW: mob ? 'min(84vw,320px)' : 'var(--sidebarW)',
       sbPos: mob ? 'fixed' : 'relative',
