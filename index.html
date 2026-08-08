@@ -1532,7 +1532,11 @@ class Component extends DCLogic {
     const token = this.state.viewerToken, fb = fbGet();
     if (!token) { if (this.state.viewer) this.setState({ viewer: null }); return; }
     if (!fb) return;
-    if (!fb.auth.currentUser) { fb.auth.signInAnonymously().catch(() => { }); return; }
+    /* pub/<token> is world-readable, so a public link must open even for a
+       signed-out visitor. Anonymous auth is only a nice-to-have for the
+       "ready" tick — attempt it in the background, but never block viewing on
+       it (it fails outright when anonymous sign-in is disabled). */
+    if (!fb.auth.currentUser) fb.auth.signInAnonymously().catch(() => { });
     this.watchPub(token, null, null);
   }
 
