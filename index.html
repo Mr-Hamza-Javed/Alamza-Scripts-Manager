@@ -319,7 +319,6 @@ Sign in</span>
 </div>
 <div style="height:1px;background:var(--border);margin:15px 2px"></div>
 <div style="display:flex;flex-direction:column;gap:5px;padding:0 2px">
-<span data-act="copyAllTerms" style="padding:6px 9px;border-radius:7px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer;text-align:center" style-hover="border-color:var(--accent);color:var(--accent)">Copy every search term</span>
 <sc-if value="{{ canEditDone }}" hint-placeholder-val="{{ true }}">
 <span data-act="markAll" style="padding:6px 9px;border-radius:7px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer;text-align:center" style-hover="border-color:var(--accent);color:var(--accent)">Mark all as ready</span>
 </sc-if>
@@ -375,7 +374,7 @@ Sign in</span>
 </sc-if>
 <span style="flex:1"></span>
 <sc-if value="{{ sec.hasLines }}" hint-placeholder-val="{{ true }}">
-<span data-copysec="{{ sec.id }}" title="Copy this section's search terms" style="font:500 9.5px/1 'JetBrains Mono',monospace;color:var(--faint);cursor:pointer;padding:4px 7px;border-radius:5px;border:1px solid var(--border)" style-hover="color:var(--accent);border-color:var(--accent)">COPY TERMS</span>
+<span data-marksec="{{ sec.id }}" title="{{ sec.markTitle }}" style="display:flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:6px;border:1px solid {{ sec.markBd }};background:{{ sec.markBg }};color:{{ sec.markColor }};cursor:pointer;flex:none;transition:color .12s,border-color .12s,background .12s" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg></span>
 <span style="font:400 9.5px/1 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ sec.count }} LINES</span>
 <div style="width:64px;height:4px;border-radius:2px;background:var(--rule);overflow:hidden;flex:none"><div style="width:{{ sec.pct }};height:100%;background:var(--accent)"></div></div>
 </sc-if>
@@ -417,9 +416,6 @@ Sign in</span>
 </sc-if>
 </div>
 <div style="flex:none;display:flex;align-items:center;gap:6px;margin-top:2px">
-<sc-if value="{{ showCopyBtn }}" hint-placeholder-val="{{ true }}">
-<span data-copy="{{ ln.allTerms }}" title="Copy all search terms of this line" style="padding:3px 8px;border-radius:5px;border:1px solid var(--border);font:500 9px/1.5 'JetBrains Mono',monospace;color:var(--faint);cursor:pointer" style-hover="color:var(--accent);border-color:var(--accent)">COPY</span>
-</sc-if>
 <sc-if value="{{ showChecks }}" hint-placeholder-val="{{ true }}">
 <span data-done="{{ ln.id }}" title="{{ checkTitle }}" style="width:17px;height:17px;border-radius:50%;border:1.5px solid {{ ln.checkBorder }};background:{{ ln.checkBg }};display:flex;align-items:center;justify-content:center;cursor:pointer">
 <svg width="8" height="8" viewBox="0 0 10 10"><path d="M1.5 5.2l2.4 2.4L8.6 2.8" fill="none" stroke="{{ ln.checkTick }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -434,7 +430,7 @@ Sign in</span>
 </sc-if>
 <sc-if value="{{ it.isChips }}" hint-placeholder-val="{{ false }}">
 <div style="display:inline-block;width:100%;break-inside:avoid;margin-bottom:var(--itemGap);line-height:var(--lhChip)">
-<span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 7px 4px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:2px;white-space:nowrap">{{ it.label }}</span><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="3"><span data-chip="{{ ch.v }}" data-tag="{{ ch.tag }}" title="{{ ch.hint }}" style="display:inline-block;padding:2.5px 8px;margin:0 4px 4px 0;border-radius:{{ chipR }};background:var(--chipBg);border:1px solid var(--chipBd);font-family:var(--fUI);font-size:calc(var(--szBody) - 0.5px);line-height:1.4;color:var(--chipInk);cursor:pointer;vertical-align:middle" style-hover="border-color:{{ it.color }};background:{{ it.soft }}">{{ ch.v }}</span></sc-for><sc-if value="{{ it.copyable }}" hint-placeholder-val="{{ true }}"><span data-copy="{{ it.all }}" title="Copy all of these" style="display:inline-block;padding:2.5px 7px;margin:0 0 4px 0;border-radius:{{ chipR }};border:1px dashed var(--border);font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:500;line-height:1.4;color:var(--faint);cursor:pointer;vertical-align:middle" style-hover="color:var(--accent);border-color:var(--accent)">ALL</span></sc-if>
+<span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 7px 4px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:2px;white-space:nowrap">{{ it.label }}</span><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="3"><span data-chip="{{ ch.v }}" data-tag="{{ ch.tag }}" title="{{ ch.hint }}" style="display:inline-block;padding:2.5px 8px;margin:0 4px 4px 0;border-radius:{{ chipR }};background:var(--chipBg);border:1px solid var(--chipBd);font-family:var(--fUI);font-size:calc(var(--szBody) - 0.5px);line-height:1.4;color:var(--chipInk);cursor:pointer;vertical-align:middle" style-hover="border-color:{{ it.color }};background:{{ it.soft }}">{{ ch.v }}</span></sc-for>
 </div>
 </sc-if>
 <sc-if value="{{ it.isOverlay }}" hint-placeholder-val="{{ false }}">
@@ -828,7 +824,6 @@ const FIELDS = {
     { key: 'numWeight', type: 'range', label: 'Line number weight', min: 400, max: 700, step: 100 },
     { key: 'numColor', type: 'select', label: 'Line number colour', options: [['faint', 'Faint'], ['muted', 'Muted'], ['prose', 'Body'], ['ink', 'Strong'], ['accent', 'Accent']] },
     { key: 'showChecks', type: 'toggle', label: 'Ready checkboxes' },
-    { key: 'showCopyBtn', type: 'toggle', label: 'Per-line COPY button' },
     { key: 'showTranscript', type: 'toggle', label: 'Show video transcripts' },
     { key: 'stickyHeaders', type: 'toggle', label: 'Sticky section headers' },
     { key: 'collapseDefault', type: 'toggle', label: 'Start with sections collapsed' }
@@ -1298,6 +1293,10 @@ function readHashToken() {
 }
 
 const KEY = 'alamza.scripts.v1';
+/* A viewer's own reading prefs (theme, focus mode) for shared links — saved on
+   THEIR device only, never written back to the owner who shared the file. */
+const VKEY = 'alamza.viewer.prefs';
+function loadViewerPrefs() { try { return JSON.parse(localStorage.getItem(VKEY) || '{}') || {}; } catch (e) { return {}; } }
 const SCHEMA = 3;
 /* keys re-baselined in schema 2 — a stale saved value would hide the new defaults */
 const RESET_IN_V2 = ['scriptFont', 'scriptSize', 'scriptWeight', 'scriptLeading', 'bodySize', 'labelSize', 'radius', 'maxWidth', 'density'];
@@ -1364,7 +1363,8 @@ class Component extends DCLogic {
       sideTab: vt ? 'review' : (d.settings.defaultSideTab === 'review' ? 'review' : 'files'),
       showTrash: false, menu: null, shareFor: null,
       shares: {}, grants: {}, shareEmail: '', shareRole: d.settings.defaultShareRole || 'viewer',
-      user: null, authReady: false, cloud: false, viewer: null, viewerToken: readHashToken()
+      user: null, authReady: false, cloud: false, viewer: null, viewerToken: vt,
+      viewerPrefs: loadViewerPrefs()
     };
   }
 
@@ -1388,7 +1388,7 @@ class Component extends DCLogic {
       if (e.key === 'j' || e.key === 'k' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault(); this.step((e.key === 'j' || e.key === 'ArrowDown') ? 1 : -1); return;
       }
-      if (e.key === 'f') { this.set('focusMode', !this.state.settings.focusMode); return; }
+      if (e.key === 'f') { this.toggleFocus(); return; }
       /* Enter or Space toggles the active line's "ready" mark (mark / unmark) */
       if ((e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') && this.state.activeLine) {
         e.preventDefault(); this.toggleDone(this.state.activeLine); return;
@@ -1673,10 +1673,25 @@ class Component extends DCLogic {
   }
   isViewing() { return !!(this.state.viewer && !this.state.viewer.missing); }
   /* a shared script must look exactly as its owner sees it — settings and the
-     tag registry travel with the payload and win while viewing */
+     tag registry travel with the payload and win while viewing. The viewer may
+     override theme + focus mode locally (viewerPrefs) without touching the
+     owner's saved settings. */
   effS() {
-    const v = this.state.viewer;
-    return (this.isViewing() && v.settings) ? { ...DEFAULTS, ...v.settings } : this.state.settings;
+    if (this.isViewing()) {
+      const v = this.state.viewer;
+      return { ...DEFAULTS, ...(v.settings || {}), ...(this.state.viewerPrefs || {}) };
+    }
+    return this.state.settings;
+  }
+  /* persist a viewer-only reading pref on this device (theme / focusMode) */
+  setViewerPref(k, val) {
+    const viewerPrefs = { ...(this.state.viewerPrefs || {}), [k]: val };
+    this.setState({ viewerPrefs });
+    try { localStorage.setItem(VKEY, JSON.stringify(viewerPrefs)); } catch (e) { }
+  }
+  toggleFocus() {
+    if (this.isViewing()) return this.setViewerPref('focusMode', !this.effS().focusMode);
+    return this.set('focusMode', !this.state.settings.focusMode);
   }
   effT() {
     const v = this.state.viewer;
@@ -1826,6 +1841,15 @@ class Component extends DCLogic {
     if (done[id]) delete done[id]; else done[id] = true;
     this.setDone(a.id, done);
   }
+  markSection(si) {
+    const a = this.active();
+    const lines = this.allLines().filter(l => l.si === si);
+    if (!lines.length) return;
+    const done = { ...a.done };
+    const allDone = lines.every(l => done[l.id]);   // toggle: all ready -> clear, else mark all ready
+    lines.forEach(l => { if (allDone) delete done[l.id]; else done[l.id] = true; });
+    this.setDone(a.id, done);
+  }
   copy(txt, label, tag) {
     const s = this.state.settings;
     let out = txt;
@@ -1850,12 +1874,7 @@ class Component extends DCLogic {
     }
     if ((el = g('data-copy'))) { lineOf(el); this.copy(el.getAttribute('data-copy'), '', el.getAttribute('data-tag')); return; }
     if ((el = g('data-done'))) { this.toggleDone(el.getAttribute('data-done')); return; }
-    if ((el = g('data-copysec'))) {
-      const si = +el.getAttribute('data-copysec');
-      const terms = [];
-      this.doc().sections[si].lines.forEach(l => l.items.forEach(it => { if (it.render === 'chips') terms.push(...it.chips); }));
-      this.copy(terms.join(this.joiner()), terms.length + ' terms'); return;
-    }
+    if ((el = g('data-marksec'))) { this.markSection(+el.getAttribute('data-marksec')); return; }
     if ((el = g('data-section'))) {
       const k = el.getAttribute('data-section');
       const cur = this.state.collapsed[k] !== undefined ? this.state.collapsed[k] : this.effS().collapseDefault;
@@ -1877,6 +1896,8 @@ class Component extends DCLogic {
         this.setState({ collapsed: c }, () => setTimeout(() => this.windowFromScroll(), 30));
         return;
       }
+      /* focus mode is viewer-toggleable in a shared view (saved locally) */
+      if (k === 'focusMode') { this.toggleFocus(); return; }
       this.set(k, !this.state.settings[k]); return;
     }
     if ((el = g('data-set-color'))) { this.set(el.getAttribute('data-set-color'), el.getAttribute('data-val')); return; }
@@ -2235,11 +2256,9 @@ class Component extends DCLogic {
     if (k === 'rename') return this.rename(a.id);
     if (k === 'delete') return this.trash(a.id);
     if (k === 'theme') {
-      if (this.isViewing()) {
-        const v = this.state.viewer, cur = this.effS().theme;
-        this.setState({ viewer: { ...v, settings: { ...(v.settings || {}), theme: cur === 'dark' ? 'light' : 'dark' } } });
-        return;
-      }
+      /* in a shared view the theme is a viewer-local override (saved on their
+         device); the owner's theme is never changed */
+      if (this.isViewing()) { const cur = this.effS().theme; this.setViewerPref('theme', cur === 'dark' ? 'light' : 'dark'); return; }
       return this.set('theme', this.state.settings.theme === 'dark' ? 'light' : 'dark');
     }
     if (k === 'clearq') return this.setState({ query: '' });
@@ -2436,6 +2455,7 @@ class Component extends DCLogic {
       const lines = s.lines.map((l, li) => ({ ...l, id: 's' + si + 'r' + li })).filter(l => visIds[l.id] && (!capSet || capSet[l.id]));
       const ids = s.lines.map((l, li) => 's' + si + 'r' + li);
       const dn = ids.filter(id => a.done[id]).length;
+      const allReady = ids.length > 0 && dn === ids.length;
       const open = !(this.state.collapsed[si] !== undefined ? this.state.collapsed[si] : S.collapseDefault);
       /* every line stays mounted — the browser skips off-screen work through
          content-visibility, so no spacer geometry is ever rewritten mid-scroll */
@@ -2445,6 +2465,11 @@ class Component extends DCLogic {
         hasBadge: !!s.badge, badge: s.badge,
         count: lines.length === s.lines.length ? String(s.lines.length) : lines.length + '/' + s.lines.length,
         pct: ids.length ? Math.round(dn / ids.length * 100) + '%' : '0%',
+        allReady,
+        markTitle: allReady ? 'Section ready — click to unmark' : 'Mark section as ready',
+        markColor: allReady ? '#3FA98C' : t.faint,
+        markBd: allReady ? '#3FA98C' : t.border,
+        markBg: allReady ? '#3FA98C22' : 'transparent',
         open, chev: open ? 'rotate(0deg)' : 'rotate(-90deg)',
         hasLines: s.lines.length > 0,
         notesOnly: s.lines.length === 0,
