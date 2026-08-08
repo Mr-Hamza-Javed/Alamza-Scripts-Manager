@@ -12,7 +12,13 @@
 body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
 a{color:inherit;text-decoration:none}
 input,select,textarea,button{font-family:inherit;outline:none}
+button{appearance:none;-webkit-appearance:none}
 ::selection{background:rgba(217,69,26,.22)}
+.ui-control:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--accent);outline:none}
+.hscroll{scrollbar-width:none;-ms-overflow-style:none}
+.hscroll::-webkit-scrollbar{display:none}
+.settings-card{transition:border-color .15s ease,background .15s ease,box-shadow .15s ease}
+.settings-card:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accentSoft)}
 .sc::-webkit-scrollbar{width:11px;height:11px}
 .sc::-webkit-scrollbar-thumb{background:var(--faint);border-radius:8px;border:3px solid transparent;background-clip:content-box}
 .sc::-webkit-scrollbar-track{background:transparent}
@@ -26,6 +32,7 @@ input,select,textarea,button{font-family:inherit;outline:none}
 .rawhl .b{color:var(--ink);font-weight:700}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 <script>
 (function () {
@@ -124,7 +131,7 @@ Signing in…</div>
 
 <div style="flex:none;display:flex;align-items:center;gap:10px;height:{{ headH }};padding:0 {{ headPad }};background:var(--surface);border-bottom:1px solid var(--border);z-index:20">
 <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-<span data-act="drawer" title="Menu" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-6px;border-radius:9px;color:var(--ink);cursor:pointer;flex:none" style-hover="background:var(--panel)">
+<span data-act="drawer" tabindex="0" role="button" aria-label="Open navigation" title="Menu" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-6px;border-radius:9px;color:var(--ink);cursor:pointer;flex:none" style-hover="background:var(--panel)">
 <svg width="17" height="17" viewBox="0 0 18 18"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
 </span>
 </sc-if>
@@ -143,6 +150,11 @@ Signing in…</div>
 </sc-if>
 </div>
 <span style="flex:1"></span>
+<sc-if value="{{ showMobileSearchButton }}" hint-placeholder-val="{{ false }}">
+<span data-act="mobileSearch" tabindex="0" role="button" aria-label="Search script" title="Search script" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;color:{{ mobileSearchFg }};background:{{ mobileSearchBg }};cursor:pointer;flex:none">
+<svg width="16" height="16" viewBox="0 0 18 18"><circle cx="7.5" cy="7.5" r="4.7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11.2 11.2L15 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+</span>
+</sc-if>
 <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);width:270px;flex:none">
 <svg width="12" height="12" viewBox="0 0 14 14" style="flex:none;color:var(--faint)"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.2 9.2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
@@ -152,7 +164,7 @@ Signing in…</div>
 <span style="flex:1"></span>
 <div style="display:flex;gap:2px;padding:2px;border-radius:8px;background:var(--panel);border:1px solid var(--border);flex:none">
 <sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
-<span data-mode="{{ m.id }}" style="padding:5px 12px;border-radius:6px;font:500 11.5px/1.3 var(--fUI);cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</span>
+<span data-mode="{{ m.id }}" tabindex="0" role="tab" class="ui-control" style="padding:5px 12px;border-radius:6px;font:500 11.5px/1.3 var(--fUI);cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</span>
 </sc-for>
 </div>
 </sc-if>
@@ -161,8 +173,19 @@ Signing in…</div>
 <svg width="12" height="12" viewBox="0 0 14 14"><path d="M5 7.6l4-2.2M5 6.4l4 2.2" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="4" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="3.4" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="10" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
 Share</span>
 </sc-if>
-<span data-act="theme" title="Toggle theme" style="display:flex;align-items:center;justify-content:center;width:{{ iconBtn }};height:{{ iconBtn }};border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer;flex:none" style-hover="color:var(--ink)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M11.6 8.6A5 5 0 0 1 5.4 2.4a5 5 0 1 0 6.2 6.2z" fill="currentColor"/></svg></span>
+<span data-act="theme" tabindex="0" role="button" aria-label="Toggle theme" title="Toggle theme" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:{{ iconBtn }};height:{{ iconBtn }};border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer;flex:none" style-hover="color:var(--ink)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M11.6 8.6A5 5 0 0 1 5.4 2.4a5 5 0 1 0 6.2 6.2z" fill="currentColor"/></svg></span>
 </div>
+
+<sc-if value="{{ showMobileSearch }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);z-index:19;box-shadow:0 4px 16px rgba(0,0,0,.06)">
+<div style="flex:1;display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:9px;background:var(--panel);border:1px solid var(--border)">
+<svg width="14" height="14" viewBox="0 0 18 18" style="flex:none;color:var(--faint)"><circle cx="7.5" cy="7.5" r="4.7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11.2 11.2L15 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search lines, tags, terms…" aria-label="Search script" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 13px/1.4 var(--fUI)"/>
+<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" tabindex="0" role="button" aria-label="Clear search" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-5px;color:var(--muted);cursor:pointer;font:400 17px/1 var(--fUI)">×</span></sc-if>
+</div>
+<span data-act="mobileSearch" tabindex="0" role="button" class="ui-control" style="padding:9px 4px;color:var(--accent);cursor:pointer;font:600 12px/1.3 var(--fUI)">Done</span>
+</div>
+</sc-if>
 
 
 <sc-if value="{{ banner.show }}" hint-placeholder-val="{{ false }}">
@@ -190,23 +213,23 @@ Share</span>
 <span style="font:600 13.5px/1 var(--fUI);color:var(--ink)">Alamza</span>
 <span style="font:400 13.5px/1 var(--fUI);color:var(--muted)">Scripts</span>
 <span style="flex:1"></span>
-<span data-act="closeDrawer" style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;margin-right:-6px;border-radius:9px;color:var(--muted);cursor:pointer;font:300 20px/1 var(--fUI)">×</span>
+<span data-act="closeDrawer" tabindex="0" role="button" aria-label="Close navigation" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;margin-right:-6px;border-radius:9px;color:var(--muted);cursor:pointer;font:300 20px/1 var(--fUI)">×</span>
 </div>
 </sc-if>
 <div style="flex:none;display:flex;gap:2px;padding:9px 9px 0">
 <sc-for list="{{ sideTabs }}" as="st" hint-placeholder-count="2">
-<span data-sidetab="{{ st.id }}" style="flex:1;text-align:center;padding:{{ tabPad }};border-radius:7px;font:500 11.5px/1.3 var(--fUI);cursor:pointer;background:{{ st.bg }};color:{{ st.fg }}">{{ st.label }} <span style="opacity:.5">{{ st.n }}</span></span>
+<span data-sidetab="{{ st.id }}" tabindex="0" role="tab" class="ui-control" style="flex:1;text-align:center;padding:{{ tabPad }};border-radius:8px;font:600 11.5px/1.3 var(--fUI);cursor:pointer;background:{{ st.bg }};color:{{ st.fg }}">{{ st.label }} <span style="opacity:.55">{{ st.n }}</span></span>
 </sc-for>
 </div>
 
 <sc-if value="{{ isFilesTab }}" hint-placeholder-val="{{ true }}">
 <sc-if value="{{ showLibraryTools }}" hint-placeholder-val="{{ true }}">
-<div style="flex:none;display:flex;align-items:center;gap:4px;padding:8px 10px 7px">
-<span data-act="newScript" title="New script" style="display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:6px;border:1px solid var(--border);font:500 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Script</span>
-<span data-act="newFolder" title="New folder" style="display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:6px;border:1px solid var(--border);font:500 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Folder</span>
-<label title="Upload .md / .txt" style="display:flex;align-items:center;justify-content:center;width:25px;height:24px;border-radius:6px;border:1px solid var(--border);color:var(--muted);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M7 10V2M4 5l3-3 3 3M2 11.5h10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><input type="file" accept=".md,.txt,.markdown,text/*" multiple="{{ true }}" onChange="{{ onUpload }}" style="display:none"/></label>
+<div style="flex:none;display:flex;align-items:center;gap:5px;padding:9px 10px 8px">
+<span data-act="newScript" tabindex="0" role="button" title="New script" class="ui-control" style="display:flex;align-items:center;gap:5px;min-height:30px;padding:6px 10px;border-radius:7px;border:1px solid var(--border);font:600 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Script</span>
+<span data-act="newFolder" tabindex="0" role="button" title="New folder" class="ui-control" style="display:flex;align-items:center;gap:5px;min-height:30px;padding:6px 10px;border-radius:7px;border:1px solid var(--border);font:600 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Folder</span>
+<label title="Upload .md / .txt" tabindex="0" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:31px;height:30px;border-radius:7px;border:1px solid var(--border);color:var(--muted);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M7 10V2M4 5l3-3 3 3M2 11.5h10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><input type="file" accept=".md,.txt,.markdown,text/*" multiple="{{ true }}" onChange="{{ onUpload }}" style="display:none"/></label>
 <span style="flex:1"></span>
-<span data-act="toggleTrash" title="Trash" style="display:flex;align-items:center;gap:5px;padding:4px 8px;border-radius:6px;font:500 10.5px/1.3 var(--fUI);color:{{ trashFg }};background:{{ trashBg }};cursor:pointer">
+<span data-act="toggleTrash" tabindex="0" role="button" title="Trash" class="ui-control" style="display:flex;align-items:center;gap:5px;min-width:31px;min-height:30px;justify-content:center;padding:6px 8px;border-radius:7px;font:600 10.5px/1.3 var(--fUI);color:{{ trashFg }};background:{{ trashBg }};cursor:pointer">
 <svg width="11" height="11" viewBox="0 0 14 14"><path d="M3 4h8M5.5 4V2.8h3V4M4.2 4l.5 7.2h4.6L9.8 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ trashCount }}</span>
 </div>
 </sc-if>
@@ -223,7 +246,7 @@ Share</span>
 </div>
 </sc-if>
 <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}">
-<div data-row="{{ it.id }}" style="display:flex;align-items:center;gap:6px;padding:5px 6px 5px {{ it.indent }};border-radius:6px;cursor:pointer;background:{{ it.bg }};border-left:2px solid {{ it.bar }}" style-hover="background:var(--panel)">
+<div data-row="{{ it.id }}" tabindex="0" role="button" class="ui-control" style="display:flex;align-items:center;gap:7px;min-height:35px;padding:7px 5px 7px {{ it.indent }};border-radius:8px;cursor:pointer;background:{{ it.bg }};border-left:3px solid {{ it.bar }}" style-hover="background:var(--panel)">
 <sc-if value="{{ it.isFolder }}" hint-placeholder-val="{{ false }}">
 <svg width="9" height="9" viewBox="0 0 10 10" style="flex:none;color:var(--faint);transform:{{ it.chev }};transition:transform .13s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
 <svg width="13" height="13" viewBox="0 0 14 14" style="flex:none;color:{{ it.iconInk }}"><path d="M1.6 3.6h3.4l1 1.2h6.4v6.2a.8.8 0 0 1-.8.8H2.4a.8.8 0 0 1-.8-.8z" fill="currentColor" opacity=".9"/></svg>
@@ -240,7 +263,7 @@ Share</span>
 <span style="flex:none;font:400 8.5px/1.35 'JetBrains Mono',monospace;color:var(--faint)">{{ it.pct }}</span>
 </sc-if>
 <sc-if value="{{ it.hasMenu }}" hint-placeholder-val="{{ true }}">
-<span data-menu="{{ it.id }}" title="More" style="flex:none;width:16px;text-align:center;color:var(--faint);font:600 12px/1 var(--fUI);cursor:pointer" style-hover="color:var(--ink)">⋯</span>
+<span data-menu="{{ it.id }}" tabindex="0" role="button" aria-label="More options for {{ it.name }}" title="More" class="ui-control" style="flex:none;display:flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-4px -2px -4px 0;border-radius:7px;color:var(--muted);font:700 14px/1 var(--fUI);cursor:pointer" style-hover="background:var(--surface);color:var(--ink)">⋯</span>
 </sc-if>
 </div>
 </sc-if>
@@ -301,7 +324,7 @@ Copy all {{ termCount }} terms
 </div>
 </sc-if>
 
-<div style="flex:none;border-top:1px solid var(--border);padding:9px 10px;background:var(--surface)">
+<div style="flex:none;border-top:1px solid var(--border);padding:11px 12px;background:var(--surface)">
 <sc-if value="{{ auth.signedIn }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;align-items:center;gap:10px">
 <span style="width:{{ avatarSz }};height:{{ avatarSz }};border-radius:50%;flex:none;background:var(--accent) center/cover no-repeat url({{ auth.photo }});display:flex;align-items:center;justify-content:center;font:700 11px/1 var(--fUI);color:#fff">{{ auth.initial }}</span>
@@ -452,22 +475,22 @@ Copy all {{ termCount }} terms
 
 <sc-if value="{{ isRaw }}" hint-placeholder-val="{{ false }}">
 <div style="flex:1;min-height:0;display:flex;flex-direction:column">
-<div style="flex:none;display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--surface);border-bottom:1px solid var(--border)">
+<div style="{{ rawToolbarStyle }}">
 <span style="font:500 11px/1 var(--fUI);color:var(--muted)">Raw markdown</span>
 <span style="font:400 10px/1 'JetBrains Mono',monospace;color:var(--faint)">{{ rawStats }}</span>
 <span style="flex:1"></span>
 <sc-if value="{{ dirty }}" hint-placeholder-val="{{ false }}">
 <span style="font:500 10.5px/1 var(--fUI);color:var(--accent)">Unsaved changes</span>
-<span data-act="revert" style="padding:5px 11px;border-radius:7px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--muted)">Revert</span>
+<span data-act="revert" tabindex="0" role="button" class="ui-control" style="padding:7px 12px;border-radius:7px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--muted)">Revert</span>
 </sc-if>
-<span data-act="save" style="padding:5px 13px;border-radius:7px;background:var(--accent);color:#fff;font:600 11px/1.3 var(--fUI);cursor:pointer">Save &amp; render</span>
+<span data-act="save" tabindex="0" role="button" class="ui-control" style="padding:7px 13px;border-radius:7px;background:var(--accent);color:#fff;font:600 11px/1.3 var(--fUI);cursor:pointer">Save &amp; render</span>
 </div>
 <div class="sc" id="rawwrap" style="flex:1;min-height:0;overflow:auto;background:var(--panel);position:relative">
-<div style="display:flex;min-height:100%;min-width:100%;width:max-content">
-<div style="flex:none;width:52px;padding:14px 8px 200px 0;text-align:right;font:400 12px/1.65 'JetBrains Mono',monospace;color:var(--faint);background:var(--surface);border-right:1px solid var(--border);position:sticky;left:0;z-index:2;white-space:pre">{{ gutter }}</div>
-<div style="flex:1;position:relative;min-width:900px">
+<div style="display:flex;min-height:100%;min-width:100%;width:{{ rawCanvasWidth }}">
+<div style="display:{{ rawGutterDisplay }};flex:none;width:52px;padding:14px 8px 200px 0;text-align:right;font:400 12px/1.65 'JetBrains Mono',monospace;color:var(--faint);background:var(--surface);border-right:1px solid var(--border);position:sticky;left:0;z-index:2;white-space:pre">{{ gutter }}</div>
+<div style="flex:1;position:relative;min-width:{{ rawMinW }}">
 {{ rawLayer }}
-<textarea value="{{ draft }}" onChange="{{ onDraft }}" spellcheck="false" style="position:absolute;inset:0;width:100%;height:100%;padding:14px 18px 200px;border:0;resize:none;background:transparent;color:transparent;caret-color:var(--accent);font:400 12px/1.65 'JetBrains Mono',monospace;white-space:pre;overflow:hidden"></textarea>
+<textarea value="{{ draft }}" onChange="{{ onDraft }}" spellcheck="false" aria-label="Raw markdown editor" style="position:absolute;inset:0;width:100%;height:100%;padding:{{ rawEditorPad }};border:0;resize:none;background:transparent;color:transparent;caret-color:var(--accent);font:400 12px/1.65 'JetBrains Mono',monospace;white-space:{{ rawWhiteSpace }};overflow-wrap:{{ rawOverflowWrap }};overflow:hidden"></textarea>
 </div>
 </div>
 </div>
@@ -476,86 +499,137 @@ Copy all {{ termCount }} terms
 
 <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
 <div style="flex:1;min-height:0;display:flex;flex-direction:{{ setDir }}">
-<div class="sc" style="{{ setNavStyle }}">
-<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
-<div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 4px 9px">SETTINGS</div>
+<div class="sc hscroll" style="{{ setNavStyle }}">
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<span style="flex:none;font:700 10px/1 var(--fUI);letter-spacing:.12em;color:var(--faint)">SETTINGS</span>
+<select value="{{ activeSettingsTab }}" onChange="{{ onSettingsTab }}" aria-label="Settings category" style="flex:1;min-width:0;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:600 12px/1.3 var(--fUI)">
+<sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="6"><option value="{{ tb.id }}">{{ tb.label }}</option></sc-for>
+</select>
 </sc-if>
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="margin:1px 5px 14px">
+<div style="font:700 9px/1 var(--fUI);letter-spacing:.15em;color:var(--faint)">SETTINGS</div>
+<div style="display:flex;align-items:center;gap:6px;margin-top:8px;font:400 10px/1.3 var(--fUI);color:var(--muted)"><span style="width:6px;height:6px;border-radius:50%;background:#3FA98C"></span>Changes save automatically</div>
+</div>
 <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="6">
-<div data-tab="{{ tb.id }}" style="{{ setTabStyle }};color:{{ tb.fg }};background:{{ tb.bg }}" style-hover="background:var(--panel)">{{ tb.label }}</div>
+<sc-if value="{{ tb.hasGroup }}" hint-placeholder-val="{{ false }}"><div style="margin:13px 5px 7px;font:700 8.5px/1 var(--fUI);letter-spacing:.13em;color:var(--faint)">{{ tb.group }}</div></sc-if>
+<button type="button" data-tab="{{ tb.id }}" role="tab" aria-selected="{{ tb.selected }}" class="ui-control" style="{{ tb.style }}">
+<span style="width:8px;height:8px;border-radius:50%;background:{{ tb.dot }};box-shadow:{{ tb.dotRing }};flex:none"></span>
+<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ tb.label }}</span>
+<svg width="13" height="13" viewBox="0 0 14 14" style="flex:none;opacity:{{ tb.chevOpacity }}"><path d="M5 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
 </sc-for>
-<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
-<div style="height:1px;background:var(--border);margin:12px 4px"></div>
 </sc-if>
-<div data-act="resetSettings" style="{{ setResetStyle }};color:var(--muted)" style-hover="color:#D9451A">Reset to defaults</div>
 </div>
 <div class="sc" id="setmain" style="flex:1;min-width:0;overflow-y:auto;padding:{{ setMainPad }}">
 <div style="max-width:760px;margin:0 auto">
 <sc-if value="{{ isTagsTab }}" hint-placeholder-val="{{ false }}">
 <div style="margin-bottom:8px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">Tags &amp; labels</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">Har tag ka rendering type, rang aur split character yahan se badlein. Naya tag milne par app khud andaza laga kar yahan add kar deti hai — usay confirm ya badal dein. Ye registry save rehti hai, agli script me wahi tag pehchana jayega.</p></div>
-<div style="display:flex;align-items:center;gap:9px;margin:16px 0 10px">
-<span data-toggle="autoDetect" style="width:28px;height:16px;border-radius:10px;background:{{ autoBg }};position:relative;flex:none;cursor:pointer"><span style="position:absolute;top:2px;left:{{ autoX }};width:12px;height:12px;border-radius:50%;background:#fff;transition:left .15s"></span></span>
+<div style="{{ tagToolsStyle }}">
+<span data-toggle="autoDetect" tabindex="0" role="switch" aria-checked="{{ autoChecked }}" class="ui-control" style="width:32px;height:18px;border-radius:10px;background:{{ autoBg }};position:relative;flex:none;cursor:pointer"><span style="position:absolute;top:2px;left:{{ autoDetectX }};width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.18)"></span></span>
 <span style="font:400 12px/1.3 var(--fUI);color:var(--prose)">Auto-detect unknown tags</span>
-<span style="flex:1"></span>
-<input value="{{ newTag }}" onChange="{{ onNewTag }}" placeholder="NEW TAG NAME" style="width:150px;padding:5px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:500 10.5px/1.3 'JetBrains Mono',monospace"/>
-<span data-act="addTag" style="padding:5px 11px;border-radius:7px;background:var(--accent);color:#fff;font:600 11px/1.3 var(--fUI);cursor:pointer">Add</span>
+<span style="{{ tagToolsSpacer }}"></span>
+<input value="{{ newTag }}" onChange="{{ onNewTag }}" placeholder="NEW TAG NAME" aria-label="New tag name" style="{{ newTagStyle }}"/>
+<span data-act="addTag" tabindex="0" role="button" class="ui-control" style="padding:8px 14px;border-radius:8px;background:var(--accent);color:#fff;font:600 11.5px/1.3 var(--fUI);cursor:pointer">Add</span>
 </div>
-<div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)">
-<div style="display:grid;grid-template-columns:150px 108px 1fr 96px 30px;gap:10px;padding:9px 12px;background:var(--panel);border-bottom:1px solid var(--border);font:500 9px/1 var(--fUI);letter-spacing:.1em;color:var(--faint)">
+<div style="{{ tagTableStyle }}">
+<div style="{{ tagHeadStyle }}">
 <span>TAG</span><span>RENDER AS</span><span>COLOR</span><span>SPLIT ON</span><span></span>
 </div>
 <sc-for list="{{ tagRows }}" as="tg" hint-placeholder-count="6">
-<div style="display:grid;grid-template-columns:150px 108px 1fr 96px 30px;gap:10px;padding:9px 12px;border-bottom:1px solid var(--rule);align-items:center">
-<div style="display:flex;align-items:center;gap:6px;min-width:0">
+<div class="settings-card" style="{{ tagRowStyle }}">
+<div style="{{ tagNameStyle }}">
 <span style="width:5px;height:5px;border-radius:50%;background:{{ tg.color }};flex:none"></span>
 <span style="font:500 10.5px/1.4 'JetBrains Mono',monospace;color:var(--ink);overflow:hidden;text-overflow:ellipsis">{{ tg.name }}</span>
 <sc-if value="{{ tg.isAuto }}" hint-placeholder-val="{{ false }}"><span style="font:500 8px/1 var(--fUI);padding:2px 5px;border-radius:4px;background:var(--accentSoft);color:var(--accent);flex:none">AUTO</span></sc-if>
 </div>
-<select value="{{ tg.render }}" data-tagset="render" data-tag="{{ tg.name }}" onChange="{{ onTagSet }}" style="padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11px/1.3 var(--fUI);cursor:pointer">
+<div style="{{ tagRenderStyle }}"><sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}"><span style="font:600 8.5px/1 var(--fUI);letter-spacing:.1em;color:var(--faint)">RENDER AS</span></sc-if>
+<select value="{{ tg.render }}" aria-label="Render {{ tg.name }} as" data-tagset="render" data-tag="{{ tg.name }}" onChange="{{ onTagSet }}" style="width:100%;padding:7px 8px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11px/1.3 var(--fUI);cursor:pointer">
 <option value="prose">Prose</option><option value="chips">Chips</option><option value="overlay">Overlay</option><option value="links">Links</option><option value="hidden">Hidden</option>
-</select>
-<div style="display:flex;gap:3px;flex-wrap:wrap">
+</select></div>
+<div style="{{ tagColorStyle }}"><sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}"><span style="font:600 8.5px/1 var(--fUI);letter-spacing:.1em;color:var(--faint);margin-right:4px">COLOR</span></sc-if>
 <sc-for list="{{ tg.swatches }}" as="sw" hint-placeholder-count="10">
-<span data-tagcolor="{{ sw.key }}" data-tag="{{ tg.name }}" style="width:15px;height:15px;border-radius:4px;background:{{ sw.hex }};cursor:pointer;box-shadow:{{ sw.ring }}"></span>
+<span data-tagcolor="{{ sw.key }}" data-tag="{{ tg.name }}" tabindex="0" role="button" aria-label="Set {{ tg.name }} color to {{ sw.key }}" class="ui-control" style="width:19px;height:19px;border-radius:5px;background:{{ sw.hex }};cursor:pointer;box-shadow:{{ sw.ring }}"></span>
 </sc-for>
 </div>
-<select value="{{ tg.split }}" data-tagset="split" data-tag="{{ tg.name }}" onChange="{{ onTagSet }}" style="padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11px/1.3 var(--fUI);cursor:pointer">
+<div style="{{ tagSplitStyle }}"><sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}"><span style="font:600 8.5px/1 var(--fUI);letter-spacing:.1em;color:var(--faint)">SPLIT ON</span></sc-if>
+<select value="{{ tg.split }}" aria-label="Split {{ tg.name }} on" data-tagset="split" data-tag="{{ tg.name }}" onChange="{{ onTagSet }}" style="width:100%;padding:7px 8px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11px/1.3 var(--fUI);cursor:pointer">
 <option value="none">—</option><option value=";">;</option><option value=",">,</option><option value="auto">auto</option><option value="—">— and —</option>
-</select>
-<span data-tagdel="{{ tg.name }}" style="text-align:center;color:var(--faint);cursor:pointer;font:400 14px/1 var(--fUI)" style-hover="color:#D9451A">×</span>
+</select></div>
+<span data-tagdel="{{ tg.name }}" tabindex="0" role="button" aria-label="Delete {{ tg.name }} tag" class="ui-control" style="{{ tagDeleteStyle }}" style-hover="color:#D9451A;background:var(--accentSoft)">×</span>
 </div>
 </sc-for>
 </div>
 </sc-if>
 <sc-if value="{{ isLibTab }}" hint-placeholder-val="{{ false }}">
-<div style="margin-bottom:14px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">Library</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">Sab scripts yahan hain. Browser me save rehti hain.</p></div>
-<div style="display:flex;flex-direction:column;gap:7px">
-<sc-for list="{{ libRows }}" as="lb" hint-placeholder-count="2">
-<div style="display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid {{ lb.bd }};border-radius:var(--radius);background:var(--surface)">
-<span style="width:6px;height:6px;border-radius:50%;background:{{ lb.dot }};flex:none"></span>
-<div style="flex:1;min-width:0">
-<div style="font:500 13px/1.3 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ lb.name }}</div>
-<div style="font:400 10.5px/1.5 'JetBrains Mono',monospace;color:var(--faint);margin-top:2px">{{ lb.meta }}</div>
+<div style="margin-bottom:16px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">Library</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">Apni scripts ko ek jagah se open, rename, duplicate ya manage karein.</p></div>
+<div style="{{ libraryStatsStyle }}">
+<sc-for list="{{ libraryStats }}" as="st" hint-placeholder-count="3">
+<div style="padding:12px 13px;border:1px solid var(--border);border-radius:10px;background:var(--surface)">
+<div style="font:650 18px/1.1 var(--fUI);color:var(--ink)">{{ st.value }}</div>
+<div style="margin-top:5px;font:600 9px/1.2 var(--fUI);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)">{{ st.label }}</div>
 </div>
-<span data-open="{{ lb.id }}" style="padding:5px 11px;border-radius:6px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">Open</span>
-<span data-ren="{{ lb.id }}" style="padding:5px 11px;border-radius:6px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">Rename</span>
-<span data-dup="{{ lb.id }}" style="padding:5px 11px;border-radius:6px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">Duplicate</span>
-<span data-del="{{ lb.id }}" style="padding:5px 11px;border-radius:6px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--muted);cursor:pointer" style-hover="border-color:#D9451A;color:#D9451A">Delete</span>
+</sc-for>
+</div>
+<sc-if value="{{ libraryEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="padding:28px 18px;border:1px dashed var(--border);border-radius:12px;background:var(--surface);text-align:center;color:var(--muted);font:400 12px/1.6 var(--fUI)">Abhi koi script nahi hai. Scripts panel se apni pehli script banayein.</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ libRows }}" as="lb" hint-placeholder-count="2">
+<div class="settings-card" style="{{ lb.style }}">
+<div style="{{ lb.iconStyle }}">
+<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2.5h5l3 3v10H5z"/><path d="M10 2.5v3h3M7.5 9h3M7.5 12h3"/></svg>
+</div>
+<div style="flex:1;min-width:0">
+<div style="display:flex;align-items:center;gap:7px;min-width:0">
+<div style="font:600 13px/1.35 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ lb.name }}</div>
+<sc-if value="{{ lb.active }}" hint-placeholder-val="{{ false }}"><span style="flex:none;padding:3px 6px;border-radius:999px;background:var(--accentSoft);color:var(--accent);font:700 8px/1 var(--fUI);letter-spacing:.08em">OPEN</span></sc-if>
+</div>
+<div style="font:400 10.5px/1.4 var(--fUI);color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ lb.folder }}</div>
+<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:8px">
+<span style="padding:4px 7px;border-radius:6px;background:var(--panel);color:var(--muted);font:500 9.5px/1 'JetBrains Mono',monospace">{{ lb.lineLabel }}</span>
+<span style="padding:4px 7px;border-radius:6px;background:var(--panel);color:var(--muted);font:500 9.5px/1 'JetBrains Mono',monospace">{{ lb.readyLabel }}</span>
+<sc-if value="{{ lb.isPublic }}" hint-placeholder-val="{{ false }}"><span style="padding:4px 7px;border-radius:6px;background:var(--accentSoft);color:var(--accent);font:600 9px/1 var(--fUI)">Public link</span></sc-if>
+<sc-if value="{{ lb.hasMembers }}" hint-placeholder-val="{{ false }}"><span style="padding:4px 7px;border-radius:6px;background:var(--panel);color:var(--muted);font:600 9px/1 var(--fUI)">{{ lb.sharedLabel }}</span></sc-if>
+</div>
+</div>
+<div style="{{ libActionsStyle }}">
+<button type="button" data-open="{{ lb.id }}" class="ui-control" style="{{ libOpenButtonStyle }}">Open</button>
+<button type="button" data-ren="{{ lb.id }}" class="ui-control" style="{{ libNeutralButtonStyle }}">Rename</button>
+<button type="button" data-dup="{{ lb.id }}" class="ui-control" style="{{ libNeutralButtonStyle }}">Duplicate</button>
+<button type="button" data-del="{{ lb.id }}" class="ui-control" style="{{ libDangerButtonStyle }}">Delete</button>
+</div>
 </div>
 </sc-for>
 </div>
 </sc-if>
+<sc-if value="{{ isDangerTab }}" hint-placeholder-val="{{ false }}">
+<div style="margin-bottom:16px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">Danger zone</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">Reset jaisi sensitive actions yahan rakhi gayi hain taa-ke ghalti se trigger na hon.</p></div>
+<div style="border:1px solid rgba(217,69,26,.38);border-radius:12px;background:rgba(217,69,26,.045);overflow:hidden">
+<div style="display:flex;gap:12px;padding:16px">
+<div style="width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none;background:rgba(217,69,26,.11);color:#D9451A">
+<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.2l7 12.2a1 1 0 0 1-.9 1.5H2.9a1 1 0 0 1-.9-1.5z"/><path d="M9 6.2v4.3M9 13.2h.01"/></svg>
+</div>
+<div><div style="font:600 13px/1.4 var(--fUI);color:var(--ink)">Reset all settings</div><p style="margin:4px 0 0;font:400 11.5px/1.55 var(--fUI);color:var(--muted)">Appearance, typography, layout, reading preferences aur tag labels defaults par wapas chale jayenge. Aapki scripts aur folders delete nahi honge.</p></div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:13px 16px;border-top:1px solid rgba(217,69,26,.22);background:var(--surface)">
+<span style="font:500 10.5px/1.4 var(--fUI);color:var(--muted)">Confirmation ke baghair reset apply nahi hoga.</span>
+<button type="button" data-act="resetSettings" class="ui-control" style="{{ dangerResetStyle }}">Reset settings</button>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{ isFieldTab }}" hint-placeholder-val="{{ true }}">
 <div style="margin-bottom:16px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">{{ tabTitle }}</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">{{ tabHint }}</p></div>
-<div style="display:flex;flex-direction:column;gap:2px">
+<div style="display:flex;flex-direction:column;gap:8px">
 <sc-for list="{{ fields }}" as="f" hint-placeholder-count="8">
-<div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;padding:11px 13px;border-radius:var(--radius);background:{{ f.rowBg }}">
+<div class="settings-card" style="display:flex;align-items:center;flex-wrap:wrap;gap:11px 18px;min-height:54px;padding:13px 14px;border-radius:var(--radius);border:1px solid var(--border);background:{{ f.rowBg }}">
 <div style="flex:1;min-width:140px">
 <div style="font:500 12.5px/1.4 var(--fUI);color:var(--ink)">{{ f.label }}</div>
 <sc-if value="{{ f.hasHint }}" hint-placeholder-val="{{ false }}"><div style="font:400 11px/1.5 var(--fUI);color:var(--muted);margin-top:2px">{{ f.hint }}</div></sc-if>
 </div>
 <div style="flex:none;display:flex;align-items:center;gap:9px">
 <sc-if value="{{ f.isToggle }}" hint-placeholder-val="{{ false }}">
-<span data-toggle="{{ f.key }}" style="width:32px;height:18px;border-radius:10px;background:{{ f.tbg }};position:relative;cursor:pointer;transition:background .15s"><span style="position:absolute;top:2px;left:{{ f.tx }};width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
+<span data-toggle="{{ f.key }}" tabindex="0" role="switch" aria-checked="{{ f.checked }}" class="ui-control" style="width:36px;height:20px;border-radius:12px;background:{{ f.tbg }};position:relative;cursor:pointer;transition:background .15s"><span style="position:absolute;top:2px;left:{{ f.txLarge }};width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
 </sc-if>
 <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
 <select value="{{ f.value }}" data-set="{{ f.key }}" onChange="{{ onSet }}" style="min-width:150px;padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:400 12px/1.3 var(--fUI);cursor:pointer">
@@ -569,7 +643,7 @@ Copy all {{ termCount }} terms
 <sc-if value="{{ f.isSwatch }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;gap:4px">
 <sc-for list="{{ f.swatches }}" as="sw" hint-placeholder-count="8">
-<span data-set-color="{{ f.key }}" data-val="{{ sw.key }}" style="width:19px;height:19px;border-radius:5px;background:{{ sw.hex }};cursor:pointer;box-shadow:{{ sw.ring }}"></span>
+<span data-set-color="{{ f.key }}" data-val="{{ sw.key }}" tabindex="0" role="button" aria-label="Set {{ f.label }} to {{ sw.key }}" class="ui-control" style="width:22px;height:22px;border-radius:6px;background:{{ sw.hex }};cursor:pointer;box-shadow:{{ sw.ring }}"></span>
 </sc-for>
 </div>
 </sc-if>
@@ -577,7 +651,7 @@ Copy all {{ termCount }} terms
 <input value="{{ f.value }}" data-set="{{ f.key }}" onChange="{{ onSet }}" style="width:190px;padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:400 12px/1.3 var(--fUI)"/>
 </sc-if>
 <sc-if value="{{ f.isAction }}" hint-placeholder-val="{{ false }}">
-<span data-act="{{ f.key }}" style="padding:6px 13px;border-radius:7px;border:1px solid var(--border);font:500 11.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">{{ f.actionLabel }}</span>
+<span data-act="{{ f.key }}" tabindex="0" role="button" class="ui-control" style="padding:8px 13px;border-radius:7px;border:1px solid var(--border);font:500 11.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">{{ f.actionLabel }}</span>
 </sc-if>
 </div>
 </div>
@@ -592,7 +666,7 @@ Copy all {{ termCount }} terms
 <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
 <div style="flex:none;display:flex;align-items:stretch;gap:2px;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);z-index:30">
 <sc-for list="{{ mobileNav }}" as="mn" hint-placeholder-count="4">
-<div data-mnav="{{ mn.id }}" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;border-radius:10px;cursor:pointer;background:{{ mn.bg }};color:{{ mn.fg }}">
+<div data-mnav="{{ mn.id }}" tabindex="0" role="tab" class="ui-control" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;border-radius:10px;cursor:pointer;background:{{ mn.bg }};color:{{ mn.fg }}">
 <span style="display:flex;align-items:center;justify-content:center;height:17px" dangerouslySetInnerHTML="{{ mn.icon }}"></span>
 <span style="font:600 9.5px/1 var(--fUI);letter-spacing:.02em">{{ mn.label }}</span>
 </div>
@@ -632,8 +706,8 @@ Copy all {{ termCount }} terms
 <div style="font:600 14px/1.35 var(--fUI);color:var(--ink);margin-bottom:12px">{{ renameBox.title }}</div>
 <input value="{{ renameBox.value }}" onChange="{{ onRenameValue }}" onKeyDown="{{ onRenameKey }}" placeholder="Name" style="width:100%;padding:10px 11px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:500 13px/1.4 var(--fUI)"/>
 <div style="display:flex;justify-content:flex-end;gap:7px;margin-top:14px">
-<span data-act="cancelRename" style="padding:7px 13px;border-radius:7px;border:1px solid var(--border);font:500 11.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer">Cancel</span>
-<span data-act="commitRename" style="padding:7px 13px;border-radius:7px;background:var(--accent);font:600 11.5px/1.3 var(--fUI);color:#fff;cursor:pointer">Save</span>
+<span data-act="cancelRename" tabindex="0" role="button" class="ui-control" style="padding:8px 14px;border-radius:7px;border:1px solid var(--border);font:500 11.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer">Cancel</span>
+<span data-act="commitRename" tabindex="0" role="button" class="ui-control" style="padding:8px 14px;border-radius:7px;background:var(--accent);font:600 11.5px/1.3 var(--fUI);color:#fff;cursor:pointer">Save</span>
 </div>
 </div>
 </div>
@@ -645,35 +719,37 @@ Copy all {{ termCount }} terms
 <div style="font:600 14px/1.35 var(--fUI);color:var(--ink)">{{ confirmBox.title }}</div>
 <p style="margin:7px 0 0;font:400 12px/1.55 var(--fUI);color:var(--prose)">{{ confirmBox.text }}</p>
 <div style="display:flex;justify-content:flex-end;gap:7px;margin-top:16px">
-<span data-act="cancelConfirm" style="padding:7px 13px;border-radius:7px;border:1px solid var(--border);font:500 11.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer">Cancel</span>
-<span data-act="confirmDanger" style="padding:7px 13px;border-radius:7px;background:#D9451A;font:600 11.5px/1.3 var(--fUI);color:#fff;cursor:pointer">{{ confirmBox.action }}</span>
+<span data-act="cancelConfirm" tabindex="0" role="button" class="ui-control" style="padding:8px 14px;border-radius:7px;border:1px solid var(--border);font:500 11.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer">Cancel</span>
+<span data-act="confirmDanger" tabindex="0" role="button" class="ui-control" style="padding:8px 14px;border-radius:7px;background:#D9451A;font:600 11.5px/1.3 var(--fUI);color:#fff;cursor:pointer">{{ confirmBox.action }}</span>
 </div>
 </div>
 </div>
 </sc-if>
 
 <sc-if value="{{ share.show }}" hint-placeholder-val="{{ false }}">
-<div data-act="closeOverlay" style="position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.34);display:flex;align-items:center;justify-content:center">
-<div data-stop="1" style="width:{{ dialogW }};max-width:calc(100vw - 24px);max-height:82vh;overflow-y:auto;border-radius:13px;background:var(--surface);border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.32);animation:pop .13s ease-out">
-<div style="padding:17px 19px 14px;border-bottom:1px solid var(--border)">
-<div style="font:600 15px/1.3 var(--fUI);color:var(--ink)">Share “{{ share.name }}”</div>
+<div data-act="closeOverlay" style="position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.42);display:flex;align-items:{{ dialogAlign }};justify-content:center;padding:{{ dialogPad }};animation:fin .12s ease-out">
+<div data-stop="1" class="sc" style="width:{{ dialogW }};max-width:calc(100vw - {{ dialogMaxInset }});max-height:{{ dialogMaxH }};overflow-y:auto;border-radius:{{ dialogRadius }};background:var(--surface);border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.32);animation:pop .13s ease-out;padding-bottom:{{ dialogBottomPad }}">
+<div style="display:flex;align-items:flex-start;gap:12px;padding:17px 19px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2;background:var(--surface)">
+<div style="flex:1;min-width:0"><div style="font:600 15px/1.3 var(--fUI);color:var(--ink)">Share “{{ share.name }}”</div>
 <div style="font:400 11.5px/1.55 var(--fUI);color:var(--muted);margin-top:3px">{{ share.subtitle }}</div>
+</div>
+<span data-act="closeOverlay" tabindex="0" role="button" aria-label="Close share dialog" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;margin:-6px -7px 0 0;border-radius:8px;color:var(--muted);cursor:pointer;font:300 20px/1 var(--fUI)" style-hover="background:var(--panel);color:var(--ink)">×</span>
 </div>
 
 <div style="padding:15px 19px;border-bottom:1px solid var(--border)">
 <div style="font:500 9px/1 var(--fUI);letter-spacing:.13em;color:var(--faint);margin-bottom:9px">PUBLIC LINK</div>
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
-<span data-act="togglePublic" style="width:32px;height:18px;border-radius:10px;background:{{ share.pubBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:2px;left:{{ share.pubX }};width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
+<span data-act="togglePublic" tabindex="0" role="switch" aria-checked="{{ share.isPublic }}" aria-label="Toggle public link" class="ui-control" style="width:36px;height:20px;border-radius:12px;background:{{ share.pubBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:2px;left:{{ sharePubX }};width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
 <div style="flex:1;min-width:0">
 <div style="font:500 12px/1.35 var(--fUI);color:var(--ink)">Anyone with the link can view</div>
 <div style="font:400 11px/1.5 var(--fUI);color:var(--muted)">Sirf dekh sakte hain — aur “ready” tick kar sakte hain. Baqi kuch nahi.</div>
 </div>
 </div>
 <sc-if value="{{ share.isPublic }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;gap:6px">
-<input value="{{ share.url }}" readOnly="{{ true }}" onFocus="{{ onSelectAll }}" style="flex:1;min-width:0;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--prose);font:400 11px/1.4 'JetBrains Mono',monospace"/>
-<span data-copy="{{ share.url }}" style="flex:none;padding:7px 13px;border-radius:7px;background:var(--accent);color:#fff;font:600 11.5px/1.4 var(--fUI);cursor:pointer">Copy</span>
-<a href="{{ share.url }}" target="_blank" rel="noopener" style="flex:none;padding:7px 12px;border-radius:7px;border:1px solid var(--border);color:var(--prose);font:500 11.5px/1.4 var(--fUI)">Open</a>
+<div style="{{ shareLinkStyle }}">
+<input value="{{ share.url }}" readOnly="{{ true }}" onFocus="{{ onSelectAll }}" aria-label="Public share link" style="{{ shareUrlStyle }}"/>
+<span data-copy="{{ share.url }}" tabindex="0" role="button" class="ui-control" style="{{ shareLinkButtonStyle }};background:var(--accent);color:#fff;border-color:var(--accent)">Copy</span>
+<a href="{{ share.url }}" target="_blank" rel="noopener" class="ui-control" style="{{ shareLinkButtonStyle }};color:var(--prose)">Open</a>
 </div>
 <sc-if value="{{ share.stale }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;align-items:center;gap:9px;margin-top:9px;padding:8px 10px;border-radius:7px;background:var(--accentSoft)">
@@ -686,12 +762,12 @@ Copy all {{ termCount }} terms
 
 <div style="padding:15px 19px">
 <div style="font:500 9px/1 var(--fUI);letter-spacing:.13em;color:var(--faint);margin-bottom:9px">INVITE BY GOOGLE ACCOUNT</div>
-<div style="display:flex;gap:6px;margin-bottom:12px">
-<input value="{{ share.email }}" onChange="{{ onShareEmail }}" placeholder="name@gmail.com" style="flex:1;min-width:0;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 12px/1.4 var(--fUI)"/>
-<select value="{{ share.role }}" data-set-share="role" onChange="{{ onShareRole }}" style="flex:none;padding:7px 8px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11.5px/1.4 var(--fUI);cursor:pointer">
+<div style="{{ shareInviteStyle }}">
+<input value="{{ share.email }}" onChange="{{ onShareEmail }}" placeholder="name@gmail.com" aria-label="Invite email address" style="{{ shareEmailStyle }}"/>
+<select value="{{ share.role }}" aria-label="Invite role" data-set-share="role" onChange="{{ onShareRole }}" style="{{ shareRoleStyle }}">
 <sc-for list="{{ share.roles }}" as="r" hint-placeholder-count="4"><option value="{{ r.v }}">{{ r.l }}</option></sc-for>
 </select>
-<span data-act="invite" style="flex:none;padding:7px 13px;border-radius:7px;background:var(--accent);color:#fff;font:600 11.5px/1.4 var(--fUI);cursor:pointer">Invite</span>
+<span data-act="invite" tabindex="0" role="button" class="ui-control" style="{{ shareInviteButtonStyle }}">Invite</span>
 </div>
 <div style="font:400 11px/1.5 var(--fUI);color:var(--muted);margin-bottom:11px">{{ share.roleHint }}</div>
 <div style="display:flex;flex-direction:column;gap:1px">
@@ -715,7 +791,7 @@ Copy all {{ termCount }} terms
 </sc-if>
 
 <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;left:50%;bottom:26px;z-index:60;transform:translateX(-50%);display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:9px;background:var(--ovBg);box-shadow:0 8px 26px rgba(0,0,0,.28);animation:tin .16s ease-out;max-width:60vw">
+<div role="status" aria-live="polite" style="position:fixed;left:50%;bottom:{{ toastBottom }};z-index:60;transform:translateX(-50%);display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:9px;background:var(--ovBg);box-shadow:0 8px 26px rgba(0,0,0,.28);animation:tin .16s ease-out;max-width:{{ toastMaxW }}">
 <svg width="12" height="12" viewBox="0 0 10 10" style="flex:none"><path d="M1.5 5.2l2.4 2.4L8.6 2.8" fill="none" stroke="#8BD05F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 <span style="font:500 12px/1.3 var(--fUI);color:var(--ovInk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ toast }}</span>
 </div>
@@ -806,7 +882,8 @@ const TABS = [
   { id: 'library', label: 'Library' },
   { id: 'account', label: 'Account & sync', title: 'Account & sync', hint: 'Google sign-in, cloud sync aur settings kahan save hon.' },
   { id: 'sharing', label: 'Sharing', title: 'Sharing', hint: 'Share links aur invites ke defaults.' },
-  { id: 'data', label: 'Data', title: 'Data', hint: 'Export, import aur reset.' }
+  { id: 'data', label: 'Data', title: 'Data', hint: 'Export aur import controls.' },
+  { id: 'danger', label: 'Danger zone', title: 'Danger zone', hint: 'Sensitive reset actions ek mehfooz jagah par.' }
 ];
 
 const FIELDS = {
@@ -1417,7 +1494,7 @@ class Component extends DCLogic {
     this.state = {
       items: d.items, raws: d.raws, doneMap: d.doneMap, activeId: d.activeId,
       settings: d.settings, tags: d.tags, openFolders: d.openFolders,
-      mode: 'normal', tab: 'appearance', query: '', filter: 'all', collapsed: {}, filtersOpen: false,
+      mode: 'normal', tab: 'appearance', query: '', mobileSearch: false, filter: 'all', collapsed: {}, filtersOpen: false,
       activeLine: d.activeLine, draft: null, toast: '', newTag: '', win: { s: 0, e: 28 }, mounted: 40, offScreen: false,
       vw: typeof window !== 'undefined' ? window.innerWidth : 1440,
       drawer: false, loginOpen: false, loginBusy: false, loginError: '', skippedLogin: loadGuestChoice(),
@@ -1433,9 +1510,13 @@ class Component extends DCLogic {
 
   componentDidMount() {
     this._key = (e) => {
-      if (this.state.mode !== 'normal') return;
       const tag = (e.target.tagName || '').toLowerCase();
-      if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+      const formControl = tag === 'input' || tag === 'textarea' || tag === 'select' || tag === 'button' || tag === 'a';
+      const actionable = !formControl && e.target.closest ? e.target.closest('[tabindex="0"][data-act],[tabindex="0"][data-mode],[tabindex="0"][data-tab],[tabindex="0"][data-toggle],[tabindex="0"][data-set-color],[tabindex="0"][data-tagcolor],[tabindex="0"][data-tagdel],[tabindex="0"][data-sidetab],[tabindex="0"][data-mnav],[tabindex="0"][data-menu],[tabindex="0"][data-row],[tabindex="0"][data-open],[tabindex="0"][data-ren],[tabindex="0"][data-dup],[tabindex="0"][data-del]') : null;
+      if (actionable && (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar')) {
+        e.preventDefault(); actionable.click(); return;
+      }
+      if (formControl) {
         if (e.key === 'Escape') e.target.blur();
         return;
       }
@@ -1445,6 +1526,7 @@ class Component extends DCLogic {
         }
         return;
       }
+      if (this.state.mode !== 'normal') return;
       if (this.state.menu || this.state.shareFor || this.state.loginOpen || this.state.renameFor || this.state.confirmBox) return;
       if (e.key === '/') { e.preventDefault(); const el = document.querySelector('input[placeholder^="Search lines"]'); if (el) el.focus(); return; }
       /* j/k and ArrowDown/ArrowUp move the active line up/down */
@@ -2004,8 +2086,10 @@ class Component extends DCLogic {
     }
     if ((el = g('data-mnav'))) {
       const n = el.getAttribute('data-mnav');
-      if (n === 'files') return this.setState({ drawer: true, sideTab: 'files' });
-      if (n === 'review') return this.setState({ drawer: true, sideTab: 'review' });
+      if (n === 'files' || n === 'review') {
+        if (this.state.mode === 'raw' && this.state.draft !== null && this.state.draft !== this.active().raw) this.flash('Unsaved raw changes rakhe hue hain — Save & render dabayein');
+        return this.setState({ mode: 'normal', mobileSearch: false, drawer: true, sideTab: n }, () => setTimeout(() => this.adjustWindow(), 60));
+      }
       if (n === 'raw') return this.setMode('raw');
       if (n === 'settings') return this.setMode('settings');
       return this.setMode('normal');
@@ -2126,9 +2210,9 @@ class Component extends DCLogic {
        if the viewer was granted edit rights). */
     if (m === 'settings' && this.isViewing()) return;
     if (m === 'raw' && this.isViewing() && !this.can('edit')) return;
-    if (m === 'raw') { this.setState({ mode: 'raw', draft: this.state.draft === null ? this.active().raw : this.state.draft }); return; }
+    if (m === 'raw') { this.setState({ mode: 'raw', mobileSearch: false, draft: this.state.draft === null ? this.active().raw : this.state.draft }); return; }
     if (this.state.mode === 'raw' && this.state.draft !== null && this.state.draft !== this.active().raw) this.flash('Unsaved raw changes rakhe hue hain — Save & render dabayein');
-    this.setState({ mode: m, win: { s: 0, e: 28 }, mounted: 40 }, () => { if (m === 'normal') setTimeout(() => this.adjustWindow(), 60); });
+    this.setState({ mode: m, mobileSearch: false, win: { s: 0, e: 28 }, mounted: 40 }, () => { if (m === 'normal') setTimeout(() => this.adjustWindow(), 60); });
   }
   rename(id) {
     const it = this.state.items[id]; if (!it) return;
@@ -2334,6 +2418,9 @@ class Component extends DCLogic {
         if (c.kind === 'trash') this.trash(c.id, true);
         else if (c.kind === 'purge') this.purge(c.id, true);
         else if (c.kind === 'emptyTrash') this.emptyTrash(true);
+        else if (c.kind === 'resetSettings') {
+          this.setState({ settings: { ...DEFAULTS }, tags: { ...DEFAULT_TAGS }, tab: 'appearance' }, () => { this.save(); this.flash('Settings reset'); });
+        }
       });
       return;
     }
@@ -2409,6 +2496,13 @@ class Component extends DCLogic {
       if (this.isViewing()) { const cur = this.effS().theme; this.setViewerPref('theme', cur === 'dark' ? 'light' : 'dark'); return; }
       return this.set('theme', this.state.settings.theme === 'dark' ? 'light' : 'dark');
     }
+    if (k === 'mobileSearch') {
+      const open = !this.state.mobileSearch;
+      this.setState({ mobileSearch: open }, () => {
+        if (open) setTimeout(() => { const el = document.querySelector('input[aria-label="Search script"]'); if (el) el.focus(); }, 30);
+      });
+      return;
+    }
     if (k === 'clearq') return this.setState({ query: '' });
     if (k === 'save') {
       if (this.isViewing()) {
@@ -2442,7 +2536,10 @@ class Component extends DCLogic {
     }
     if (k === 'exportMd') return this.download(a.name + '.md', a.raw, 'text/markdown');
     if (k === 'exportSettings') return this.download('alamza-settings.json', JSON.stringify({ settings: this.state.settings, tags: this.state.tags }, null, 2), 'application/json');
-    if (k === 'resetSettings') { this.setState({ settings: { ...DEFAULTS }, tags: { ...DEFAULT_TAGS } }, this.save); this.flash('Settings reset'); return; }
+    if (k === 'resetSettings') {
+      this.setState({ confirmBox: { kind: 'resetSettings', title: 'Reset every setting?', text: 'Appearance, layout, reading preferences aur tag labels defaults par wapas chalay jayenge.', action: 'Reset settings' } });
+      return;
+    }
     if (k === 'addTag') {
       const n = (this.state.newTag || '').trim().toUpperCase();
       if (!n) return;
@@ -2466,6 +2563,7 @@ class Component extends DCLogic {
   onDraft = (e) => this.setState({ draft: e.target.value });
   onShareEmail = (e) => this.setState({ shareEmail: e.target.value });
   onShareRole = (e) => this.setState({ shareRole: e.target.value });
+  onSettingsTab = (e) => this.setState({ tab: e.target.value });
   onMemberRole = (e) => this.setMemberRole(this.state.shareFor, e.target.getAttribute('data-member'), e.target.value);
   onSelectAll = (e) => { try { e.target.select(); } catch (x) { } };
   onPickScript = (e) => this.setState({ activeId: e.target.value, activeLine: null }, () => { this.save(); this.watchDone(); });
@@ -2660,12 +2758,13 @@ class Component extends DCLogic {
         isToggle: f.type === 'toggle', isSelect: f.type === 'select', isRange: f.type === 'range',
         isSwatch: f.type === 'swatch', isText: f.type === 'text', isAction: f.type === 'action',
         actionLabel: f.actionLabel || 'Run',
+        checked: !!v,
         value: f.type === 'action' ? '' : v, display: disp,
         min: f.min, max: f.max, step: f.step,
         options: (f.options || []).map(o => ({ v: o[0], l: o[1] })),
         swatches: PKEYS.map(k => ({ key: k, hex: (PALETTE[k])[dark ? 0 : 1], ring: S[f.key] === k ? '0 0 0 2px ' + t.surface + ',0 0 0 3.5px ' + (PALETTE[k])[dark ? 0 : 1] : 'none' })),
-        tbg: v ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), tx: v ? '16px' : '2px',
-        rowBg: i % 2 ? 'transparent' : t.panel
+        tbg: v ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), tx: v ? '16px' : '2px', txLarge: v ? '18px' : '2px',
+        rowBg: t.surface
       };
     });
 
@@ -2858,25 +2957,116 @@ class Component extends DCLogic {
       if (id === 'files' || id === 'review') return this.state.drawer && this.state.sideTab === id;
       return !this.state.drawer && this.state.mode === (id === 'normal' ? 'normal' : id);
     };
+    const libraryIds = Object.keys(items).filter(k => items[k].type === 'script' && !items[k].trashed);
+    const libraryRows = libraryIds.map(k => {
+      const md = this.state.raws[k] || '';
+      const lineCount = md ? md.split('\n').length : 0;
+      const readyCount = Object.keys((this.state.doneMap || {})[k] || {}).filter(id => (this.state.doneMap || {})[k][id]).length;
+      const parent = items[k].parentId && items[k].parentId !== 'root' ? items[items[k].parentId] : null;
+      const sh = shares[k] || {};
+      const memberCount = Object.keys(sh.members || {}).length;
+      const active = k === a.id;
+      return {
+        id: k, name: items[k].name, folder: parent ? parent.name : 'Top level', active,
+        lineCount, readyCount, lineLabel: lineCount + ' lines', readyLabel: readyCount + ' ready',
+        isPublic: !!sh.public, hasMembers: memberCount > 0, sharedLabel: memberCount + ' invited',
+        style: [
+          'display:flex', 'align-items:' + (mob ? 'flex-start' : 'center'), 'flex-wrap:' + (mob ? 'wrap' : 'nowrap'), 'gap:12px',
+          'padding:' + (mob ? '13px' : '14px'), 'border-radius:11px',
+          'border:1px solid ' + (active ? t.accent + '88' : t.border), 'background:' + t.surface,
+          'box-shadow:' + (active ? '0 0 0 2px ' + t.accentSoft : '0 1px 2px rgba(0,0,0,.025)')
+        ].join(';'),
+        iconStyle: [
+          'width:38px', 'height:38px', 'border-radius:9px', 'display:flex', 'align-items:center', 'justify-content:center', 'flex:none',
+          'background:' + (active ? t.accentSoft : t.panel), 'color:' + (active ? t.accent : t.muted)
+        ].join(';')
+      };
+    });
+    const libraryReadyTotal = libraryRows.reduce((sum, row) => sum + row.readyCount, 0);
+    const libraryPublicTotal = libraryRows.filter(row => row.isPublic).length;
 
     return {
       isMobile: mob, isDesktop: !mob,
       minW: mob ? '0' : '760px',
       headH: mob ? '56px' : '52px', headPad: mob ? '12px' : '14px',
       iconBtn: mob ? '38px' : '30px', avatarSz: mob ? '34px' : '30px',
-      tabPad: mob ? '9px 4px' : '6px 4px',
+      tabPad: mob ? '10px 5px' : '8px 5px',
       dialogW: mob ? '100%' : '520px',
+      dialogAlign: mob ? 'flex-end' : 'center', dialogPad: mob ? '0' : '18px',
+      dialogMaxInset: mob ? '0px' : '24px', dialogMaxH: mob ? '90vh' : '82vh',
+      dialogRadius: mob ? '18px 18px 0 0' : '14px', dialogBottomPad: mob ? 'env(safe-area-inset-bottom)' : '0px',
       setDir: mob ? 'column' : 'row',
       setNavStyle: mob
-        ? 'flex:none;display:flex;gap:6px;align-items:center;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto;overflow-y:hidden;padding:8px 12px'
-        : 'width:206px;flex:none;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;padding:14px 10px',
-      setTabStyle: mob
-        ? 'flex:none;white-space:nowrap;padding:7px 13px;border-radius:20px;cursor:pointer;font:500 12px/1.3 var(--fUI)'
-        : 'padding:7px 9px;border-radius:7px;cursor:pointer;font:500 12px/1.3 var(--fUI);margin-bottom:1px',
-      setResetStyle: mob
-        ? 'flex:none;white-space:nowrap;padding:7px 13px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font:500 11.5px/1.3 var(--fUI)'
-        : 'padding:7px 9px;border-radius:7px;cursor:pointer;font:500 11.5px/1.3 var(--fUI)',
-      setMainPad: mob ? '18px 14px 100px' : '24px 30px 120px',
+        ? 'flex:none;display:flex;gap:6px;align-items:center;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto;overflow-y:hidden;padding:9px 12px;box-shadow:0 4px 14px rgba(0,0,0,.045)'
+        : 'width:224px;flex:none;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;padding:16px 12px',
+      setMainPad: mob ? '20px 14px 110px' : '28px 32px 120px',
+      tagToolsStyle: mob
+        ? 'display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:17px 0 13px'
+        : 'display:flex;align-items:center;gap:9px;margin:17px 0 12px',
+      tagToolsSpacer: mob ? 'flex-basis:100%;height:0' : 'flex:1',
+      newTagStyle: mob
+        ? "flex:1;min-width:0;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:500 10.5px/1.3 'JetBrains Mono',monospace"
+        : "width:170px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:500 10.5px/1.3 'JetBrains Mono',monospace",
+      tagTableStyle: mob
+        ? 'display:flex;flex-direction:column;gap:10px;background:transparent'
+        : 'border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)',
+      tagHeadStyle: mob
+        ? 'display:none'
+        : 'display:grid;grid-template-columns:150px 108px 1fr 96px 30px;gap:10px;padding:10px 12px;background:var(--panel);border-bottom:1px solid var(--border);font:600 9px/1 var(--fUI);letter-spacing:.1em;color:var(--faint)',
+      tagRowStyle: mob
+        ? 'display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 36px;grid-template-areas:"name name delete" "render split split" "color color color";gap:12px 10px;padding:13px;border:1px solid var(--border);border-radius:11px;background:var(--surface);align-items:center'
+        : 'display:grid;grid-template-columns:150px 108px 1fr 96px 30px;gap:10px;padding:10px 12px;border-bottom:1px solid var(--rule);align-items:center',
+      tagNameStyle: mob ? 'grid-area:name;display:flex;align-items:center;gap:7px;min-width:0' : 'display:flex;align-items:center;gap:6px;min-width:0',
+      tagRenderStyle: mob ? 'grid-area:render;display:flex;flex-direction:column;gap:6px' : 'display:contents',
+      tagColorStyle: mob ? 'grid-area:color;display:flex;align-items:center;gap:6px;flex-wrap:wrap' : 'display:flex;gap:4px;flex-wrap:wrap',
+      tagSplitStyle: mob ? 'grid-area:split;display:flex;flex-direction:column;gap:6px' : 'display:contents',
+      tagDeleteStyle: mob
+        ? 'grid-area:delete;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;color:var(--muted);cursor:pointer;font:400 17px/1 var(--fUI)'
+        : 'display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;color:var(--faint);cursor:pointer;font:400 15px/1 var(--fUI)',
+      libraryStatsStyle: 'display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:' + (mob ? '7px' : '9px') + ';margin:0 0 13px',
+      libActionsStyle: mob ? 'display:flex;flex-basis:100%;flex-wrap:wrap;gap:7px;padding-left:50px' : 'display:flex;align-items:center;gap:6px;flex:none',
+      libOpenButtonStyle: [
+        'padding:7px 12px', 'border-radius:7px', 'border:1px solid ' + t.accent,
+        'background:' + t.accent, 'color:#fff', 'font:600 11px/1.3 ' + t.fUI, 'cursor:pointer'
+      ].join(';'),
+      libNeutralButtonStyle: [
+        'padding:7px 11px', 'border-radius:7px', 'border:1px solid ' + t.border,
+        'background:' + t.surface, 'color:' + t.prose, 'font:500 11px/1.3 ' + t.fUI, 'cursor:pointer'
+      ].join(';'),
+      libDangerButtonStyle: [
+        'padding:7px 11px', 'border-radius:7px', 'border:1px solid ' + t.border,
+        'background:' + t.surface, 'color:#B54A2A', 'font:500 11px/1.3 ' + t.fUI, 'cursor:pointer'
+      ].join(';'),
+      dangerResetStyle: [
+        'flex:none', 'padding:8px 13px', 'border-radius:8px', 'border:1px solid #D9451A',
+        'background:#D9451A', 'color:#fff', 'font:650 11.5px/1.3 ' + t.fUI, 'cursor:pointer'
+      ].join(';'),
+      rawToolbarStyle: mob
+        ? 'flex:none;display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:9px 12px;background:var(--surface);border-bottom:1px solid var(--border)'
+        : 'flex:none;display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--surface);border-bottom:1px solid var(--border)',
+      rawGutterDisplay: mob ? 'none' : 'block', rawMinW: mob ? '100%' : '900px', rawCanvasWidth: mob ? '100%' : 'max-content',
+      rawEditorPad: mob ? '15px 14px 180px' : '14px 18px 200px', rawWhiteSpace: mob ? 'pre-wrap' : 'pre', rawOverflowWrap: mob ? 'anywhere' : 'normal',
+      shareLinkStyle: mob ? 'display:flex;flex-wrap:wrap;gap:7px' : 'display:flex;gap:6px',
+      shareUrlStyle: mob
+        ? "flex:1 0 100%;min-width:0;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--prose);font:400 11px/1.4 'JetBrains Mono',monospace"
+        : "flex:1;min-width:0;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--prose);font:400 11px/1.4 'JetBrains Mono',monospace",
+      shareLinkButtonStyle: mob
+        ? 'flex:1;text-align:center;padding:9px 13px;border-radius:8px;border:1px solid var(--border);font:600 11.5px/1.4 var(--fUI);cursor:pointer'
+        : 'flex:none;padding:7px 13px;border-radius:7px;border:1px solid var(--border);font:600 11.5px/1.4 var(--fUI);cursor:pointer',
+      shareInviteStyle: mob ? 'display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px' : 'display:flex;gap:6px;margin-bottom:12px',
+      shareEmailStyle: mob
+        ? 'flex:1 0 100%;min-width:0;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 12px/1.4 var(--fUI)'
+        : 'flex:1;min-width:0;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 12px/1.4 var(--fUI)',
+      shareRoleStyle: mob
+        ? 'flex:1;padding:9px 8px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11.5px/1.4 var(--fUI);cursor:pointer'
+        : 'flex:none;padding:7px 8px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11.5px/1.4 var(--fUI);cursor:pointer',
+      shareInviteButtonStyle: mob
+        ? 'flex:1;text-align:center;padding:9px 13px;border-radius:8px;background:var(--accent);color:#fff;font:600 11.5px/1.4 var(--fUI);cursor:pointer'
+        : 'flex:none;padding:7px 13px;border-radius:7px;background:var(--accent);color:#fff;font:600 11.5px/1.4 var(--fUI);cursor:pointer',
+      sharePubX: srec.public ? '18px' : '2px', autoChecked: !!S.autoDetect, autoDetectX: S.autoDetect ? '16px' : '2px',
+      showMobileSearchButton: mob && this.state.mode === 'normal', showMobileSearch: mob && this.state.mobileSearch && this.state.mode === 'normal',
+      mobileSearchBg: this.state.mobileSearch ? t.accentSoft : 'transparent', mobileSearchFg: this.state.mobileSearch ? t.accent : t.muted,
+      toastBottom: mob ? 'calc(72px + env(safe-area-inset-bottom))' : '26px', toastMaxW: mob ? 'calc(100vw - 28px)' : '60vw',
       jumpX: mob ? '14px' : '26px', jumpY: mob ? '78px' : '26px',
       sbW: mob ? 'min(84vw,320px)' : 'var(--sidebarW)',
       sbPos: mob ? 'fixed' : 'relative',
@@ -2956,21 +3146,37 @@ class Component extends DCLogic {
       autoBg: S.autoDetect ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), autoX: S.autoDetect ? '14px' : '2px',
       showJump: !!activeId && this.state.mode === 'normal' && this.state.offScreen,
       activeNum: (() => { const f = this.allLines().find(l => l.id === activeId); return f ? String(f.n) : ''; })(),
-      tabs: TABS.map(x => ({ id: x.id, label: x.label, bg: tab === x.id ? t.accentSoft : 'transparent', fg: tab === x.id ? t.accent : t.prose })),
-      tabTitle: tabDef.title || tabDef.label, tabHint: tabDef.hint || '',
-      isTagsTab: tab === 'tags', isLibTab: tab === 'library', isFieldTab: !!FIELDS[tab],
-      fields, tagRows,
-      libRows: Object.keys(items).filter(k => items[k].type === 'script' && !items[k].trashed).map(k => {
-        const md = this.state.raws[k] || '';
-        const par = items[k].parentId && items[k].parentId !== 'root' && items[items[k].parentId] ? items[items[k].parentId].name + ' / ' : '';
-        const sh = shares[k];
+      tabs: TABS.map(x => {
+        const selected = tab === x.id;
+        const danger = x.id === 'danger';
+        const navColor = danger ? '#D9451A' : t.accent;
+        const navSoft = danger ? 'rgba(217,69,26,.10)' : t.accentSoft;
+        const group = x.id === 'appearance' ? 'DISPLAY & LAYOUT' : x.id === 'reading' ? 'WORKFLOW' : x.id === 'library' ? 'WORKSPACE & SYNC' : x.id === 'danger' ? 'SYSTEM' : '';
         return {
-          id: k, name: par + items[k].name, dot: k === a.id ? t.accent : t.faint,
-          bd: k === a.id ? t.accent : t.border,
-          meta: md.split('\n').length + ' lines · ' + Object.keys((this.state.doneMap || {})[k] || {}).length + ' ready'
-            + (sh && sh.public ? ' · public link' : '') + (sh && Object.keys(sh.members || {}).length ? ' · ' + Object.keys(sh.members).length + ' invited' : '')
+          id: x.id, label: x.label, selected, hasGroup: !!group, group,
+          dot: danger ? '#D9451A' : (selected ? t.accent : t.faint),
+          dotRing: selected ? '0 0 0 4px ' + navSoft : 'none',
+          chevOpacity: selected ? '1' : '.24',
+          style: [
+            'width:100%', 'min-height:40px', 'display:flex', 'align-items:center', 'gap:10px',
+            'padding:8px 10px', 'margin:0 0 5px', 'border-radius:9px',
+            'border:1px solid ' + (selected ? navColor + '66' : t.border),
+            'background:' + (selected ? navSoft : t.panel),
+            'color:' + (danger ? '#D9451A' : (selected ? t.accent : t.ink)),
+            'font:600 12px/1.3 ' + t.fUI, 'text-align:left', 'cursor:pointer',
+            'box-shadow:' + (selected ? 'inset 3px 0 0 ' + navColor : 'none')
+          ].join(';')
         };
       }),
+      tabTitle: tabDef.title || tabDef.label, tabHint: tabDef.hint || '',
+      isTagsTab: tab === 'tags', isLibTab: tab === 'library', isDangerTab: tab === 'danger', isFieldTab: !!FIELDS[tab],
+      fields, tagRows,
+      libraryStats: [
+        { value: String(libraryRows.length), label: 'Scripts' },
+        { value: String(libraryReadyTotal), label: 'Ready marks' },
+        { value: String(libraryPublicTotal), label: 'Public links' }
+      ],
+      libraryEmpty: libraryRows.length === 0, libRows: libraryRows,
       draft: raw, dirty: this.state.draft !== null && this.state.draft !== a.raw,
       gutter: Array.from({ length: nl }, (_, i) => i + 1).join('\n'),
       rawStats: nl + ' lines · ' + doc.total + ' script lines · ' + doc.sections.length + ' sections',
@@ -2979,20 +3185,22 @@ class Component extends DCLogic {
       onClick: this.onClick, onSet: this.onSet, onTagSet: this.onTagSet, onQuery: this.onQuery,
       onNewTag: this.onNewTag, onRenameValue: this.onRenameValue, onRenameKey: this.onRenameKey,
       onDraft: this.onDraft, onPickScript: this.onPickScript, onUpload: this.onUpload, imgErr: this.imgErr,
-      onShareEmail: this.onShareEmail, onShareRole: this.onShareRole, onMemberRole: this.onMemberRole, onSelectAll: this.onSelectAll,
+      onShareEmail: this.onShareEmail, onShareRole: this.onShareRole, onSettingsTab: this.onSettingsTab, onMemberRole: this.onMemberRole, onSelectAll: this.onSelectAll,
+      activeSettingsTab: tab,
       toast: this.state.toast
     };
   }
 
   rawLayer(raw, t) {
     if (this.state.mode !== 'raw') return null;
-    const sig = raw.length + ':' + hashOf(raw) + ':' + t.prose;
+    const mobile = this.state.vw < 760;
+    const sig = raw.length + ':' + hashOf(raw) + ':' + t.prose + ':' + (mobile ? 'm' : 'd');
     if (this._rlSig !== sig) {
       this._rlSig = sig;
       this._rl = React.createElement('pre', {
         className: 'rawhl', 'aria-hidden': 'true',
         dangerouslySetInnerHTML: { __html: highlight(raw) },
-        style: { margin: 0, padding: '14px 18px 200px', font: "400 12px/1.65 'JetBrains Mono',monospace", whiteSpace: 'pre', color: t.prose, pointerEvents: 'none', minHeight: '100%' }
+        style: { margin: 0, padding: mobile ? '15px 14px 180px' : '14px 18px 200px', font: "400 12px/1.65 'JetBrains Mono',monospace", whiteSpace: mobile ? 'pre-wrap' : 'pre', overflowWrap: mobile ? 'anywhere' : 'normal', color: t.prose, pointerEvents: 'none', minHeight: '100%' }
       });
     }
     return this._rl;
