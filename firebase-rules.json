@@ -1,0 +1,36 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "done": {
+      "$scriptId": {
+        ".read": true,
+        ".write": true,
+        "$lineId": { ".validate": "newData.isBoolean()" }
+      }
+    },
+    "shares": {
+      "$token": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('ownerUid').val() === auth.uid)"
+      }
+    },
+    "pub": {
+      "$token": {
+        ".read": true,
+        ".write": "auth != null",
+        "ownerUid": { ".validate": "!data.exists() || data.val() === newData.val() || data.parent().child('ownerUid').val() === auth.uid" }
+      }
+    },
+    "grants": {
+      "$emailKey": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}

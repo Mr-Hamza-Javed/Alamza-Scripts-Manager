@@ -1,0 +1,2704 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+a{color:inherit;text-decoration:none}
+input,select,textarea,button{font-family:inherit;outline:none}
+::selection{background:rgba(217,69,26,.22)}
+.sc::-webkit-scrollbar{width:11px;height:11px}
+.sc::-webkit-scrollbar-thumb{background:var(--faint);border-radius:8px;border:3px solid transparent;background-clip:content-box}
+.sc::-webkit-scrollbar-track{background:transparent}
+@keyframes tin{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.rawhl .h{color:var(--accent);font-weight:700}
+.rawhl .p{color:var(--faint)}
+.rawhl .t{color:var(--tagc);font-weight:700}
+.rawhl .l{color:var(--link)}
+.rawhl .u{color:var(--muted)}
+.rawhl .b{color:var(--ink);font-weight:700}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+</style>
+<script>
+(function () {
+  if (window.__alamzaFBLoading || (window.firebase && window.firebase.SDK_VERSION)) return;
+  window.__alamzaFBLoading = true;
+  var base = 'https://www.gstatic.com/firebasejs/10.12.5/firebase-';
+  ['app', 'auth', 'database'].reduce(function (chain, mod) {
+    return chain.then(function () {
+      return new Promise(function (res, rej) {
+        var s = document.createElement('script');
+        s.src = base + mod + '-compat.js';
+        s.async = false;
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+    });
+  }, Promise.resolve()).then(function () {
+    window.__alamzaFBReady = true;
+  }).catch(function () { window.__alamzaFBLoading = false; });
+})();
+</script>
+</helmet>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F1EEE8"/><rect x="30" y="30" width="40" height="40" rx="11" fill="#CE3F16"/><path d="M44 41l17 9-17 9z" fill="#fff"/></svg></template>
+
+<div style="--rowR:{{ t.rowR }};--rowPad:{{ t.rowPad }};--rowMT:{{ t.rowMT }};--guideR:{{ t.guideR }};--guideBdT:{{ t.guideBdT }};--guideBdX:{{ t.guideBdX }};--secHeadR:{{ t.secHeadR }};--secHeadMB:{{ t.secHeadMB }};--secHeadPad:{{ t.secHeadPad }};--secHeadBg:{{ t.secHeadBg }};--padGuideX:{{ t.padGuideX }};--bg:{{ t.bg }};--panel:{{ t.panel }};--surface:{{ t.surface }};--border:{{ t.border }};--rule:{{ t.rule }};--ink:{{ t.ink }};--prose:{{ t.prose }};--muted:{{ t.muted }};--faint:{{ t.faint }};--accent:{{ t.accent }};--accentSoft:{{ t.accentSoft }};--chipBg:{{ t.chipBg }};--chipBd:{{ t.chipBd }};--chipInk:{{ t.chipInk }};--ovBg:{{ t.ovBg }};--ovInk:{{ t.ovInk }};--shadow:{{ t.shadow }};--radius:{{ t.radius }};--pad:{{ t.pad }};--gap:{{ t.gap }};--fScript:{{ t.fScript }};--fUI:{{ t.fUI }};--szScript:{{ t.szScript }};--lhScript:{{ t.lhScript }};--wScript:{{ t.wScript }};--szBody:{{ t.szBody }};--szLabel:{{ t.szLabel }};--cols:{{ t.cols }};--colw:{{ t.colw }};--tagc:{{ t.tagc }};--link:{{ t.link }};--maxw:{{ t.maxw }};--lhBody:{{ t.lhBody }};--lhChip:{{ t.lhChip }};--itemGap:{{ t.itemGap }};--secGap:{{ t.secGap }};--sidebarW:{{ t.sidebarW }};--panelBg:{{ t.panelBg }};--panelBd:{{ t.panelBd }};--padGuide:{{ t.padGuide }};--colGap:{{ t.colGap }};--pillPadX:{{ t.pillPadX }};--pillPadY:{{ t.pillPadY }};--pillR:{{ t.pillR }};--padHead:{{ t.padHead }};--padHeadT:{{ t.padHeadT }};--padHeadB:{{ t.padHeadB }};--padHeadX:{{ t.padHeadX }};--gapHead:{{ t.gapHead }};--szNum:{{ t.szNum }};--wNum:{{ t.wNum }};--numInk:{{ t.numInk }};--numBg:{{ t.numBg }};--numBd:{{ t.numBd }};--numR:{{ t.numR }};--numPad:{{ t.numPad }};--numW:{{ t.numW }};--numLH:{{ t.numLH }};--numMT:{{ t.numMT }};display:flex;flex-direction:column;height:100vh;min-width:{{ minW }};position:relative;background:var(--bg,#F1EEE8);color:var(--ink,#17161A)" onClick="{{ onClick }}">
+
+<sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:80;display:flex;background:var(--bg);animation:fin .2s ease-out;flex-direction:{{ loginDir }}">
+<div style="flex:{{ loginArtFlex }};min-width:0;display:{{ loginArtDisp }};flex-direction:column;justify-content:space-between;padding:{{ loginArtPad }};background:var(--surface);border-right:1px solid var(--border);position:relative;overflow:hidden">
+<div style="display:flex;align-items:center;gap:9px">
+<div style="width:26px;height:26px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 1.2l8.2 4.8L2 10.8z" fill="#fff"/></svg></div>
+<span style="font:600 14px/1 var(--fUI);letter-spacing:-.01em;color:var(--ink)">Alamza</span>
+<span style="font:400 14px/1 var(--fUI);color:var(--muted)">Scripts</span>
+</div>
+<div style="max-width:430px;position:relative;z-index:2">
+<h1 style="margin:0 0 14px;font:300 40px/1.14 'Newsreader',Georgia,serif;color:var(--ink);letter-spacing:-.015em;text-wrap:pretty">The visual guide, the way an editor actually reads it.</h1>
+<p style="margin:0 0 26px;font:400 13.5px/1.7 var(--fUI);color:var(--prose);max-width:390px;text-wrap:pretty">Har script line ke saath uska poora visual guide — tags alag, search terms click-to-copy, sources ek tap pe. Scroll kam, kaam zyada.</p>
+<div style="display:flex;flex-direction:column;gap:11px">
+<sc-for list="{{ loginPoints }}" as="p" hint-placeholder-count="4">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<span style="flex:none;width:16px;height:16px;margin-top:1px;border-radius:5px;background:{{ p.bg }};display:flex;align-items:center;justify-content:center">
+<svg width="8" height="8" viewBox="0 0 10 10"><path d="M1.5 5.2l2.4 2.4L8.6 2.8" fill="none" stroke="{{ p.ink }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</span>
+<div style="min-width:0">
+<div style="font:600 12.5px/1.4 var(--fUI);color:var(--ink)">{{ p.title }}</div>
+<div style="font:400 12px/1.55 var(--fUI);color:var(--muted)">{{ p.text }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;font:400 11px/1.5 var(--fUI);color:var(--faint)">
+<span>Built for video editors</span><span>·</span><span>Light &amp; dark</span><span>·</span><span>Share read-only links</span>
+</div>
+<div style="position:absolute;right:-90px;bottom:-90px;width:320px;height:320px;border-radius:50%;background:var(--accentSoft);pointer-events:none"></div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;padding:{{ loginFormPad }}">
+<div style="width:100%;max-width:360px">
+<sc-if value="{{ loginCompact }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:9px;margin-bottom:26px">
+<div style="width:26px;height:26px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 1.2l8.2 4.8L2 10.8z" fill="#fff"/></svg></div>
+<span style="font:600 14px/1 var(--fUI);color:var(--ink)">Alamza</span>
+<span style="font:400 14px/1 var(--fUI);color:var(--muted)">Scripts</span>
+</div>
+</sc-if>
+<div style="font:600 21px/1.3 var(--fUI);color:var(--ink);letter-spacing:-.012em">Sign in</div>
+<p style="margin:7px 0 24px;font:400 12.5px/1.65 var(--fUI);color:var(--muted)">Aap ki scripts, folders aur settings har device pe milengi — aur aap link se team ko share kar sakenge.</p>
+
+<div data-act="signIn" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:13px 16px;border-radius:10px;background:var(--ovBg);color:var(--ovInk);cursor:pointer;font:600 13px/1.3 var(--fUI);box-shadow:0 1px 2px rgba(0,0,0,.10)" style-hover="opacity:.9">
+<svg width="15" height="15" viewBox="0 0 16 16"><circle cx="8" cy="5.4" r="2.9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.6 14c.7-2.8 2.8-4.2 5.4-4.2S12.7 11.2 13.4 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+Continue with Google</div>
+
+<sc-if value="{{ loginBusy }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:13px;font:500 11.5px/1.4 var(--fUI);color:var(--muted)">
+<span style="width:11px;height:11px;border-radius:50%;border:1.6px solid var(--rule);border-top-color:var(--accent);animation:spin .7s linear infinite"></span>
+Signing in…</div>
+</sc-if>
+<sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:13px;padding:9px 11px;border-radius:8px;background:var(--accentSoft);font:400 11.5px/1.55 var(--fUI);color:var(--accent)">{{ loginError }}</div>
+</sc-if>
+
+<div style="display:flex;align-items:center;gap:11px;margin:22px 0">
+<span style="flex:1;height:1px;background:var(--border)"></span>
+<span style="font:500 9.5px/1 var(--fUI);letter-spacing:.12em;color:var(--faint)">OR</span>
+<span style="flex:1;height:1px;background:var(--border)"></span>
+</div>
+
+<div data-act="skipLogin" style="display:flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:10px;border:1px solid var(--border);color:var(--prose);cursor:pointer;font:500 12.5px/1.3 var(--fUI)" style-hover="border-color:var(--muted);color:var(--ink)">Continue without an account</div>
+<p style="margin:11px 0 0;font:400 11px/1.6 var(--fUI);color:var(--faint);text-align:center">Bina account ke scripts sirf is browser me rehti hain — sharing band rahegi.</p>
+</div>
+</div>
+</div>
+</sc-if>
+
+<div style="flex:none;display:flex;align-items:center;gap:10px;height:{{ headH }};padding:0 {{ headPad }};background:var(--surface);border-bottom:1px solid var(--border);z-index:20">
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<span data-act="drawer" title="Menu" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-6px;border-radius:9px;color:var(--ink);cursor:pointer;flex:none" style-hover="background:var(--panel)">
+<svg width="17" height="17" viewBox="0 0 18 18"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+</span>
+</sc-if>
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:8px;flex:none">
+<div style="width:22px;height:22px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 1.2l8.2 4.8L2 10.8z" fill="#fff"/></svg></div>
+<span style="font:600 13px/1 var(--fUI);letter-spacing:-.01em">Alamza</span>
+<span style="font:400 13px/1 var(--fUI);color:var(--muted)">Scripts</span>
+</div>
+<div style="width:1px;height:22px;background:var(--border);flex:none"></div>
+</sc-if>
+<div style="display:flex;align-items:center;gap:7px;flex:none;min-width:0;max-width:300px">
+<span style="font:600 12.5px/1.3 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ docName }}</span>
+<sc-if value="{{ badge.show }}" hint-placeholder-val="{{ false }}">
+<span style="flex:none;padding:2.5px 8px;border-radius:20px;background:{{ badge.bg }};color:{{ badge.fg }};font:700 8.5px/1.3 'JetBrains Mono',monospace;letter-spacing:.09em">{{ badge.label }}</span>
+</sc-if>
+</div>
+<span style="flex:1"></span>
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);width:270px;flex:none">
+<svg width="12" height="12" viewBox="0 0 14 14" style="flex:none;color:var(--faint)"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.2 9.2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search lines, tags, terms…  ( / )" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 12px/1.4 var(--fUI)"/>
+<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" style="cursor:pointer;color:var(--faint);font:400 13px/1 var(--fUI)">×</span></sc-if>
+</div>
+<span style="flex:1"></span>
+<div style="display:flex;gap:2px;padding:2px;border-radius:8px;background:var(--panel);border:1px solid var(--border);flex:none">
+<sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
+<span data-mode="{{ m.id }}" style="padding:5px 12px;border-radius:6px;font:500 11.5px/1.3 var(--fUI);cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</span>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ showHeadShare }}" hint-placeholder-val="{{ false }}">
+<span data-act="openShare" style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--prose);cursor:pointer;flex:none;font:500 11.5px/1.3 var(--fUI)" style-hover="border-color:var(--accent);color:var(--accent)">
+<svg width="12" height="12" viewBox="0 0 14 14"><path d="M5 7.6l4-2.2M5 6.4l4 2.2" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="4" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="3.4" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="10" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+Share</span>
+</sc-if>
+<span data-act="theme" title="Toggle theme" style="display:flex;align-items:center;justify-content:center;width:{{ iconBtn }};height:{{ iconBtn }};border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer;flex:none" style-hover="color:var(--ink)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M11.6 8.6A5 5 0 0 1 5.4 2.4a5 5 0 1 0 6.2 6.2z" fill="currentColor"/></svg></span>
+<sc-if value="{{ showHeadAccount }}" hint-placeholder-val="{{ false }}">
+<span data-act="account" title="{{ auth.email }}" style="display:flex;align-items:center;gap:7px;padding:3px 9px 3px 3px;border-radius:20px;border:1px solid var(--border);background:var(--panel);cursor:pointer;flex:none" style-hover="border-color:var(--muted)">
+<span style="width:21px;height:21px;border-radius:50%;flex:none;background:var(--accent) center/cover no-repeat url({{ auth.photo }});display:flex;align-items:center;justify-content:center;font:700 9px/1 var(--fUI);color:#fff">{{ auth.initial }}</span>
+<span style="font:500 11px/1.3 var(--fUI);color:var(--prose);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ auth.name }}</span>
+</span>
+</sc-if>
+<sc-if value="{{ showHeadSignIn }}" hint-placeholder-val="{{ false }}">
+<span data-act="showLogin" style="display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:7px;background:var(--accent);color:#fff;cursor:pointer;flex:none;font:600 11.5px/1.3 var(--fUI)">
+<svg width="12" height="12" viewBox="0 0 14 14"><circle cx="7" cy="4.6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.35"/><path d="M2.4 12c.6-2.4 2.4-3.6 4.6-3.6S11 9.6 11.6 12" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/></svg>
+Sign in</span>
+</sc-if>
+</div>
+
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);z-index:19">
+<div style="display:flex;align-items:center;gap:7px;padding:8px 11px;border-radius:9px;background:var(--panel);border:1px solid var(--border);flex:1;min-width:0">
+<svg width="13" height="13" viewBox="0 0 14 14" style="flex:none;color:var(--faint)"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.2 9.2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search lines, tags, terms…" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 13px/1.4 var(--fUI)"/>
+<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" style="cursor:pointer;color:var(--faint);font:400 15px/1 var(--fUI);padding:0 3px">×</span></sc-if>
+</div>
+<sc-if value="{{ canShare }}" hint-placeholder-val="{{ false }}">
+<span data-act="openShare" title="Share" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--panel);color:var(--prose);cursor:pointer;flex:none">
+<svg width="14" height="14" viewBox="0 0 14 14"><path d="M5 7.6l4-2.2M5 6.4l4 2.2" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="4" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="3.4" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="10" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+</span>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ banner.show }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:flex;align-items:center;gap:10px;padding:8px 15px;background:{{ banner.bg }};border-bottom:1px solid {{ banner.bd }};z-index:19">
+<span style="width:6px;height:6px;border-radius:50%;background:{{ banner.dot }};flex:none"></span>
+<span style="font:500 11.5px/1.4 var(--fUI);color:{{ banner.ink }}">{{ banner.title }}</span>
+<span style="font:400 11.5px/1.4 var(--fUI);color:var(--muted)">{{ banner.text }}</span>
+<span style="flex:1"></span>
+<sc-if value="{{ banner.hasAction }}" hint-placeholder-val="{{ false }}">
+<span data-act="{{ banner.action }}" style="padding:4px 11px;border-radius:6px;border:1px solid {{ banner.bd }};font:500 11px/1.3 var(--fUI);color:{{ banner.ink }};cursor:pointer" style-hover="background:var(--surface)">{{ banner.actionLabel }}</span>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isNormal }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;min-height:0;display:flex">
+<sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+<div data-act="closeDrawer" style="position:fixed;inset:0;z-index:44;background:rgba(0,0,0,.38);animation:fin .15s ease-out"></div>
+</sc-if>
+<div style="width:{{ sbW }};flex:none;border-right:1px solid var(--border);background:var(--surface);display:{{ sidebarDisplay }};flex-direction:column;min-height:0;position:{{ sbPos }};left:0;top:0;bottom:0;z-index:45;transform:{{ sbTx }};box-shadow:{{ sbShadow }};transition:transform .22s cubic-bezier(.32,.72,0,1)">
+
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:flex;align-items:center;gap:9px;padding:14px 13px 10px;border-bottom:1px solid var(--border)">
+<div style="width:24px;height:24px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex:none"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 1.2l8.2 4.8L2 10.8z" fill="#fff"/></svg></div>
+<span style="font:600 13.5px/1 var(--fUI);color:var(--ink)">Alamza</span>
+<span style="font:400 13.5px/1 var(--fUI);color:var(--muted)">Scripts</span>
+<span style="flex:1"></span>
+<span data-act="closeDrawer" style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;margin-right:-6px;border-radius:9px;color:var(--muted);cursor:pointer;font:300 20px/1 var(--fUI)">×</span>
+</div>
+</sc-if>
+<div style="flex:none;display:flex;gap:2px;padding:9px 9px 0">
+<sc-for list="{{ sideTabs }}" as="st" hint-placeholder-count="2">
+<span data-sidetab="{{ st.id }}" style="flex:1;text-align:center;padding:{{ tabPad }};border-radius:7px;font:500 11.5px/1.3 var(--fUI);cursor:pointer;background:{{ st.bg }};color:{{ st.fg }}">{{ st.label }} <span style="opacity:.5">{{ st.n }}</span></span>
+</sc-for>
+</div>
+
+<sc-if value="{{ isFilesTab }}" hint-placeholder-val="{{ true }}">
+<div style="flex:none;display:flex;align-items:center;gap:4px;padding:8px 10px 7px">
+<span data-act="newScript" title="New script" style="display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:6px;border:1px solid var(--border);font:500 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Script</span>
+<span data-act="newFolder" title="New folder" style="display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:6px;border:1px solid var(--border);font:500 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Folder</span>
+<label title="Upload .md / .txt" style="display:flex;align-items:center;justify-content:center;width:25px;height:24px;border-radius:6px;border:1px solid var(--border);color:var(--muted);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M7 10V2M4 5l3-3 3 3M2 11.5h10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><input type="file" accept=".md,.txt,.markdown,text/*" multiple="{{ true }}" onChange="{{ onUpload }}" style="display:none"/></label>
+<span style="flex:1"></span>
+<span data-act="toggleTrash" title="Trash" style="display:flex;align-items:center;gap:5px;padding:4px 8px;border-radius:6px;font:500 10.5px/1.3 var(--fUI);color:{{ trashFg }};background:{{ trashBg }};cursor:pointer">
+<svg width="11" height="11" viewBox="0 0 14 14"><path d="M3 4h8M5.5 4V2.8h3V4M4.2 4l.5 7.2h4.6L9.8 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ trashCount }}</span>
+</div>
+
+<div class="sc" style="flex:1;min-height:0;overflow-y:auto;padding:0 7px 24px">
+<sc-if value="{{ treeEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="padding:22px 12px;text-align:center;font:400 11.5px/1.65 var(--fUI);color:var(--muted)">{{ treeEmptyMsg }}</div>
+</sc-if>
+<sc-for list="{{ tree }}" as="it" hint-placeholder-count="5">
+<sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:7px;padding:14px 6px 6px">
+<span style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint)">{{ it.name }}</span>
+<span style="flex:1;height:1px;background:var(--border)"></span>
+</div>
+</sc-if>
+<sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}">
+<div data-row="{{ it.id }}" style="display:flex;align-items:center;gap:6px;padding:5px 6px 5px {{ it.indent }};border-radius:6px;cursor:pointer;background:{{ it.bg }};border-left:2px solid {{ it.bar }}" style-hover="background:var(--panel)">
+<sc-if value="{{ it.isFolder }}" hint-placeholder-val="{{ false }}">
+<svg width="9" height="9" viewBox="0 0 10 10" style="flex:none;color:var(--faint);transform:{{ it.chev }};transition:transform .13s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+<svg width="13" height="13" viewBox="0 0 14 14" style="flex:none;color:{{ it.iconInk }}"><path d="M1.6 3.6h3.4l1 1.2h6.4v6.2a.8.8 0 0 1-.8.8H2.4a.8.8 0 0 1-.8-.8z" fill="currentColor" opacity=".9"/></svg>
+</sc-if>
+<sc-if value="{{ it.isScript }}" hint-placeholder-val="{{ true }}">
+<span style="width:9px;flex:none"></span>
+<svg width="12" height="12" viewBox="0 0 14 14" style="flex:none;color:{{ it.iconInk }}"><path d="M3.2 1.8h5l3 3v7.4H3.2z" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M4.9 6.2h4.2M4.9 8.4h4.2M4.9 10.2h2.6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+</sc-if>
+<span style="flex:1;min-width:0;font:{{ it.font }};color:{{ it.ink }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.name }}</span>
+<sc-if value="{{ it.hasTag }}" hint-placeholder-val="{{ false }}">
+<span title="{{ it.tagTitle }}" style="flex:none;padding:1.5px 5px;border-radius:4px;background:{{ it.tagBg }};color:{{ it.tagFg }};font:700 7.5px/1.35 'JetBrains Mono',monospace;letter-spacing:.06em">{{ it.tag }}</span>
+</sc-if>
+<sc-if value="{{ it.hasPct }}" hint-placeholder-val="{{ false }}">
+<span style="flex:none;font:400 8.5px/1.35 'JetBrains Mono',monospace;color:var(--faint)">{{ it.pct }}</span>
+</sc-if>
+<sc-if value="{{ it.hasMenu }}" hint-placeholder-val="{{ true }}">
+<span data-menu="{{ it.id }}" title="More" style="flex:none;width:16px;text-align:center;color:var(--faint);font:600 12px/1 var(--fUI);cursor:pointer" style-hover="color:var(--ink)">⋯</span>
+</sc-if>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isReviewTab }}" hint-placeholder-val="{{ false }}">
+<div class="sc" style="flex:1;min-height:0;overflow-y:auto;padding:11px 11px 40px">
+<div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 2px 8px">PROGRESS</div>
+<div style="display:flex;align-items:center;gap:9px;margin:0 2px 14px">
+<div style="flex:1;height:5px;border-radius:3px;background:var(--rule);overflow:hidden"><div style="width:{{ pct }};height:100%;background:var(--accent);border-radius:3px"></div></div>
+<span style="font:500 10px/1 'JetBrains Mono',monospace;color:var(--muted)">{{ pct }}</span>
+</div>
+<div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 2px 8px">FILTER</div>
+<div style="display:flex;flex-wrap:wrap;gap:4px;margin:0 0 15px">
+<sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+<span data-filter="{{ f.id }}" style="padding:4px 9px;border-radius:20px;font:500 10.5px/1.3 var(--fUI);cursor:pointer;background:{{ f.bg }};color:{{ f.fg }};border:1px solid {{ f.bd }}">{{ f.label }} <span style="opacity:.55">{{ f.n }}</span></span>
+</sc-for>
+</div>
+<div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 2px 8px">SECTIONS</div>
+<div style="display:flex;flex-direction:column;gap:1px">
+<sc-for list="{{ outline }}" as="o" hint-placeholder-count="4">
+<div data-goto="{{ o.id }}" style="padding:7px 8px;border-radius:7px;cursor:pointer;background:{{ o.bg }}" style-hover="background:var(--panel)">
+<div style="display:flex;align-items:baseline;gap:7px">
+<span style="font:500 9px/1.5 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ o.num }}</span>
+<span style="flex:1;min-width:0;font:500 11.5px/1.4 var(--fUI);color:{{ o.ink }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ o.title }}</span>
+<span style="font:400 9.5px/1.5 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ o.count }}</span>
+</div>
+<div style="height:3px;border-radius:2px;background:var(--rule);margin-top:6px;overflow:hidden"><div style="width:{{ o.pct }};height:100%;background:{{ o.barColor }}"></div></div>
+</div>
+</sc-for>
+</div>
+<div style="height:1px;background:var(--border);margin:15px 2px"></div>
+<div style="display:flex;flex-direction:column;gap:7px;padding:0 2px">
+<label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+<span data-toggle="focusMode" style="width:28px;height:16px;border-radius:10px;background:{{ focusBg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ focusX }};width:12px;height:12px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
+<span style="font:400 11.5px/1.3 var(--fUI);color:var(--prose)">Focus mode</span>
+</label>
+<label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+<span data-toggle="collapseAll" style="width:28px;height:16px;border-radius:10px;background:{{ collapseBg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ collapseX }};width:12px;height:12px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
+<span style="font:400 11.5px/1.3 var(--fUI);color:var(--prose)">Collapse all sections</span>
+</label>
+</div>
+<div style="height:1px;background:var(--border);margin:15px 2px"></div>
+<div style="display:flex;flex-direction:column;gap:5px;padding:0 2px">
+<span data-act="copyAllTerms" style="padding:6px 9px;border-radius:7px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer;text-align:center" style-hover="border-color:var(--accent);color:var(--accent)">Copy every search term</span>
+<sc-if value="{{ canEditDone }}" hint-placeholder-val="{{ true }}">
+<span data-act="markAll" style="padding:6px 9px;border-radius:7px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer;text-align:center" style-hover="border-color:var(--accent);color:var(--accent)">Mark all as ready</span>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<div style="flex:none;border-top:1px solid var(--border);padding:9px 10px;background:var(--surface)">
+<sc-if value="{{ auth.signedIn }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:{{ avatarSz }};height:{{ avatarSz }};border-radius:50%;flex:none;background:var(--accent) center/cover no-repeat url({{ auth.photo }});display:flex;align-items:center;justify-content:center;font:700 11px/1 var(--fUI);color:#fff">{{ auth.initial }}</span>
+<div style="flex:1;min-width:0">
+<div style="font:600 12px/1.35 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ auth.fullName }}</div>
+<div style="display:flex;align-items:center;gap:5px">
+<span style="width:5px;height:5px;border-radius:50%;background:{{ syncDot }};flex:none"></span>
+<span style="font:400 10.5px/1.4 var(--fUI);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ syncLabel }}</span>
+</div>
+</div>
+<span data-act="signOut" title="Sign out" style="display:flex;align-items:center;justify-content:center;width:{{ iconBtn }};height:{{ iconBtn }};border-radius:8px;color:var(--muted);cursor:pointer;flex:none" style-hover="background:var(--panel);color:#D9451A">
+<svg width="14" height="14" viewBox="0 0 16 16"><path d="M6.2 13.5H3.4a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h2.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.4 10.8L13.2 8l-2.8-2.8M13 8H6.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</span>
+</div>
+</sc-if>
+<sc-if value="{{ auth.signedOut }}" hint-placeholder-val="{{ true }}">
+<div data-act="showLogin" style="display:flex;align-items:center;gap:10px;padding:4px 2px;cursor:pointer;border-radius:8px" style-hover="background:var(--panel)">
+<span style="width:{{ avatarSz }};height:{{ avatarSz }};border-radius:50%;flex:none;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--faint)">
+<svg width="13" height="13" viewBox="0 0 14 14"><circle cx="7" cy="4.6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.35"/><path d="M2.4 12c.6-2.4 2.4-3.6 4.6-3.6S11 9.6 11.6 12" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/></svg>
+</span>
+<div style="flex:1;min-width:0">
+<div style="font:600 12px/1.35 var(--fUI);color:var(--ink)">Sign in</div>
+<div style="font:400 10.5px/1.4 var(--fUI);color:var(--muted)">Sync &amp; sharing</div>
+</div>
+<svg width="12" height="12" viewBox="0 0 14 14" style="flex:none;color:var(--faint)"><path d="M5 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+</sc-if>
+</div>
+</div>
+
+<div class="sc" id="scrollmain" style="flex:1;min-width:0;overflow-y:auto;position:relative">
+<div style="max-width:var(--maxw);margin:0 auto;padding:18px 22px 200px">
+<sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+<div style="padding:70px 0;text-align:center;font:400 13px/1.6 var(--fUI);color:var(--muted)">Koi line nahi mili. Filter ya search badal kar dekhein.</div>
+</sc-if>
+<sc-if value="{{ renderScript }}" hint-placeholder-val="{{ true }}">
+<sc-for list="{{ sections }}" as="sec" hint-placeholder-count="2">
+<div id="{{ sec.domId }}" style="margin-bottom:var(--secGap);scroll-margin-top:20px">
+<div data-section="{{ sec.id }}" data-sechead="{{ sec.id }}" style="position:{{ stickyPos }};top:0;z-index:9;display:flex;align-items:center;gap:10px;padding:var(--secHeadPad);margin-bottom:var(--secHeadMB);background:var(--secHeadBg);border:1px solid var(--border);border-radius:var(--secHeadR);cursor:pointer">
+<svg width="10" height="10" viewBox="0 0 10 10" style="flex:none;color:var(--faint);transform:{{ sec.chev }};transition:transform .15s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+<span style="font:500 9.5px/1 'JetBrains Mono',monospace;letter-spacing:.13em;color:var(--faint);flex:none">{{ sec.kicker }}</span>
+<span style="font:600 14px/1.3 var(--fUI);color:var(--ink);flex:none">{{ sec.title }}</span>
+<sc-if value="{{ sec.hasBadge }}" hint-placeholder-val="{{ false }}">
+<span style="padding:2.5px 8px;border-radius:20px;background:var(--accentSoft);color:var(--accent);font:700 8.5px/1.3 'JetBrains Mono',monospace;letter-spacing:.1em;flex:none">{{ sec.badge }}</span>
+</sc-if>
+<span style="flex:1"></span>
+<sc-if value="{{ sec.hasLines }}" hint-placeholder-val="{{ true }}">
+<span data-copysec="{{ sec.id }}" title="Copy this section's search terms" style="font:500 9.5px/1 'JetBrains Mono',monospace;color:var(--faint);cursor:pointer;padding:4px 7px;border-radius:5px;border:1px solid var(--border)" style-hover="color:var(--accent);border-color:var(--accent)">COPY TERMS</span>
+<span style="font:400 9.5px/1 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ sec.count }} LINES</span>
+<div style="width:64px;height:4px;border-radius:2px;background:var(--rule);overflow:hidden;flex:none"><div style="width:{{ sec.pct }};height:100%;background:var(--accent)"></div></div>
+</sc-if>
+<sc-if value="{{ sec.notesOnly }}" hint-placeholder-val="{{ false }}">
+<span style="font:400 9.5px/1 'JetBrains Mono',monospace;color:var(--faint);flex:none">NOTES</span>
+</sc-if>
+</div>
+<sc-if value="{{ sec.open }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ sec.hasNotes }}" hint-placeholder-val="{{ false }}">
+<div style="border:1px dashed var(--border);border-radius:var(--secHeadR);background:var(--panel);padding:var(--pad) calc(var(--pad) + 3px);margin-top:var(--rowMT);margin-bottom:var(--secHeadMB)">
+<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px">
+<span style="width:4px;height:4px;border-radius:50%;background:var(--muted)"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:500;letter-spacing:.09em;color:var(--muted)">NOTES OUTSIDE THE TABLE</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:5px;padding-left:9px">
+<sc-for list="{{ sec.notes }}" as="nt" hint-placeholder-count="2">
+<p style="margin:0;font-family:var(--fUI);font-size:var(--szBody);line-height:1.6;color:var(--prose)">{{ nt }}</p>
+</sc-for>
+</div>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:var(--gap)">
+<sc-for list="{{ sec.lines }}" as="ln" hint-placeholder-count="4">
+<div id="{{ ln.domId }}" data-line="{{ ln.id }}" style="position:{{ ln.pos }};z-index:{{ ln.z }};border:1px solid {{ ln.bd }};border-radius:var(--rowR);background:{{ ln.rowBg }};padding:var(--rowPad);margin-top:var(--rowMT);box-shadow:{{ ln.ring }};opacity:{{ ln.dim }};transition:opacity .18s,box-shadow .12s;scroll-margin-top:64px">
+<div style="display:flex;gap:var(--gapHead);align-items:flex-start;padding:var(--padHeadT) var(--padHeadX) var(--padHeadB) calc(var(--padHeadX) - 3px);background:{{ ln.headBg }};border-radius:var(--guideR)">
+<sc-if value="{{ showNums }}" hint-placeholder-val="{{ true }}">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:var(--szNum);font-weight:var(--wNum);line-height:var(--numLH);color:var(--numInk);background:var(--numBg);border:var(--numBd);border-radius:var(--numR);padding:var(--numPad);min-width:var(--numW);margin-top:var(--numMT);text-align:center">{{ ln.n }}</span>
+</sc-if>
+<div style="flex:1;min-width:0">
+<sc-if value="{{ ln.isVideo }}" hint-placeholder-val="{{ false }}">
+<div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:5px;padding:2.5px 8px;border-radius:20px;background:var(--accentSoft)">
+<svg width="9" height="9" viewBox="0 0 12 12"><path d="M2 1.5l8 4.5-8 4.5z" fill="var(--accent)"/></svg>
+<span style="font:700 8.5px/1 'JetBrains Mono',monospace;letter-spacing:.1em;color:var(--accent)">INSERT VIDEO{{ ln.range }}</span>
+</div>
+</sc-if>
+<p style="margin:0;font-family:var(--fScript);font-size:var(--szScript);line-height:var(--lhScript);font-weight:var(--wScript);color:var(--ink);text-wrap:pretty">{{ ln.text }}</p>
+<sc-if value="{{ ln.hasTranscript }}" hint-placeholder-val="{{ false }}">
+<p style="margin:6px 0 0;padding-left:10px;border-left:2px solid var(--border);font-family:var(--fUI);font-size:var(--szBody);font-style:italic;line-height:var(--lhBody);color:var(--muted)">{{ ln.transcript }}</p>
+</sc-if>
+</div>
+<div style="flex:none;display:flex;align-items:center;gap:6px;margin-top:2px">
+<sc-if value="{{ showCopyBtn }}" hint-placeholder-val="{{ true }}">
+<span data-copy="{{ ln.allTerms }}" title="Copy all search terms of this line" style="padding:3px 8px;border-radius:5px;border:1px solid var(--border);font:500 9px/1.5 'JetBrains Mono',monospace;color:var(--faint);cursor:pointer" style-hover="color:var(--accent);border-color:var(--accent)">COPY</span>
+</sc-if>
+<sc-if value="{{ showChecks }}" hint-placeholder-val="{{ true }}">
+<span data-done="{{ ln.id }}" title="{{ checkTitle }}" style="width:17px;height:17px;border-radius:50%;border:1.5px solid {{ ln.checkBorder }};background:{{ ln.checkBg }};display:flex;align-items:center;justify-content:center;cursor:pointer">
+<svg width="8" height="8" viewBox="0 0 10 10"><path d="M1.5 5.2l2.4 2.4L8.6 2.8" fill="none" stroke="{{ ln.checkTick }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</span>
+</sc-if>
+</div>
+</div>
+<sc-if value="{{ ln.hasGuide }}" hint-placeholder-val="{{ true }}">
+<div style="border-radius:var(--guideR);background:var(--panelBg);border-top:var(--guideBdT);border-left:var(--guideBdX);border-right:var(--guideBdX);border-bottom:var(--guideBdX);padding:var(--padGuide) var(--padGuideX) 2px;columns:var(--colw) var(--cols);column-gap:var(--colGap);column-rule:{{ ruleCss }}">
+<sc-for list="{{ ln.items }}" as="it" hint-placeholder-count="4"><sc-if value="{{ it.isProse }}" hint-placeholder-val="{{ true }}">
+<p style="display:inline-block;width:100%;break-inside:avoid;margin:0 0 var(--itemGap);font-family:var(--fUI);font-size:var(--szBody);line-height:var(--lhBody);color:var(--prose);text-wrap:pretty"><span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 7px 2px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:1px;white-space:nowrap">{{ it.label }}</span>{{ it.body }}</p>
+</sc-if>
+<sc-if value="{{ it.isChips }}" hint-placeholder-val="{{ false }}">
+<div style="display:inline-block;width:100%;break-inside:avoid;margin-bottom:var(--itemGap);line-height:var(--lhChip)">
+<span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 7px 4px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:2px;white-space:nowrap">{{ it.label }}</span><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="3"><span data-chip="{{ ch.v }}" data-tag="{{ ch.tag }}" title="{{ ch.hint }}" style="display:inline-block;padding:2.5px 8px;margin:0 4px 4px 0;border-radius:{{ chipR }};background:var(--chipBg);border:1px solid var(--chipBd);font-family:var(--fUI);font-size:calc(var(--szBody) - 0.5px);line-height:1.4;color:var(--chipInk);cursor:pointer;vertical-align:middle" style-hover="border-color:{{ it.color }};background:{{ it.soft }}">{{ ch.v }}</span></sc-for><sc-if value="{{ it.copyable }}" hint-placeholder-val="{{ true }}"><span data-copy="{{ it.all }}" title="Copy all of these" style="display:inline-block;padding:2.5px 7px;margin:0 0 4px 0;border-radius:{{ chipR }};border:1px dashed var(--border);font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:500;line-height:1.4;color:var(--faint);cursor:pointer;vertical-align:middle" style-hover="color:var(--accent);border-color:var(--accent)">ALL</span></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ it.isOverlay }}" hint-placeholder-val="{{ false }}">
+<div style="display:inline-block;width:100%;break-inside:avoid;margin-bottom:var(--itemGap);line-height:var(--lhChip)">
+<span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 8px 4px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:3px;white-space:nowrap">{{ it.label }}</span><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="1"><span data-copy="{{ ch.v }}" style="display:inline-block;padding:4px 11px;margin:0 5px 4px 0;border-radius:3px;background:var(--ovBg);color:var(--ovInk);font-family:var(--fUI);font-size:var(--szBody);font-weight:700;line-height:1.35;cursor:pointer;vertical-align:middle;box-shadow:0 0 0 2.5px var(--accentSoft)">{{ ch.v }}</span></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ it.isLinks }}" hint-placeholder-val="{{ false }}">
+<div style="display:inline-block;width:100%;break-inside:avoid;margin-bottom:var(--itemGap);line-height:var(--lhChip)">
+<span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 7px 4px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:2px;white-space:nowrap">{{ it.label }}</span><sc-for list="{{ it.links }}" as="s" hint-placeholder-count="2"><sc-if value="{{ s.hasUrl }}" hint-placeholder-val="{{ true }}"><a href="{{ s.u }}" target="{{ linkTarget }}" rel="noopener" title="{{ s.t }}" style="display:inline-flex;align-items:center;gap:6px;max-width:100%;margin:0 4px 4px 0;padding:2px 8px 2px 3.5px;border-radius:20px;background:var(--chipBg);border:1px solid var(--chipBd);text-decoration:none;vertical-align:middle" style-hover="border-color:var(--muted)">
+<sc-if value="{{ s.hasFav }}" hint-placeholder-val="{{ true }}">
+<img src="{{ s.fav }}" alt="" width="13" height="13" loading="lazy" decoding="async" style="border-radius:3px;flex:none;background:var(--rule)"/>
+</sc-if>
+<span style="font-family:var(--fUI);font-size:calc(var(--szBody) - 1px);line-height:1.4;color:var(--prose);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px">{{ s.t }}</span>
+<sc-if value="{{ showDomain }}" hint-placeholder-val="{{ false }}">
+<span style="font:400 9px/1.3 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ s.d }}</span>
+</sc-if>
+</a></sc-if><sc-if value="{{ s.noUrl }}" hint-placeholder-val="{{ false }}"><span data-copy="{{ s.t }}" title="No link in the script — click to copy the title" style="display:inline-flex;align-items:center;gap:6px;max-width:100%;margin:0 4px 4px 0;padding:2px 8px 2px 7px;border-radius:20px;background:transparent;border:1px dashed var(--chipBd);cursor:pointer;vertical-align:middle" style-hover="border-color:var(--muted)">
+<span style="font-family:var(--fUI);font-size:calc(var(--szBody) - 1px);line-height:1.4;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px">{{ s.t }}</span>
+</span></sc-if></sc-for>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</sc-if>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isRaw }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-height:0;display:flex;flex-direction:column">
+<div style="flex:none;display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--surface);border-bottom:1px solid var(--border)">
+<span style="font:500 11px/1 var(--fUI);color:var(--muted)">Raw markdown</span>
+<span style="font:400 10px/1 'JetBrains Mono',monospace;color:var(--faint)">{{ rawStats }}</span>
+<span style="flex:1"></span>
+<sc-if value="{{ dirty }}" hint-placeholder-val="{{ false }}">
+<span style="font:500 10.5px/1 var(--fUI);color:var(--accent)">Unsaved changes</span>
+<span data-act="revert" style="padding:5px 11px;border-radius:7px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--muted)">Revert</span>
+</sc-if>
+<span data-act="save" style="padding:5px 13px;border-radius:7px;background:var(--accent);color:#fff;font:600 11px/1.3 var(--fUI);cursor:pointer">Save &amp; render</span>
+</div>
+<div class="sc" id="rawwrap" style="flex:1;min-height:0;overflow:auto;background:var(--panel);position:relative">
+<div style="display:flex;min-height:100%;min-width:100%;width:max-content">
+<div style="flex:none;width:52px;padding:14px 8px 200px 0;text-align:right;font:400 12px/1.65 'JetBrains Mono',monospace;color:var(--faint);background:var(--surface);border-right:1px solid var(--border);position:sticky;left:0;z-index:2;white-space:pre">{{ gutter }}</div>
+<div style="flex:1;position:relative;min-width:900px">
+{{ rawLayer }}
+<textarea value="{{ draft }}" onChange="{{ onDraft }}" spellcheck="false" style="position:absolute;inset:0;width:100%;height:100%;padding:14px 18px 200px;border:0;resize:none;background:transparent;color:transparent;caret-color:var(--accent);font:400 12px/1.65 'JetBrains Mono',monospace;white-space:pre;overflow:hidden"></textarea>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;min-height:0;display:flex">
+<div class="sc" style="width:206px;flex:none;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;padding:14px 10px">
+<div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 4px 9px">SETTINGS</div>
+<sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="6">
+<div data-tab="{{ tb.id }}" style="padding:7px 9px;border-radius:7px;cursor:pointer;font:500 12px/1.3 var(--fUI);color:{{ tb.fg }};background:{{ tb.bg }};margin-bottom:1px" style-hover="background:var(--panel)">{{ tb.label }}</div>
+</sc-for>
+<div style="height:1px;background:var(--border);margin:12px 4px"></div>
+<div data-act="resetSettings" style="padding:7px 9px;border-radius:7px;cursor:pointer;font:500 11.5px/1.3 var(--fUI);color:var(--muted)" style-hover="color:#D9451A">Reset to defaults</div>
+</div>
+<div class="sc" id="setmain" style="flex:1;min-width:0;overflow-y:auto;padding:24px 30px 120px">
+<div style="max-width:760px;margin:0 auto">
+<sc-if value="{{ isTagsTab }}" hint-placeholder-val="{{ false }}">
+<div style="margin-bottom:8px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">Tags &amp; labels</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">Har tag ka rendering type, rang aur split character yahan se badlein. Naya tag milne par app khud andaza laga kar yahan add kar deti hai — usay confirm ya badal dein. Ye registry save rehti hai, agli script me wahi tag pehchana jayega.</p></div>
+<div style="display:flex;align-items:center;gap:9px;margin:16px 0 10px">
+<span data-toggle="autoDetect" style="width:28px;height:16px;border-radius:10px;background:{{ autoBg }};position:relative;flex:none;cursor:pointer"><span style="position:absolute;top:2px;left:{{ autoX }};width:12px;height:12px;border-radius:50%;background:#fff;transition:left .15s"></span></span>
+<span style="font:400 12px/1.3 var(--fUI);color:var(--prose)">Auto-detect unknown tags</span>
+<span style="flex:1"></span>
+<input value="{{ newTag }}" onChange="{{ onNewTag }}" placeholder="NEW TAG NAME" style="width:150px;padding:5px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:500 10.5px/1.3 'JetBrains Mono',monospace"/>
+<span data-act="addTag" style="padding:5px 11px;border-radius:7px;background:var(--accent);color:#fff;font:600 11px/1.3 var(--fUI);cursor:pointer">Add</span>
+</div>
+<div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)">
+<div style="display:grid;grid-template-columns:150px 108px 1fr 96px 30px;gap:10px;padding:9px 12px;background:var(--panel);border-bottom:1px solid var(--border);font:500 9px/1 var(--fUI);letter-spacing:.1em;color:var(--faint)">
+<span>TAG</span><span>RENDER AS</span><span>COLOR</span><span>SPLIT ON</span><span></span>
+</div>
+<sc-for list="{{ tagRows }}" as="tg" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:150px 108px 1fr 96px 30px;gap:10px;padding:9px 12px;border-bottom:1px solid var(--rule);align-items:center">
+<div style="display:flex;align-items:center;gap:6px;min-width:0">
+<span style="width:5px;height:5px;border-radius:50%;background:{{ tg.color }};flex:none"></span>
+<span style="font:500 10.5px/1.4 'JetBrains Mono',monospace;color:var(--ink);overflow:hidden;text-overflow:ellipsis">{{ tg.name }}</span>
+<sc-if value="{{ tg.isAuto }}" hint-placeholder-val="{{ false }}"><span style="font:500 8px/1 var(--fUI);padding:2px 5px;border-radius:4px;background:var(--accentSoft);color:var(--accent);flex:none">AUTO</span></sc-if>
+</div>
+<select value="{{ tg.render }}" data-tagset="render" data-tag="{{ tg.name }}" onChange="{{ onTagSet }}" style="padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11px/1.3 var(--fUI);cursor:pointer">
+<option value="prose">Prose</option><option value="chips">Chips</option><option value="overlay">Overlay</option><option value="links">Links</option><option value="hidden">Hidden</option>
+</select>
+<div style="display:flex;gap:3px;flex-wrap:wrap">
+<sc-for list="{{ tg.swatches }}" as="sw" hint-placeholder-count="10">
+<span data-tagcolor="{{ sw.key }}" data-tag="{{ tg.name }}" style="width:15px;height:15px;border-radius:4px;background:{{ sw.hex }};cursor:pointer;box-shadow:{{ sw.ring }}"></span>
+</sc-for>
+</div>
+<select value="{{ tg.split }}" data-tagset="split" data-tag="{{ tg.name }}" onChange="{{ onTagSet }}" style="padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11px/1.3 var(--fUI);cursor:pointer">
+<option value="none">—</option><option value=";">;</option><option value=",">,</option><option value="auto">auto</option><option value="—">— and —</option>
+</select>
+<span data-tagdel="{{ tg.name }}" style="text-align:center;color:var(--faint);cursor:pointer;font:400 14px/1 var(--fUI)" style-hover="color:#D9451A">×</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ isLibTab }}" hint-placeholder-val="{{ false }}">
+<div style="margin-bottom:14px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">Library</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">Sab scripts yahan hain. Browser me save rehti hain.</p></div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ libRows }}" as="lb" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid {{ lb.bd }};border-radius:var(--radius);background:var(--surface)">
+<span style="width:6px;height:6px;border-radius:50%;background:{{ lb.dot }};flex:none"></span>
+<div style="flex:1;min-width:0">
+<div style="font:500 13px/1.3 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ lb.name }}</div>
+<div style="font:400 10.5px/1.5 'JetBrains Mono',monospace;color:var(--faint);margin-top:2px">{{ lb.meta }}</div>
+</div>
+<span data-open="{{ lb.id }}" style="padding:5px 11px;border-radius:6px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">Open</span>
+<span data-ren="{{ lb.id }}" style="padding:5px 11px;border-radius:6px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">Rename</span>
+<span data-dup="{{ lb.id }}" style="padding:5px 11px;border-radius:6px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">Duplicate</span>
+<span data-del="{{ lb.id }}" style="padding:5px 11px;border-radius:6px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--muted);cursor:pointer" style-hover="border-color:#D9451A;color:#D9451A">Delete</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ isFieldTab }}" hint-placeholder-val="{{ true }}">
+<div style="margin-bottom:16px"><div style="font:600 17px/1.3 var(--fUI);color:var(--ink)">{{ tabTitle }}</div><p style="margin:5px 0 0;font:400 12.5px/1.6 var(--fUI);color:var(--muted)">{{ tabHint }}</p></div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ fields }}" as="f" hint-placeholder-count="8">
+<div style="display:flex;align-items:center;gap:16px;padding:11px 13px;border-radius:var(--radius);background:{{ f.rowBg }}">
+<div style="flex:1;min-width:0">
+<div style="font:500 12.5px/1.4 var(--fUI);color:var(--ink)">{{ f.label }}</div>
+<sc-if value="{{ f.hasHint }}" hint-placeholder-val="{{ false }}"><div style="font:400 11px/1.5 var(--fUI);color:var(--muted);margin-top:2px">{{ f.hint }}</div></sc-if>
+</div>
+<div style="flex:none;display:flex;align-items:center;gap:9px">
+<sc-if value="{{ f.isToggle }}" hint-placeholder-val="{{ false }}">
+<span data-toggle="{{ f.key }}" style="width:32px;height:18px;border-radius:10px;background:{{ f.tbg }};position:relative;cursor:pointer;transition:background .15s"><span style="position:absolute;top:2px;left:{{ f.tx }};width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
+</sc-if>
+<sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+<select value="{{ f.value }}" data-set="{{ f.key }}" onChange="{{ onSet }}" style="min-width:150px;padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:400 12px/1.3 var(--fUI);cursor:pointer">
+<sc-for list="{{ f.options }}" as="op" hint-placeholder-count="3"><option value="{{ op.v }}">{{ op.l }}</option></sc-for>
+</select>
+</sc-if>
+<sc-if value="{{ f.isRange }}" hint-placeholder-val="{{ false }}">
+<input type="range" min="{{ f.min }}" max="{{ f.max }}" step="{{ f.step }}" value="{{ f.value }}" data-set="{{ f.key }}" onChange="{{ onSet }}" style="width:170px;accent-color:var(--accent);cursor:pointer"/>
+<span style="width:48px;text-align:right;font:500 11px/1 'JetBrains Mono',monospace;color:var(--muted)">{{ f.display }}</span>
+</sc-if>
+<sc-if value="{{ f.isSwatch }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:4px">
+<sc-for list="{{ f.swatches }}" as="sw" hint-placeholder-count="8">
+<span data-set-color="{{ f.key }}" data-val="{{ sw.key }}" style="width:19px;height:19px;border-radius:5px;background:{{ sw.hex }};cursor:pointer;box-shadow:{{ sw.ring }}"></span>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ f.isText }}" hint-placeholder-val="{{ false }}">
+<input value="{{ f.value }}" data-set="{{ f.key }}" onChange="{{ onSet }}" style="width:190px;padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:400 12px/1.3 var(--fUI)"/>
+</sc-if>
+<sc-if value="{{ f.isAction }}" hint-placeholder-val="{{ false }}">
+<span data-act="{{ f.key }}" style="padding:6px 13px;border-radius:7px;border:1px solid var(--border);font:500 11.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">{{ f.actionLabel }}</span>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;display:flex;align-items:stretch;gap:2px;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);z-index:30">
+<sc-for list="{{ mobileNav }}" as="mn" hint-placeholder-count="4">
+<div data-mnav="{{ mn.id }}" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;border-radius:10px;cursor:pointer;background:{{ mn.bg }};color:{{ mn.fg }}">
+<span style="display:flex;align-items:center;justify-content:center;height:17px" dangerouslySetInnerHTML="{{ mn.icon }}"></span>
+<span style="font:600 9.5px/1 var(--fUI);letter-spacing:.02em">{{ mn.label }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ showJump }}" hint-placeholder-val="{{ false }}">
+<div data-act="jump" style="position:fixed;right:{{ jumpX }};bottom:{{ jumpY }};z-index:40;display:flex;align-items:center;gap:9px;padding:10px 15px 10px 12px;border-radius:30px;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 6px 22px rgba(0,0,0,.22);animation:fin .2s ease-out">
+<svg width="13" height="13" viewBox="0 0 14 14"><path d="M7 2.5v9M3.5 8L7 11.5 10.5 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span style="font:600 11.5px/1 var(--fUI)">Back to line {{ activeNum }}</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ menu.show }}" hint-placeholder-val="{{ false }}">
+<div data-act="closeOverlay" style="position:fixed;inset:0;z-index:50">
+<div style="position:absolute;left:{{ menu.x }};top:{{ menu.y }};min-width:186px;padding:5px;border-radius:9px;background:var(--surface);border:1px solid var(--border);box-shadow:0 10px 34px rgba(0,0,0,.20);animation:pop .11s ease-out">
+<div style="padding:6px 9px 7px;font:600 11px/1.3 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ menu.name }}</div>
+<sc-for list="{{ menu.items }}" as="mi" hint-placeholder-count="5">
+<sc-if value="{{ mi.isDivider }}" hint-placeholder-val="{{ false }}">
+<div style="height:1px;background:var(--border);margin:4px 2px"></div>
+</sc-if>
+<sc-if value="{{ mi.isItem }}" hint-placeholder-val="{{ true }}">
+<div data-mact="{{ mi.id }}" style="display:flex;align-items:center;gap:9px;padding:6px 9px;border-radius:6px;cursor:pointer;font:500 11.5px/1.4 var(--fUI);color:{{ mi.ink }}" style-hover="background:var(--panel)">
+<span style="flex:1">{{ mi.label }}</span>
+<span style="font:400 9.5px/1 'JetBrains Mono',monospace;color:var(--faint)">{{ mi.hint }}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ share.show }}" hint-placeholder-val="{{ false }}">
+<div data-act="closeOverlay" style="position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.34);display:flex;align-items:center;justify-content:center">
+<div data-stop="1" style="width:{{ dialogW }};max-width:calc(100vw - 24px);max-height:82vh;overflow-y:auto;border-radius:13px;background:var(--surface);border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.32);animation:pop .13s ease-out">
+<div style="padding:17px 19px 14px;border-bottom:1px solid var(--border)">
+<div style="font:600 15px/1.3 var(--fUI);color:var(--ink)">Share “{{ share.name }}”</div>
+<div style="font:400 11.5px/1.55 var(--fUI);color:var(--muted);margin-top:3px">{{ share.subtitle }}</div>
+</div>
+
+<div style="padding:15px 19px;border-bottom:1px solid var(--border)">
+<div style="font:500 9px/1 var(--fUI);letter-spacing:.13em;color:var(--faint);margin-bottom:9px">PUBLIC LINK</div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+<span data-act="togglePublic" style="width:32px;height:18px;border-radius:10px;background:{{ share.pubBg }};position:relative;flex:none;cursor:pointer;transition:background .15s"><span style="position:absolute;top:2px;left:{{ share.pubX }};width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
+<div style="flex:1;min-width:0">
+<div style="font:500 12px/1.35 var(--fUI);color:var(--ink)">Anyone with the link can view</div>
+<div style="font:400 11px/1.5 var(--fUI);color:var(--muted)">Sirf dekh sakte hain — aur “ready” tick kar sakte hain. Baqi kuch nahi.</div>
+</div>
+</div>
+<sc-if value="{{ share.isPublic }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:6px">
+<input value="{{ share.url }}" readOnly="{{ true }}" onFocus="{{ onSelectAll }}" style="flex:1;min-width:0;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--prose);font:400 11px/1.4 'JetBrains Mono',monospace"/>
+<span data-copy="{{ share.url }}" style="flex:none;padding:7px 13px;border-radius:7px;background:var(--accent);color:#fff;font:600 11.5px/1.4 var(--fUI);cursor:pointer">Copy</span>
+<a href="{{ share.url }}" target="_blank" rel="noopener" style="flex:none;padding:7px 12px;border-radius:7px;border:1px solid var(--border);color:var(--prose);font:500 11.5px/1.4 var(--fUI)">Open</a>
+</div>
+<sc-if value="{{ share.stale }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:9px;margin-top:9px;padding:8px 10px;border-radius:7px;background:var(--accentSoft)">
+<span style="flex:1;font:400 11px/1.5 var(--fUI);color:var(--prose)">Content badla hai — public copy purani hai.</span>
+<span data-act="refreshShare" style="flex:none;padding:4px 10px;border-radius:6px;background:var(--accent);color:#fff;font:600 10.5px/1.3 var(--fUI);cursor:pointer">Update now</span>
+</div>
+</sc-if>
+</sc-if>
+</div>
+
+<div style="padding:15px 19px">
+<div style="font:500 9px/1 var(--fUI);letter-spacing:.13em;color:var(--faint);margin-bottom:9px">INVITE BY GOOGLE ACCOUNT</div>
+<div style="display:flex;gap:6px;margin-bottom:12px">
+<input value="{{ share.email }}" onChange="{{ onShareEmail }}" placeholder="name@gmail.com" style="flex:1;min-width:0;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 12px/1.4 var(--fUI)"/>
+<select value="{{ share.role }}" data-set-share="role" onChange="{{ onShareRole }}" style="flex:none;padding:7px 8px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:400 11.5px/1.4 var(--fUI);cursor:pointer">
+<sc-for list="{{ share.roles }}" as="r" hint-placeholder-count="4"><option value="{{ r.v }}">{{ r.l }}</option></sc-for>
+</select>
+<span data-act="invite" style="flex:none;padding:7px 13px;border-radius:7px;background:var(--accent);color:#fff;font:600 11.5px/1.4 var(--fUI);cursor:pointer">Invite</span>
+</div>
+<div style="font:400 11px/1.5 var(--fUI);color:var(--muted);margin-bottom:11px">{{ share.roleHint }}</div>
+<div style="display:flex;flex-direction:column;gap:1px">
+<sc-for list="{{ share.members }}" as="mb" hint-placeholder-count="1">
+<div style="display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:7px;background:var(--panel)">
+<span style="width:22px;height:22px;border-radius:50%;flex:none;background:{{ mb.dot }};display:flex;align-items:center;justify-content:center;font:700 9.5px/1 var(--fUI);color:#fff">{{ mb.initial }}</span>
+<span style="flex:1;min-width:0;font:400 12px/1.4 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ mb.email }}</span>
+<select value="{{ mb.role }}" data-member="{{ mb.key }}" onChange="{{ onMemberRole }}" style="flex:none;padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--prose);font:400 11px/1.3 var(--fUI);cursor:pointer">
+<sc-for list="{{ share.roles }}" as="r" hint-placeholder-count="4"><option value="{{ r.v }}">{{ r.l }}</option></sc-for>
+</select>
+<span data-unshare="{{ mb.key }}" style="flex:none;width:18px;text-align:center;color:var(--faint);cursor:pointer;font:400 14px/1 var(--fUI)" style-hover="color:#D9451A">×</span>
+</div>
+</sc-for>
+<sc-if value="{{ share.noMembers }}" hint-placeholder-val="{{ true }}">
+<div style="padding:11px 9px;font:400 11.5px/1.5 var(--fUI);color:var(--muted)">Abhi kisi ko invite nahi kiya.</div>
+</sc-if>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;left:50%;bottom:26px;z-index:60;transform:translateX(-50%);display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:9px;background:var(--ovBg);box-shadow:0 8px 26px rgba(0,0,0,.28);animation:tin .16s ease-out;max-width:60vw">
+<svg width="12" height="12" viewBox="0 0 10 10" style="flex:none"><path d="M1.5 5.2l2.4 2.4L8.6 2.8" fill="none" stroke="#8BD05F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span style="font:500 12px/1.3 var(--fUI);color:var(--ovInk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ toast }}</span>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+const PALETTE = {
+  slate: ['#93A0AE', '#54606E'], blue: ['#7FA6D9', '#2F639F'], cyan: ['#5FC7D9', '#0E7286'],
+  teal: ['#4FC1A6', '#0E7A63'], green: ['#8BD05F', '#437019'], amber: ['#E8B45C', '#996908'],
+  orange: ['#FF6B45', '#CE3F16'], red: ['#F2795F', '#B82E15'], pink: ['#E87FA6', '#AE3D70'],
+  violet: ['#B48EE8', '#6F45B8']
+};
+const PKEYS = Object.keys(PALETTE);
+
+const DEFAULT_TAGS = {
+  'CONTEXT': { render: 'prose', color: 'blue', split: 'none' },
+  'B-ROLL': { render: 'prose', color: 'teal', split: 'none' },
+  'IMAGE': { render: 'prose', color: 'amber', split: 'none' },
+  'ARTICLE SHOT': { render: 'chips', color: 'violet', split: 'auto' },
+  'SEARCH TERMS': { render: 'chips', color: 'green', split: 'auto' },
+  'TEXT OVERLAY': { render: 'overlay', color: 'pink', split: '—' },
+  'INSERT VIDEO': { render: 'prose', color: 'orange', split: 'none' },
+  'SOURCES': { render: 'links', color: 'slate', split: 'none' },
+  'TRANSCRIPT': { render: 'prose', color: 'slate', split: 'none' }
+};
+
+const DEFAULTS = {
+  scale: 100,
+  theme: 'light', paper: 'warm', accent: 'orange', density: 'cozy', radius: 9,
+  cardBorders: true, cardShadow: true, maxWidth: 1120,
+  viewStyle: 'cards', docTight: 0.82, docHeadTint: true, docZebra: false, docGuideIndent: true,
+  scriptFont: 'sans', scriptSize: 14, scriptWeight: 700, scriptLeading: 1.5,
+  bodyFont: 'sans', bodySize: 11.5, labelSize: 8, lhBody: 1.62, lhChip: 2,
+  guideColumns: '2', columnRule: true, sourcesPosition: 'flow', chipShape: 'pill',
+  labelStyle: 'pill', cardGap: 7, itemGap: 7, sectionGap: 16, colGap: 18, padGuide: 10,
+  autoPad: true, padRatio: 0.62, padTopRatio: 0.4, padBottomRatio: 0.4,
+  numSize: 9.5, numWeight: 400, numColor: 'faint', numStyle: 'plain',
+  panelInset: true, panelBorder: true, sidebarWidth: 236, showSidebar: true, treeHeight: 300,
+  defaultSideTab: 'files', foldersFirst: true, showReadyCount: true, confirmTrash: false,
+  defaultShareRole: 'viewer', autoRefreshShare: true, sharePublicByDefault: false,
+  cloudSync: true, syncSettings: true,
+  showLineNumbers: true, showChecks: true, showCopyBtn: true, showTranscript: true,
+  stickyHeaders: true, collapseDefault: false,
+  focusMode: false, dimAmount: 45, activeStyle: 'ring', rememberLine: true,
+  chipClick: 'copy', searchEngine: 'youtube', copyFormat: 'plain', copyJoin: 'comma',
+  openNewTab: true, showFavicons: true, showDomain: false,
+  autoDetect: true, defaultSplit: 'auto', unknownAs: 'auto',
+  scriptCol: 'script line', visualCol: 'visual guide', showExtraCols: false,
+  resolveNumRefs: true, resolveTitleRefs: true, keepBrokenCells: true
+};
+
+const TABS = [
+  { id: 'appearance', label: 'Appearance', title: 'Appearance', hint: 'Theme, rang aur poori app ki kasavat.' },
+  { id: 'type', label: 'Typography', title: 'Typography', hint: 'Script line aur guide text ka font, size aur wazan.' },
+  { id: 'layout', label: 'Layout', title: 'Layout', hint: 'Guide panel ke columns, labels aur kya kya dikhe.' },
+  { id: 'reading', label: 'Reading', title: 'Reading', hint: 'Focus mode, active line aur padhne ka tajurba.' },
+  { id: 'behavior', label: 'Copy & links', title: 'Copy & links', hint: 'Chip pe click kya kare, links kaise khulen.' },
+  { id: 'parsing', label: 'Parsing', title: 'Parsing', hint: 'Markdown kaise parhi jaye — columns, splits, refs.' },
+  { id: 'tags', label: 'Tags & labels' },
+  { id: 'library', label: 'Library' },
+  { id: 'account', label: 'Account & sync', title: 'Account & sync', hint: 'Google sign-in, cloud sync aur settings kahan save hon.' },
+  { id: 'sharing', label: 'Sharing', title: 'Sharing', hint: 'Share links aur invites ke defaults.' },
+  { id: 'data', label: 'Data', title: 'Data', hint: 'Export, import aur reset.' }
+];
+
+const FIELDS = {
+  appearance: [
+    { key: 'scale', type: 'range', label: 'Overall scale', hint: 'Poore script view ko chhota/bara karein', min: 70, max: 160, step: 2, unit: '%' },
+    { key: 'theme', type: 'select', label: 'Theme', options: [['light', 'Light'], ['dark', 'Dark']] },
+    { key: 'paper', type: 'select', label: 'Paper tone', hint: 'Light theme ka mizaaj', options: [['warm', 'Warm paper'], ['neutral', 'Neutral'], ['cool', 'Cool white']] },
+    { key: 'accent', type: 'swatch', label: 'Accent colour' },
+    { key: 'viewStyle', type: 'select', label: 'Script view style', hint: 'Cards = alag alag cards · Document = ek continuous table', options: [['cards', 'Cards'], ['doc', 'Document (table)']] },
+    { key: 'docTight', type: 'range', label: 'Document · row padding', hint: 'Sirf Document view me', min: 0.55, max: 1.3, step: 0.05 },
+    { key: 'docHeadTint', type: 'toggle', label: 'Document · tinted header row' },
+    { key: 'docZebra', type: 'toggle', label: 'Document · alternating row tint' },
+    { key: 'docGuideIndent', type: 'toggle', label: 'Document · guide indented under script' },
+    { key: 'density', type: 'select', label: 'Density', options: [['comfortable', 'Comfortable'], ['cozy', 'Cozy'], ['compact', 'Compact']] },
+    { key: 'radius', type: 'range', label: 'Corner radius', min: 0, max: 18, step: 1, unit: 'px' },
+    { key: 'cardBorders', type: 'toggle', label: 'Card borders' },
+    { key: 'cardShadow', type: 'toggle', label: 'Card shadow' },
+    { key: 'maxWidth', type: 'range', label: 'Content width', min: 820, max: 1800, step: 20, unit: 'px' }
+  ],
+  type: [
+    { key: 'scriptFont', type: 'select', label: 'Script line font', options: [['sans', 'Instrument Sans'], ['serif', 'Newsreader (serif)'], ['mono', 'JetBrains Mono']] },
+    { key: 'scriptSize', type: 'range', label: 'Script line size', hint: 'Guide text se sirf thora bara rakhein', min: 11, max: 26, step: 0.5, unit: 'px' },
+    { key: 'scriptWeight', type: 'range', label: 'Script line weight', min: 300, max: 700, step: 50 },
+    { key: 'scriptLeading', type: 'range', label: 'Script line height', min: 1.15, max: 1.9, step: 0.05 },
+    { key: 'bodyFont', type: 'select', label: 'Guide text font', options: [['sans', 'Instrument Sans'], ['serif', 'Newsreader'], ['mono', 'JetBrains Mono']] },
+    { key: 'bodySize', type: 'range', label: 'Guide text size', min: 9, max: 17, step: 0.5, unit: 'px' },
+    { key: 'lhBody', type: 'range', label: 'Guide line height', min: 1.3, max: 2, step: 0.02 },
+    { key: 'labelSize', type: 'range', label: 'Tag label size', min: 6.5, max: 12, step: 0.5, unit: 'px' },
+    { key: 'lhChip', type: 'range', label: 'Chip row spacing', min: 1.5, max: 2.6, step: 0.05 }
+  ],
+  layout: [
+    { key: 'labelStyle', type: 'select', label: 'Tag label style', hint: 'Label usi line me shuru hota hai, data uske saath', options: [['pill', 'Filled pill'], ['outline', 'Outlined'], ['plain', 'Plain text']] },
+    { key: 'guideColumns', type: 'select', label: 'Guide columns', options: [['1', 'One column'], ['2', 'Two columns'], ['3', 'Three columns'], ['auto', 'Auto (fit width)']] },
+    { key: 'columnRule', type: 'toggle', label: 'Line between columns' },
+    { key: 'colGap', type: 'range', label: 'Column gap', min: 8, max: 40, step: 1, unit: 'px' },
+    { key: 'chipShape', type: 'select', label: 'Chip shape', options: [['pill', 'Pill'], ['rounded', 'Rounded'], ['square', 'Square']] },
+    { key: 'sourcesPosition', type: 'select', label: 'Sources position', options: [['flow', 'In the flow'], ['bottom', 'Always at the end']] },
+    { key: 'cardGap', type: 'range', label: 'Gap between lines', min: 2, max: 22, step: 1, unit: 'px' },
+    { key: 'itemGap', type: 'range', label: 'Gap between tags', min: 2, max: 18, step: 1, unit: 'px' },
+    { key: 'sectionGap', type: 'range', label: 'Gap between sections', min: 6, max: 48, step: 2, unit: 'px' },
+    { key: 'autoPad', type: 'toggle', label: 'Auto padding', hint: 'Text chhota hoga to padding bhi chhoti — text bara, padding bari' },
+    { key: 'padTopRatio', type: 'range', label: 'Space above script line', hint: 'Text size ka guna — text chhota, fasla chhota', min: 0, max: 1.4, step: 0.02, unit: '×' },
+    { key: 'padBottomRatio', type: 'range', label: 'Space below script line', min: 0, max: 1.4, step: 0.02, unit: '×' },
+    { key: 'padRatio', type: 'range', label: 'Guide panel padding ratio', hint: 'Guide text size ke muqable', min: 0.25, max: 1.3, step: 0.02, unit: '×' },
+    { key: 'padGuide', type: 'range', label: 'Guide panel padding', hint: 'Sirf jab auto padding band ho', min: 4, max: 22, step: 1, unit: 'px' },
+    { key: 'panelInset', type: 'toggle', label: 'Guide panel background' },
+    { key: 'panelBorder', type: 'toggle', label: 'Guide panel border' },
+    { key: 'showSidebar', type: 'toggle', label: 'Show sidebar' },
+    { key: 'sidebarWidth', type: 'range', label: 'Sidebar width', min: 190, max: 340, step: 2, unit: 'px' },
+    { key: 'showLineNumbers', type: 'toggle', label: 'Line numbers' },
+    { key: 'numStyle', type: 'select', label: 'Line number style', options: [['plain', 'Plain'], ['boxed', 'Boxed'], ['pill', 'Accent pill']] },
+    { key: 'numSize', type: 'range', label: 'Line number size', min: 7, max: 16, step: 0.5, unit: 'px' },
+    { key: 'numWeight', type: 'range', label: 'Line number weight', min: 400, max: 700, step: 100 },
+    { key: 'numColor', type: 'select', label: 'Line number colour', options: [['faint', 'Faint'], ['muted', 'Muted'], ['prose', 'Body'], ['ink', 'Strong'], ['accent', 'Accent']] },
+    { key: 'showChecks', type: 'toggle', label: 'Ready checkboxes' },
+    { key: 'showCopyBtn', type: 'toggle', label: 'Per-line COPY button' },
+    { key: 'showTranscript', type: 'toggle', label: 'Show video transcripts' },
+    { key: 'stickyHeaders', type: 'toggle', label: 'Sticky section headers' },
+    { key: 'collapseDefault', type: 'toggle', label: 'Start with sections collapsed' }
+  ],
+  reading: [
+    { key: 'focusMode', type: 'toggle', label: 'Focus mode', hint: 'Sirf active line poori roshni me' },
+    { key: 'dimAmount', type: 'range', label: 'Dim strength', min: 10, max: 85, step: 5, unit: '%' },
+    { key: 'activeStyle', type: 'select', label: 'Active line style', options: [['ring', 'Accent ring'], ['tint', 'Tinted background'], ['band', 'Solid band'], ['bar', 'Left bar only']] },
+    { key: 'rememberLine', type: 'toggle', label: 'Remember active line', hint: 'Wapas aane par wahi line' }
+  ],
+  behavior: [
+    { key: 'chipClick', type: 'select', label: 'Click on a chip', options: [['copy', 'Copy it'], ['search', 'Open a search'], ['both', 'Copy + open search']] },
+    { key: 'searchEngine', type: 'select', label: 'Search opens in', options: [['youtube', 'YouTube'], ['google', 'Google'], ['gimages', 'Google Images'], ['pexels', 'Pexels'], ['pixabay', 'Pixabay'], ['unsplash', 'Unsplash']] },
+    { key: 'copyFormat', type: 'select', label: 'Copy format', options: [['plain', 'Plain text'], ['quoted', 'In "quotes"'], ['prefixed', 'With tag prefix']] },
+    { key: 'copyJoin', type: 'select', label: 'Copy-all separator', options: [['comma', 'Comma'], ['newline', 'New line'], ['pipe', 'Pipe |']] },
+    { key: 'openNewTab', type: 'toggle', label: 'Open links in new tab' },
+    { key: 'showFavicons', type: 'toggle', label: 'Source favicons' },
+    { key: 'showDomain', type: 'toggle', label: 'Show domain on source chips' }
+  ],
+  parsing: [
+    { key: 'autoDetect', type: 'toggle', label: 'Auto-detect unknown tags', hint: 'Naya tag mile to khud type ka andaza lagaye' },
+    { key: 'unknownAs', type: 'select', label: 'Unknown tag renders as', options: [['auto', 'Auto guess'], ['prose', 'Always prose'], ['chips', 'Always chips']] },
+    { key: 'defaultSplit', type: 'select', label: 'Default chip split', options: [['auto', 'Auto (; then ,)'], [';', 'Semicolon'], [',', 'Comma']] },
+    { key: 'scriptCol', type: 'text', label: 'Script column header', hint: 'Column ka naam pehchanne ke liye' },
+    { key: 'visualCol', type: 'text', label: 'Visual guide column header' },
+    { key: 'showExtraCols', type: 'toggle', label: 'Show extra columns', hint: '2 se zyada columns ho to' },
+    { key: 'resolveNumRefs', type: 'toggle', label: 'Resolve [[10]] numbered refs' },
+    { key: 'resolveTitleRefs', type: 'toggle', label: 'Resolve ▶️(Title) refs by name' },
+    { key: 'keepBrokenCells', type: 'toggle', label: 'Repair broken table cells', hint: 'Link ke andar | ho to cell na toote' }
+  ],
+  account: [
+    { key: 'signIn', type: 'action', label: 'Google account', hint: 'Sign in karein taake scripts, folders aur settings har device pe milen', actionLabel: 'Sign in' },
+    { key: 'signOut', type: 'action', label: 'Sign out', actionLabel: 'Sign out' },
+    { key: 'cloudSync', type: 'toggle', label: 'Cloud sync', hint: 'Realtime database se live sync' },
+    { key: 'syncSettings', type: 'toggle', label: 'Settings account ke saath sync karein' },
+    { key: 'exportSettings', type: 'action', label: 'Export settings + tags (.json)', actionLabel: 'Export' }
+  ],
+  sharing: [
+    { key: 'defaultShareRole', type: 'select', label: 'Default invite role', options: [['viewer', 'Viewer'], ['commenter', 'Commenter'], ['editor', 'Editor'], ['manager', 'Manager']] },
+    { key: 'sharePublicByDefault', type: 'toggle', label: 'Naye share pe public link foran on ho' },
+    { key: 'autoRefreshShare', type: 'toggle', label: 'Content badalne pe public copy khud update ho' },
+    { key: 'defaultSideTab', type: 'select', label: 'Sidebar ka default tab', options: [['files', 'Scripts'], ['review', 'Review']] },
+    { key: 'foldersFirst', type: 'toggle', label: 'Folders pehle dikhen' },
+    { key: 'showReadyCount', type: 'toggle', label: 'Tree me ready count dikhe' },
+    { key: 'confirmTrash', type: 'toggle', label: 'Trash bhejne se pehle poochein' }
+  ],
+  data: [
+    { key: 'exportMd', type: 'action', label: 'Download this script (.md)', actionLabel: 'Download' },
+    { key: 'emptyTrash', type: 'action', label: 'Empty trash', actionLabel: 'Empty' },
+    { key: 'exportTerms', type: 'action', label: 'Download all search terms (.txt)', actionLabel: 'Download' },
+    { key: 'exportSettings', type: 'action', label: 'Export settings + tags (.json)', actionLabel: 'Export' },
+    { key: 'clearDone', type: 'action', label: 'Clear all ready-marks on this script', actionLabel: 'Clear' }
+  ]
+};
+
+const SEARCH_URLS = {
+  youtube: 'https://www.youtube.com/results?search_query=',
+  google: 'https://www.google.com/search?q=',
+  gimages: 'https://www.google.com/search?tbm=isch&q=',
+  pexels: 'https://www.pexels.com/search/videos/',
+  pixabay: 'https://pixabay.com/videos/search/',
+  unsplash: 'https://unsplash.com/s/photos/'
+};
+const SLUG_ENGINES = { pexels: 1, pixabay: 1, unsplash: 1 };
+function searchUrl(engine, term) {
+  const base = SEARCH_URLS[engine] || SEARCH_URLS.youtube;
+  const q = String(term).trim();
+  return SLUG_ENGINES[engine]
+    ? base + encodeURIComponent(q.replace(/\s+/g, '-').toLowerCase()) + '/'
+    : base + encodeURIComponent(q);
+}
+
+/* ---------- markdown parsing ---------- */
+function splitCells(row, repair) {
+  let s = row.trim();
+  if (s.startsWith('|')) s = s.slice(1);
+  if (s.endsWith('|')) s = s.slice(0, -1);
+  const out = []; let cur = '', depth = 0, tick = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === '\\') { cur += ch + (s[i + 1] || ''); i++; continue; }
+    if (ch === '`') { tick = !tick; cur += ch; continue; }
+    if (repair && !tick && ch === '[') { depth++; cur += ch; continue; }
+    if (repair && !tick && ch === ']') { if (depth > 0) depth--; cur += ch; continue; }
+    if (ch === '|' && !tick && depth === 0) { out.push(cur); cur = ''; continue; }
+    cur += ch;
+  }
+  out.push(cur);
+  return out.map(c => c.trim());
+}
+const isSep = r => /^\|?[\s:|-]*-{2,}[\s:|-]*\|?$/.test(r.trim()) && r.includes('-');
+
+function collectSources(text) {
+  const byNum = {}, byTitle = [];
+  text.split(/\r?\n/).forEach(raw => {
+    const line = raw.trim();
+    const m = line.match(/^\[(\d+)\]\s*(.+?)\s*[—–-]{1,2}\s*(?:\[[^\]]*\]\()?(https?:\/\/[^\s)\]]+)/);
+    if (m) {
+      const rec = { n: m[1], t: m[2].replace(/\s*[—–-]\s*$/, '').trim(), u: m[3].replace(/[).,]+$/, '') };
+      byNum[m[1]] = rec; byTitle.push(rec);
+    }
+  });
+  return { byNum, byTitle };
+}
+const norm = s => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+function findByTitle(reg, title) {
+  const n = norm(title); if (!n) return null;
+  let best = null;
+  reg.byTitle.forEach(r => {
+    const rn = norm(r.t);
+    if (rn === n) best = best || r;
+    else if (!best && (rn.includes(n) || n.includes(rn)) && Math.min(rn.length, n.length) > 12) best = r;
+  });
+  return best;
+}
+function scanBalanced(str, from) {
+  let d = 0;
+  for (let i = from; i < str.length; i++) {
+    if (str[i] === '(') d++;
+    else if (str[i] === ')') { d--; if (d === 0) return i; }
+  }
+  return -1;
+}
+function domainOf(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; } }
+
+function parseLinks(body, reg, st) {
+  const links = []; let rest = body;
+  rest = rest.replace(/\[\[(\d+)\]\]\(([^)]+)\)/g, (m, n, u) => {
+    const r = st.resolveNumRefs && reg.byNum[n];
+    links.push({ t: r ? r.t : ('Source ' + n), u: u });
+    return ' ';
+  });
+  rest = rest.replace(/\[([^\]\[]+)\]\((https?:\/\/[^)\s]+)\)/g, (m, t, u) => {
+    links.push({ t: t.replace(/\\/g, '').trim(), u }); return ' ';
+  });
+  let idx;
+  while ((idx = rest.indexOf('▶️(')) !== -1) {
+    const close = scanBalanced(rest, idx + 2);
+    const inner = close === -1 ? rest.slice(idx + 3) : rest.slice(idx + 3, close);
+    const clean = inner.replace(/^\[+/, '').replace(/\]+$/, '').trim();
+    const hit = st.resolveTitleRefs ? findByTitle(reg, clean) : null;
+    if (clean) links.push({ t: hit ? hit.t : clean, u: hit ? hit.u : '' });
+    rest = rest.slice(0, idx) + ' ' + (close === -1 ? '' : rest.slice(close + 1));
+  }
+  rest.replace(/\[(\d+)\](?!\()/g, (m, n) => {
+    const r = st.resolveNumRefs && reg.byNum[n];
+    if (r) links.push({ t: r.t, u: r.u });
+    return '';
+  });
+  const bare = rest.match(/https?:\/\/[^\s)\]]+/g) || [];
+  bare.forEach(u => { if (!links.some(l => l.u === u)) links.push({ t: domainOf(u) || u, u }); });
+  const seen = {};
+  return links.filter(l => { const k = l.u || l.t; if (seen[k]) return false; seen[k] = 1; return true; })
+    .map(l => ({ ...l, d: domainOf(l.u) }));
+}
+
+function stripMd(s) {
+  return s.replace(/\*\*(.+?)\*\*/g, '$1').replace(/(^|\s)\*(\S[^*]*?)\*/g, '$1$2')
+    .replace(/`+/g, '').replace(/\\([|*_[\]])/g, '$1')
+    .replace(/\[([^\]]*)\]\(([^)]+)\)/g, '$1').replace(/\s{2,}/g, ' ').trim();
+}
+function cleanBody(s) {
+  return s.replace(/^[\s—–\-·]+/, '').replace(/[\s—–\-·]+$/, '').replace(/\s*\n\s*/g, ' ').trim();
+}
+function guessRender(name, body) {
+  const n = name.toUpperCase();
+  if (/SOURCE|LINK|REF/.test(n)) return 'links';
+  if (/OVERLAY|TITLE CARD|LOWER THIRD/.test(n)) return 'overlay';
+  if (/TERM|KEYWORD|SHOT LIST|QUERY|SEARCH/.test(n)) return 'chips';
+  if ((body.match(/;/g) || []).length >= 2) return 'chips';
+  if (/https?:\/\//.test(body) && body.length < 400) return 'links';
+  return 'prose';
+}
+function splitChips(body, mode, def) {
+  let m = mode === 'auto' || !mode ? (def === 'auto' ? (body.includes(';') ? ';' : ',') : def) : mode;
+  if (m === 'none') return [body];
+  if (m === '—') return body.split(/\s+—\s+and\s+—\s+|\s+—\s+/).map(x => x.trim()).filter(Boolean);
+  return body.split(m).map(x => x.trim()).filter(Boolean);
+}
+
+const TAG_RE = /`?\[([A-Z][A-Z0-9 &/.\-']{1,30})\]:`?/g;
+
+function parseGuide(cell, tags, reg, st, learned) {
+  const src = cell.replace(/<br\s*\/?>/gi, '\n');
+  const marks = []; let m; TAG_RE.lastIndex = 0;
+  while ((m = TAG_RE.exec(src)) !== null) marks.push({ name: m[1].trim().toUpperCase(), s: m.index, e: m.index + m[0].length });
+  const items = [];
+  if (!marks.length) {
+    const b = cleanBody(stripMd(src));
+    if (b) items.push({ k: 'NOTE', body: b, render: 'prose' });
+    return items;
+  }
+  if (marks[0].s > 0) {
+    const b = cleanBody(stripMd(src.slice(0, marks[0].s)));
+    if (b) items.push({ k: 'NOTE', body: b, render: 'prose' });
+  }
+  marks.forEach((mk, i) => {
+    const raw = src.slice(mk.e, i + 1 < marks.length ? marks[i + 1].s : src.length);
+    let def = tags[mk.name];
+    if (!def) {
+      const g = st.unknownAs === 'auto' ? guessRender(mk.name, raw) : st.unknownAs;
+      def = { render: g, color: PKEYS[(mk.name.charCodeAt(0) + mk.name.length) % PKEYS.length], split: 'auto', auto: true };
+      if (st.autoDetect) learned[mk.name] = def;
+    }
+    if (def.render === 'hidden') return;
+    const item = { k: mk.name, render: def.render, color: def.color };
+    if (def.render === 'links') item.links = parseLinks(raw, reg, st);
+    else {
+      const body = cleanBody(stripMd(raw));
+      if (!body) return;
+      if (def.render === 'chips' || def.render === 'overlay') item.chips = splitChips(body, def.split, st.defaultSplit);
+      item.body = body;
+    }
+    if (item.render === 'links' && !item.links.length) return;
+    items.push(item);
+  });
+  return items;
+}
+
+function parseScriptCell(cell) {
+  const t = cell.trim();
+  const vid = t.match(/^`{1,3}\s*insert video:\s*([\s\S]*)$/i);
+  if (!vid) return { text: stripMd(t), video: false };
+  let rest = vid[1].replace(/`+$/, '');
+  let transcript = '';
+  const tm = rest.split(/\*\*transcript:?\*\*/i);
+  if (tm.length > 1) { rest = tm[0]; transcript = stripMd(tm.slice(1).join(' ')).trim(); }
+  let range = '';
+  const parts = rest.split(/\\?\|/);
+  let title = parts[0];
+  if (parts.length > 1) {
+    const cand = parts.slice(1).join('|').trim();
+    const rm = cand.match(/\d{1,2}:\d{2}\s*[–\-—]\s*\d{1,2}:\d{2}|clip/i);
+    if (rm) range = rm[0];
+    if (cand && !rm) title = title + ' — ' + cand;
+  }
+  return { text: stripMd(title).replace(/^["“]|["”]$/g, '').trim(), video: true, range: range, transcript: transcript };
+}
+
+function parseDoc(md, tags, st) {
+  const reg = collectSources(md);
+  const learned = {};
+  const lines = md.split(/\r?\n/);
+  const sections = []; let cur = null; let i = 0; let lineNo = 0;
+  const push = (title, badge) => { cur = { title: title, badge: badge, lines: [], notes: [] }; sections.push(cur); };
+  while (i < lines.length) {
+    const raw = lines[i];
+    const h = raw.match(/^(#{1,6})\s+(.*)$/);
+    if (h) {
+      let title = h[2].trim(); let badge = '';
+      const bm = title.match(/`?\[([A-Z][A-Z0-9 \-]{2,24})\]`?\s*$/);
+      if (bm) { badge = bm[1]; title = title.slice(0, bm.index).trim(); }
+      push(stripMd(title), badge); i++; continue;
+    }
+    if (raw.trim().startsWith('|')) {
+      const header = splitCells(raw, st.keepBrokenCells);
+      let j = i + 1;
+      const hasSep = j < lines.length && isSep(lines[j]);
+      if (hasSep) j++;
+      const lower = header.map(x => x.toLowerCase());
+      let sIdx = lower.findIndex(x => x && x.includes(st.scriptCol.split(' ')[0]));
+      let vIdx = lower.findIndex(x => x && x.includes(st.visualCol.split(' ')[0]));
+      if (sIdx < 0) sIdx = 0;
+      if (vIdx < 0) vIdx = 1;
+      if (!cur) push('Script', '');
+      const startRow = hasSep ? j : i;
+      for (let r = startRow; r < lines.length; r++) {
+        if (!lines[r].trim().startsWith('|')) { j = r; break; }
+        if (isSep(lines[r])) { j = r + 1; continue; }
+        const cells = splitCells(lines[r], st.keepBrokenCells);
+        const sc = cells[sIdx] || ''; const vc = cells[vIdx] || '';
+        if (!sc && !vc) { j = r + 1; continue; }
+        const extra = st.showExtraCols ? cells.filter((c, ci) => ci !== sIdx && ci !== vIdx && c).join(' · ') : '';
+        const parsed = parseScriptCell(sc);
+        lineNo++;
+        const items = parseGuide(vc, tags, reg, st, learned);
+        if (extra) items.push({ k: 'EXTRA', render: 'prose', body: stripMd(extra), color: 'slate' });
+        cur.lines.push({ n: lineNo, text: parsed.text, video: parsed.video, range: parsed.range, transcript: parsed.transcript, items: items });
+        j = r + 1;
+      }
+      i = j; continue;
+    }
+    const t = raw.trim();
+    if (t && cur && !/^\[\d+\]/.test(t) && !/^\*\*.*sources\*\*$/i.test(t) && t !== '---' && !/^-{3,}$/.test(t)) cur.notes.push(t);
+    i++;
+  }
+  return { sections: sections.filter(s => s.lines.length || s.notes.length), reg, learned, total: lineNo };
+}
+
+/* ---------- theme ---------- */
+function tokens(s) {
+  const dark = s.theme === 'dark';
+  const acc = PALETTE[s.accent] || PALETTE.orange;
+  const accent = dark ? acc[0] : acc[1];
+  const P = {
+    warm: { bg: '#F1EEE8', panel: '#FAF8F4', surface: '#FFFFFF', border: '#E4E0D8', rule: '#EDE9E1', ink: '#17161A', prose: '#55524D', muted: '#8A867E', faint: '#B5B1A9', chipBg: '#FFFFFF', chipBd: '#E2DED6', chipInk: '#3C3A36' },
+    neutral: { bg: '#F1F1F0', panel: '#FAFAF9', surface: '#FFFFFF', border: '#E3E3E1', rule: '#ECECEA', ink: '#17171A', prose: '#54544F', muted: '#87877F', faint: '#B3B3AC', chipBg: '#FFFFFF', chipBd: '#E1E1DE', chipInk: '#39393A' },
+    cool: { bg: '#EDEFF2', panel: '#F7F8FA', surface: '#FFFFFF', border: '#E1E5EA', rule: '#E9ECF0', ink: '#14161A', prose: '#4C5157', muted: '#878D95', faint: '#AAB2BC', chipBg: '#FFFFFF', chipBd: '#DFE4EA', chipInk: '#343A41' }
+  };
+  const D = { bg: '#0C0C0F', panel: '#0F0F13', surface: '#17171B', border: '#2B2B31', rule: '#212127', ink: '#F2F0EB', prose: '#ABA8A3', muted: '#807D78', faint: '#54524E', chipBg: '#1B1B20', chipBd: '#2B2B31', chipInk: '#C2BFBA' };
+  const c = dark ? D : P[s.paper] || P.warm;
+  const pad = s.density === 'compact' ? 8 : s.density === 'comfortable' ? 13 : 10;
+  const fam = { serif: "'Newsreader',Georgia,serif", sans: "'Instrument Sans',system-ui,sans-serif", mono: "'JetBrains Mono',monospace" };
+  const k = (s.scale || 100) / 100;
+  const px = v => (Math.round(v * k * 100) / 100) + 'px';
+  const ls = s.labelStyle || 'pill';
+  /* Document view: same markup, different geometry — rows lose their radius,
+     gap and shadow and their 1px borders collapse into one continuous table */
+  const doc = s.viewStyle === 'doc';
+  const dt = doc ? (s.docTight || 0.82) : 1;
+  const phx = (s.autoPad ? s.scriptSize * s.padRatio * 1.15 : pad) * dt;
+  const pgd = (s.autoPad ? s.bodySize * s.padRatio * 1.35 : s.padGuide) * dt;
+  const panelBd = s.panelBorder ? c.rule : 'transparent';
+  return {
+    ...c, accent,
+    docOn: doc,
+    rowR: doc ? '0px' : px(s.radius),
+    rowPad: doc ? '0px' : '3px',
+    rowMT: doc ? '-1px' : '0px',
+    guideR: doc ? '0px' : 'calc(' + px(s.radius) + ' - 3px)',
+    guideBdT: doc ? '1px solid ' + c.rule : '1px solid ' + panelBd,
+    guideBdX: doc ? '0px solid transparent' : '1px solid ' + panelBd,
+    secHeadR: doc ? '0px' : px(s.radius),
+    secHeadMB: doc ? '0px' : px(s.cardGap),
+    secHeadBg: doc && s.docHeadTint ? c.panel : c.surface,
+    secHeadPad: doc ? px(7 * dt) + ' ' + px(11 * dt) : px(9) + ' ' + px(11),
+    padGuideX: px(doc && s.docGuideIndent ? phx : pgd),
+    accentSoft: accent + (dark ? '22' : '18'),
+    ovBg: dark ? '#EFEDE8' : '#17161A', ovInk: dark ? '#111114' : '#FBFAF8',
+    shadow: s.cardShadow ? (dark ? '0 1px 2px rgba(0,0,0,.4)' : '0 1px 2px rgba(60,50,30,.05)') : 'none',
+    radius: px(s.radius), pad: px(pad), gap: doc ? '0px' : px(s.cardGap),
+    padHeadT: px((s.autoPad ? s.scriptSize * s.padTopRatio : s.padTopRatio * 14) * dt),
+    padHeadB: px((s.autoPad ? s.scriptSize * s.padBottomRatio : s.padBottomRatio * 14) * dt),
+    padHead: px((s.autoPad ? s.scriptSize * s.padRatio : pad) * dt),
+    padHeadX: px(phx),
+    gapHead: px(s.autoPad ? s.scriptSize * 0.5 : 9),
+    szNum: px(s.numSize), wNum: String(s.numWeight),
+    numInk: ({ faint: c.faint, muted: c.muted, prose: c.prose, ink: c.ink, accent: accent })[s.numColor] || c.faint,
+    numBg: s.numStyle === 'plain' ? 'transparent' : (s.numStyle === 'pill' ? accent + (dark ? '26' : '16') : c.bg),
+    numBd: s.numStyle === 'boxed' ? '1px solid ' + c.rule : 'none',
+    numR: s.numStyle === 'pill' ? '20px' : px(4),
+    numPad: s.numStyle === 'plain' ? '0px' : px(1) + ' ' + px(5.5),
+    numW: s.numStyle === 'plain' ? px(Math.max(15, s.numSize * 2)) : 'auto',
+    numLH: s.numStyle === 'plain' ? px(s.scriptSize * s.scriptLeading) : px(s.numSize * 1.5),
+    numMT: s.numStyle === 'plain' ? '0px' : px(Math.max(1, (s.scriptSize * s.scriptLeading - s.numSize * 1.5 - 2) / 2)),
+    itemGap: px(s.itemGap), secGap: px(s.sectionGap),
+    padGuide: px(pgd), colGap: px(s.colGap),
+    sidebarW: s.sidebarWidth + 'px',
+    panelBg: s.panelInset ? c.panel : 'transparent',
+    panelBd: s.panelBorder ? c.rule : 'transparent',
+    lhBody: String(s.lhBody), lhChip: String(s.lhChip),
+    pillPadX: ls === 'plain' ? '0px' : px(7), pillPadY: ls === 'plain' ? '0px' : px(2.5),
+    pillR: ls === 'plain' ? '0px' : px(5),
+    fScript: fam[s.scriptFont], fUI: fam[s.bodyFont],
+    szScript: px(s.scriptSize), lhScript: String(s.scriptLeading), wScript: String(s.scriptWeight),
+    szBody: px(s.bodySize), szLabel: px(s.labelSize),
+    cols: s._narrow ? '1' : (s._mobile ? 'auto' : (s.guideColumns === 'auto' ? 'auto' : s.guideColumns)),
+    colw: s._narrow ? 'auto' : (s._mobile ? '260px' : (s.guideColumns === 'auto' ? '250px' : 'auto')),
+    tagc: dark ? '#B48EE8' : '#6F45B8', link: dark ? '#7FA6D9' : '#2F639F',
+    maxw: s._mobile ? '100%' : s.maxWidth + 'px'
+  };
+}
+
+const SAMPLE = `# Intro
+
+| Script Line | Visual Guide |
+|---|---|
+| In 2025, the research firm NRG asked Gen Alpha kids which entertainment franchises mattered most to them. | \`[CONTEXT]:\` NRG (National Research Group) ek market research firm hai; 2025 mein isne kareeban 6,100 US moviegoers par study ki thi. — \`[ARTICLE SHOT]:\` NRG "Gen Alpha at the Movies Pixels to Popcorn"; National Research Group Gen Alpha franchises study 2025 — \`[B-ROLL]:\` Gen Alpha kids on a couch absorbed in tablets and games. — \`[SEARCH TERMS]:\` Gen Alpha kids playing tablet games b-roll, children survey research footage, kids using iPad on couch — \`[SOURCES]:\` [Gen Alpha at the Movies: From Pixels to Popcorn](https://www.nrgmr.com/our-thinking/entertainment/gen-alpha-at-the-movies-from-pixels-to-popcorn/) |
+| And their biggest star is a YouTuber named MrBeast, whose channel has more subscribers than the entire population of the United States. | \`[CONTEXT]:\` MrBeast (Jimmy Donaldson) YouTube ka sab se bara creator hai. — \`[B-ROLL]:\` MrBeast YouTube channel page and thumbnails. — \`[SEARCH TERMS]:\` MrBeast YouTube channel thumbnails, kids watching MrBeast tablet — \`[TEXT OVERLAY]:\` 490M+ Subscribers — \`[SOURCES]:\` [[7]](https://en.wikipedia.org/wiki/List_of_most-subscribed_YouTube_channels) |
+
+# FULL VIDEO SOURCES
+
+[7] List of most-subscribed YouTube channels - Wikipedia — https://en.wikipedia.org/wiki/List_of_most-subscribed_YouTube_channels
+`;
+
+const FB_CONFIG = {
+  apiKey: 'AIzaSyDJepLciAWSd3d8-KahJYBn7JOMx1I0gJc',
+  authDomain: 'alamza-scripts.firebaseapp.com',
+  databaseURL: 'https://alamza-scripts-default-rtdb.firebaseio.com',
+  projectId: 'alamza-scripts',
+  storageBucket: 'alamza-scripts.firebasestorage.app',
+  messagingSenderId: '914033444889',
+  appId: '1:914033444889:web:aa785a95119b7419270288'
+};
+const ROLES = ['viewer', 'commenter', 'editor', 'manager', 'owner'];
+const RANK = { viewer: 1, commenter: 2, editor: 3, manager: 4, owner: 5 };
+const ROLE_SHORT = { viewer: 'Viewer', commenter: 'Commenter', editor: 'Editor', manager: 'Manager', owner: 'Owner' };
+const ROLE_HINT = {
+  viewer: 'Viewer sirf dekh sakta hai aur “ready” tick kar sakta hai.',
+  commenter: 'Commenter dekh sakta hai, tick kar sakta hai aur notes likh sakta hai.',
+  editor: 'Editor raw markdown badal sakta hai aur rename kar sakta hai.',
+  manager: 'Manager sab kuch kar sakta hai aur aage share bhi kar sakta hai.',
+  owner: 'Owner ke paas poora ikhtiyar hai — delete bhi.'
+};
+const ekey = e => (e || '').trim().toLowerCase().replace(/[.#$/[\]]/g, ',');
+const tok = () => Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 6);
+const now = () => Date.now();
+
+let FB = null;
+function fbGet() {
+  /* the cached handle carries its own SDK namespace (ns) — never reach for the
+     bare global again, it may be a second realm from a re-evaluated script tag */
+  if (FB && FB.ns === window.firebase) return FB;
+  if (window.__alamzaFB && window.__alamzaFB.ns === window.firebase) { FB = window.__alamzaFB; return FB; }
+  const ns = window.firebase;
+  if (!ns || !ns.initializeApp) return null;
+  try {
+    const app = ns.apps && ns.apps.length ? ns.apps[0] : ns.initializeApp(FB_CONFIG);
+    FB = { app, ns, auth: ns.auth(), db: ns.database() };
+    window.__alamzaFB = FB;
+  } catch (e) { return null; }
+  return FB;
+}
+function hashOf(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return String(h); }
+function shareUrlFor(token) {
+  const base = location.origin + location.pathname + location.search;
+  return base + '#/s/' + token;
+}
+function readHashToken() {
+  const m = (location.hash || '').match(/^#\/s\/([A-Za-z0-9_-]{6,})/);
+  return m ? m[1] : null;
+}
+
+const KEY = 'alamza.scripts.v1';
+const SCHEMA = 3;
+/* keys re-baselined in schema 2 — a stale saved value would hide the new defaults */
+const RESET_IN_V2 = ['scriptFont', 'scriptSize', 'scriptWeight', 'scriptLeading', 'bodySize', 'labelSize', 'radius', 'maxWidth', 'density'];
+const uid = () => Math.random().toString(36).slice(2, 9);
+
+function seed() {
+  const id = uid();
+  return {
+    items: { [id]: { type: 'script', name: 'Sample script', parentId: 'root', order: 0 } },
+    raws: { [id]: SAMPLE }, doneMap: {}, activeId: id
+  };
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      const saved = { ...(d.settings || {}) };
+      if (!d.v || d.v < 2) RESET_IN_V2.forEach(k => { delete saved[k]; });
+      let items = d.items, raws = d.raws, doneMap = d.doneMap;
+      if (!items && d.scripts) {
+        items = {}; raws = {}; doneMap = {};
+        d.scripts.forEach((s, i) => {
+          items[s.id] = { type: 'script', name: s.name, parentId: 'root', order: i };
+          raws[s.id] = s.raw; doneMap[s.id] = s.done || {};
+        });
+      }
+      if (!items || !Object.keys(items).length) { const s = seed(); items = s.items; raws = s.raws; doneMap = s.doneMap; }
+      return {
+        items, raws: raws || {}, doneMap: doneMap || {},
+        activeId: d.activeId && items[d.activeId] ? d.activeId : Object.keys(items).find(k => items[k].type === 'script'),
+        settings: { ...DEFAULTS, ...saved }, tags: { ...DEFAULT_TAGS, ...(d.tags || {}) },
+        activeLine: d.activeLine || null, openFolders: d.openFolders || {}
+      };
+    }
+  } catch (e) { }
+  const s = seed();
+  return { ...s, settings: { ...DEFAULTS }, tags: { ...DEFAULT_TAGS }, activeLine: null, openFolders: {} };
+}
+
+function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function highlight(txt) {
+  return esc(txt)
+    .replace(/^(#{1,6} .*)$/gm, '<span class="h">$1</span>')
+    .replace(/^(\*\*.*\*\*)$/gm, '<span class="b">$1</span>')
+    .replace(/(`?)\[([A-Z][A-Z0-9 &amp;\/.\-']{1,30})\]:(`?)/g, '<span class="t">$1[$2]:$3</span>')
+    .replace(/(\[[^\]\n]*\])(\((?:https?:)?[^)\n]*\))/g, '<span class="l">$1</span><span class="u">$2</span>')
+    .replace(/(https?:\/\/[^\s)\]&]+)/g, '<span class="u">$1</span>')
+    .replace(/\|/g, '<span class="p">|</span>');
+}
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const d = load();
+    this.state = {
+      items: d.items, raws: d.raws, doneMap: d.doneMap, activeId: d.activeId,
+      settings: d.settings, tags: d.tags, openFolders: d.openFolders,
+      mode: 'normal', tab: 'appearance', query: '', filter: 'all', collapsed: {},
+      activeLine: d.activeLine, draft: null, toast: '', newTag: '', win: { s: 0, e: 28 }, mounted: 40, offScreen: false,
+      vw: typeof window !== 'undefined' ? window.innerWidth : 1440,
+      drawer: false, loginOpen: false, loginBusy: false, loginError: '', skippedLogin: false,
+      sideTab: d.settings.defaultSideTab === 'review' ? 'review' : 'files',
+      showTrash: false, menu: null, shareFor: null,
+      shares: {}, grants: {}, shareEmail: '', shareRole: d.settings.defaultShareRole || 'viewer',
+      user: null, authReady: false, cloud: false, viewer: null, viewerToken: readHashToken()
+    };
+  }
+
+  componentDidMount() {
+    this._key = (e) => {
+      if (this.state.mode !== 'normal') return;
+      const tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+        if (e.key === 'Escape') e.target.blur();
+        return;
+      }
+      if (e.key === 'Escape') {
+        if (this.state.menu || this.state.shareFor || this.state.drawer || this.state.loginOpen) {
+          e.preventDefault(); this.setState({ menu: null, shareFor: null, drawer: false, loginOpen: false });
+        }
+        return;
+      }
+      if (this.state.menu || this.state.shareFor || this.state.loginOpen) return;
+      if (e.key === '/') { e.preventDefault(); const el = document.querySelector('input[placeholder^="Search lines"]'); if (el) el.focus(); return; }
+      if (e.key === 'j' || e.key === 'k') { e.preventDefault(); this.step(e.key === 'j' ? 1 : -1); }
+      if (e.key === 'f') this.set('focusMode', !this.state.settings.focusMode);
+      if (e.key === 'Enter' && this.state.activeLine) { e.preventDefault(); this.toggleDone(this.state.activeLine); }
+    };
+    window.addEventListener('keydown', this._key);
+    this._hash = () => this.setState({ viewerToken: readHashToken() }, () => this.bootViewer());
+    window.addEventListener('hashchange', this._hash);
+    this._onScroll = () => {
+      /* scrolling must never trigger a render — that was the source of the jitter */
+      clearTimeout(this._scrollT);
+      this._scrollT = setTimeout(() => this.checkOffScreen(), 180);
+    };
+    document.addEventListener('scroll', this._onScroll, true);
+    this._resize = () => {
+      clearTimeout(this._rzT);
+      this._rzT = setTimeout(() => { if (window.innerWidth !== this.state.vw) this.setState({ vw: window.innerWidth }); }, 120);
+    };
+    window.addEventListener('resize', this._resize);
+    setTimeout(() => this.windowFromScroll(), 120);
+    if (!localStorage.getItem(KEY)) {
+      fetch('uploads/New%20Text%20Document.txt').then(r => r.ok ? r.text() : null).then(t => {
+        if (t && t.length > 500) {
+          const id = uid();
+          this.setState({
+            items: { ...this.state.items, [id]: { type: 'script', name: 'Disney / Gen Alpha script', parentId: 'root', order: -1 } },
+            raws: { ...this.state.raws, [id]: t }, activeId: id
+          }, this.save);
+        }
+      }).catch(() => { });
+    }
+    this.waitForFb(0);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this._key);
+    window.removeEventListener('hashchange', this._hash);
+    document.removeEventListener('scroll', this._onScroll, true);
+    window.removeEventListener('resize', this._resize);
+    clearTimeout(this._t); clearTimeout(this._cloudT); clearTimeout(this._saveT); clearTimeout(this._pubT); clearTimeout(this._growT);
+    clearTimeout(this._scrollT); clearTimeout(this._rzT); clearTimeout(this._settleT);
+    if (this._measRaf) cancelAnimationFrame(this._measRaf);
+    if (this._sRaf) cancelAnimationFrame(this._sRaf);
+    if (this._scrollRaf) cancelAnimationFrame(this._scrollRaf);
+    if (this._sRaf) cancelAnimationFrame(this._sRaf);
+    this.detach();
+  }
+
+  /* ---- windowing: only lines near the viewport stay mounted ---- */
+  /* window size follows the viewport: one screen visible + one screen of overscan
+     either side — a fixed constant mounts 25x more cards than a short box needs */
+  winMax() {
+    const box = document.getElementById('scrollmain');
+    const h = box ? box.clientHeight : 700;
+    const per = Math.ceil(h / (this._avgH || 200));
+    return Math.max(16, Math.min(70, per * 6 + 8));
+  }
+  winStep() { return Math.max(8, Math.ceil(this.winMax() / 2)); }
+  lineH(id) { return (this._h && this._h[id]) || this._avgH || 200; }
+
+  /* map scrollTop straight onto line indices through the same height model the
+     spacers use — independent of what happens to be mounted, so a fast fling
+     can never outrun the window and show blank space */
+  windowFromScroll() { }
+
+  centerWindow(i, total) {
+    const max = this.winMax();
+    const half = Math.floor(max / 2);
+    const s = Math.max(0, Math.min(i - half, Math.max(0, total - max)));
+    return { s, e: Math.min(total, s + max) };
+  }
+  resetWindow(cb) { this.setState({ win: { s: 0, e: 28 }, mounted: 40 }, cb); }
+  settle(depth) {
+    const d = (depth || 0) + 1;
+    if (d > 7) return;
+    clearTimeout(this._settleT);
+    this._settleT = setTimeout(() => this.adjustWindow(d), 40);
+  }
+  /* single source of truth — the DOM-relative walk used to fight the index model
+     and could park the window on the wrong rows */
+  adjustWindow() { this.windowFromScroll(); }
+  adjustWindowLegacy(depth) {
+    if (this.state.mode !== 'normal') return;
+    const box = document.getElementById('scrollmain'); if (!box) return;
+    const total = this.flow().length;
+    const w = this.state.win;
+    const avg = this._avgH || 200;
+    let s = Math.max(0, Math.min(w.s, Math.max(0, total - 1)));
+    let e = Math.min(total, Math.max(w.e, s + 8));
+    const els = box.querySelectorAll('[data-line]');
+    const b = box.getBoundingClientRect();
+    let win;
+    if (!els.length) {
+      win = this.centerWindow(Math.max(0, Math.min(total - 1, Math.round(box.scrollTop / avg))), total);
+    } else {
+      const first = els[0].getBoundingClientRect();
+      const last = els[els.length - 1].getBoundingClientRect();
+      if (last.bottom < b.top) {
+        /* window stranded above the viewport — jump by the measured pixel gap */
+        win = this.centerWindow(Math.min(total - 1, e + Math.round((b.top - last.bottom) / avg)), total);
+      } else if (first.top > b.bottom) {
+        win = this.centerWindow(Math.max(0, s - Math.round((first.top - b.bottom) / avg)), total);
+      } else {
+        const max = this.winMax(), stp = this.winStep(), pad = b.height * 2;
+        const down = last.bottom < b.bottom + pad && e < total;
+        const up = first.top > b.top - pad && s > 0;
+        if (down) e = Math.min(total, e + stp);
+        if (up) s = Math.max(0, s - stp);
+        if (e - s > max) {
+          if (down && !up) s = e - max;
+          else if (up && !down) e = s + max;
+          else { const c = Math.round((s + e) / 2); s = Math.max(0, c - Math.floor(max / 2)); e = Math.min(total, s + max); }
+        }
+        win = { s, e };
+      }
+    }
+    if (win.s !== w.s || win.e !== w.e) this.setState({ win }, () => this.settle(depth));
+  }
+
+  checkOffScreen() {
+    const id = this.state.activeLine;
+    if (!id || this.state.mode !== 'normal') { if (this.state.offScreen) this.setState({ offScreen: false }); return; }
+    const box = document.getElementById('scrollmain'), el = document.getElementById('line-' + id);
+    if (!box || !el) { if (!this.state.offScreen) this.setState({ offScreen: true }); return; }
+    const b = box.getBoundingClientRect(), r = el.getBoundingClientRect();
+    const off = r.bottom < b.top + 40 || r.top > b.bottom - 30;
+    if (off !== this.state.offScreen) this.setState({ offScreen: off });
+  }
+
+  waitForFb(n) {
+    const fb = fbGet();
+    if (!fb) { if (n < 60) setTimeout(() => this.waitForFb(n + 1), 250); else this.setState({ authReady: true }); return; }
+    fb.auth.onAuthStateChanged(u => {
+      const signedIn = !!u && !u.isAnonymous && this.state.settings.cloudSync !== false;
+      this.setState({ user: u, authReady: true, cloud: signedIn }, () => {
+        this.detach();
+        if (signedIn) this.attach(u);
+        if (this.state.viewerToken) this.bootViewer();
+      });
+    });
+    if (this.state.viewerToken && !fb.auth.currentUser) fb.auth.signInAnonymously().catch(() => { });
+  }
+
+  detach() {
+    (this._refs || []).forEach(r => { try { r.off(); } catch (e) { } });
+    this._refs = [];
+    if (this._doneRef) { try { this._doneRef.off(); } catch (e) { } this._doneRef = null; }
+    if (this._pubRef) { try { this._pubRef.off(); } catch (e) { } this._pubRef = null; }
+    this._pushed = false;
+  }
+  on(ref, cb) { ref.on('value', s => cb(s.val())); (this._refs = this._refs || []).push(ref); }
+
+  attach(u) {
+    const fb = fbGet(); if (!fb) return;
+    const db = fb.db, base = 'users/' + u.uid;
+    fb.db.ref(base + '/profile').update({ email: u.email || '', name: u.displayName || '', photo: u.photoURL || '', seen: now() }).catch(() => { });
+    this.on(db.ref(base + '/items'), v => {
+      const items = v || {};
+      if (!Object.keys(items).length) {
+        if (this._pushed) return;
+        this._pushed = true;
+        return this.pushLocalToCloud(u);
+      }
+      const act = this.state.activeId && items[this.state.activeId] ? this.state.activeId : Object.keys(items).find(k => items[k].type === 'script' && !items[k].trashed);
+      this.setState({ items, activeId: act }, () => this.watchDone());
+    });
+    this.on(db.ref(base + '/raw'), v => this.setState({ raws: v || {} }));
+    this.on(db.ref(base + '/shares'), v => this.setState({ shares: v || {} }));
+    this.on(db.ref(base + '/settings'), v => {
+      if (!v || this.state.settings.syncSettings === false) return;
+      this.setState({ settings: { ...DEFAULTS, ...(v.settings || {}) }, tags: { ...DEFAULT_TAGS, ...(v.tags || {}) } });
+    });
+    if (u.email) this.on(db.ref('grants/' + ekey(u.email)), v => this.setState({ grants: v || {} }));
+    this.watchDone();
+  }
+
+  pushLocalToCloud(u) {
+    const fb = fbGet(); if (!fb) return;
+    const base = 'users/' + u.uid;
+    fb.db.ref(base).update({ items: this.state.items, raw: this.state.raws, settings: { settings: this.state.settings, tags: this.state.tags } }).catch(() => { });
+    Object.keys(this.state.doneMap || {}).forEach(sid => {
+      if (Object.keys(this.state.doneMap[sid] || {}).length) fb.db.ref('done/' + sid).update(this.state.doneMap[sid]).catch(() => { });
+    });
+    this.flash('Local scripts cloud me chali gayin');
+  }
+
+  watchDone() {
+    const fb = fbGet(); const id = this.state.activeId;
+    if (this._doneRef) { try { this._doneRef.off(); } catch (e) { } this._doneRef = null; }
+    if (!fb || !id || !(this.state.cloud || this.isViewing())) return;
+    if (this._doneId === id && this._doneRef) return;
+    this._doneId = id;
+    this._doneRef = fb.db.ref('done/' + id);
+    this._doneRef.on('value', s => {
+      const v = s.val() || {};
+      const cur = (this.state.doneMap || {})[id] || {};
+      if (Object.keys(v).sort().join(',') === Object.keys(cur).sort().join(',')) return;
+      this.setState({ doneMap: { ...this.state.doneMap, [id]: v } });
+    });
+  }
+
+  bootViewer() {
+    const token = this.state.viewerToken, fb = fbGet();
+    if (!token) { if (this.state.viewer) this.setState({ viewer: null }); return; }
+    if (!fb) return;
+    if (!fb.auth.currentUser) { fb.auth.signInAnonymously().catch(() => { }); return; }
+    this.watchPub(token, null, null);
+  }
+
+  /* live: owner ke edits, naye scripts aur settings foran viewer ko pohnchte hain */
+  watchPub(token, role, wantId) {
+    const fb = fbGet(); if (!fb) return;
+    if (this._pubRef) { try { this._pubRef.off(); } catch (e) { } this._pubRef = null; }
+    this._pubRef = fb.db.ref('pub/' + token);
+    this._pubRef.on('value', s => {
+      const v = s.val();
+      if (!v) { this.setState({ viewer: { missing: true, token } }); return; }
+      const items = v.items || {};
+      const scripts = Object.keys(items).filter(k => items[k].type === 'script');
+      const cur = this.state.activeId;
+      const keep = (wantId && items[wantId] && items[wantId].type === 'script') ? wantId
+        : (items[cur] && items[cur].type === 'script' ? cur : scripts[0]);
+      const same = this.state.activeId === keep;
+      this.setState({
+        viewer: { ...v, token, items, raws: v.raw || {}, role: role || v.role, granted: !!role },
+        activeId: keep, mode: this.state.mode === 'raw' ? 'raw' : 'normal'
+      }, () => { if (!same) this.watchDone(); });
+    }, () => this.setState({ viewer: { missing: true, token } }));
+  }
+
+  save = () => {
+    clearTimeout(this._saveT);
+    this._saveT = setTimeout(() => {
+      try {
+        localStorage.setItem(KEY, JSON.stringify({
+          v: SCHEMA, items: this.state.items, raws: this.state.raws, doneMap: this.state.doneMap,
+          activeId: this.state.activeId, openFolders: this.state.openFolders,
+          settings: this.state.settings, tags: this.state.tags,
+          activeLine: this.state.settings.rememberLine ? this.state.activeLine : null
+        }));
+      } catch (e) { }
+    }, 260);
+    if (this.state.cloud && this.state.settings.autoRefreshShare !== false) {
+      /* look travels with the share — settings badalne pe public copy refresh */
+      clearTimeout(this._pubT);
+      this._pubT = setTimeout(() => {
+        const sh = this.state.shares || {};
+        Object.keys(sh).forEach(id => { if (sh[id] && sh[id].public && this.state.items[id]) this.writePub(id); });
+      }, 900);
+    }
+    if (this.state.cloud && this.state.settings.syncSettings !== false) {
+      clearTimeout(this._cloudT);
+      this._cloudT = setTimeout(() => {
+        const fb = fbGet(), u = this.state.user; if (!fb || !u) return;
+        fb.db.ref('users/' + u.uid + '/settings').set({ settings: this.state.settings, tags: this.state.tags }).catch(() => { });
+      }, 500);
+    }
+  };
+  flash = (msg) => { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 1800); };
+  set = (k, v) => this.setState({ settings: { ...this.state.settings, [k]: v } }, this.save);
+
+  /* ---- data access: cloud when signed in, localStorage otherwise ---- */
+  uref(p) { const fb = fbGet(), u = this.state.user; return (fb && u && this.state.cloud) ? fb.db.ref('users/' + u.uid + '/' + p) : null; }
+  putItem(id, patch) {
+    const items = { ...this.state.items, [id]: { ...(this.state.items[id] || {}), ...patch } };
+    this.setState({ items }, this.save);
+    const r = this.uref('items/' + id); if (r) r.update(patch).catch(() => { });
+  }
+  dropItem(id) {
+    const items = { ...this.state.items }; delete items[id];
+    const raws = { ...this.state.raws }; delete raws[id];
+    this.setState({ items, raws }, this.save);
+    const r = this.uref('items/' + id); if (r) r.remove().catch(() => { });
+    const r2 = this.uref('raw/' + id); if (r2) r2.remove().catch(() => { });
+  }
+  putRaw(id, md) {
+    this.setState({ raws: { ...this.state.raws, [id]: md } }, this.save);
+    const r = this.uref('raw/' + id); if (r) r.set(md).catch(() => { });
+    this.refreshPubFor(id);
+  }
+  setDone(sid, map) {
+    this.setState({ doneMap: { ...this.state.doneMap, [sid]: map } }, this.save);
+    const fb = fbGet();
+    if (fb && (this.state.cloud || this.state.viewer)) fb.db.ref('done/' + sid).set(map).catch(() => { });
+  }
+  isViewing() { return !!(this.state.viewer && !this.state.viewer.missing); }
+  /* a shared script must look exactly as its owner sees it — settings and the
+     tag registry travel with the payload and win while viewing */
+  effS() {
+    const v = this.state.viewer;
+    return (this.isViewing() && v.settings) ? { ...DEFAULTS, ...v.settings } : this.state.settings;
+  }
+  effT() {
+    const v = this.state.viewer;
+    return (this.isViewing() && v.tags) ? { ...DEFAULT_TAGS, ...v.tags } : this.state.tags;
+  }
+  role() {
+    if (this.isViewing()) return this.state.viewer.role || 'viewer';
+    const it = this.state.items[this.state.activeId];
+    if (it) return 'owner';
+    const g = this.grantFor(this.state.activeId);
+    return g ? g.role : 'owner';
+  }
+  grantFor(id) {
+    const g = this.state.grants || {};
+    if (g[id]) return g[id];
+    let hit = null;
+    Object.keys(g).forEach(k => { const e = g[k]; if (e && e.items && e.items[id]) hit = e; });
+    return hit;
+  }
+  can(what) {
+    const r = RANK[this.role()] || 5;
+    if (what === 'done') return true;
+    if (what === 'note') return r >= 2;
+    if (what === 'edit') return r >= 3;
+    if (what === 'share') return r >= 4 && !this.isViewing();
+    if (what === 'delete') return r >= 5 && !this.isViewing();
+    return false;
+  }
+  active = () => {
+    const id = this.state.activeId;
+    if (this.isViewing()) {
+      const v = this.state.viewer;
+      const it = (v.items || {})[id] || {};
+      return { id, name: it.name || v.name || 'Shared script', raw: (v.raws || {})[id] || '', done: (this.state.doneMap || {})[id] || {} };
+    }
+    const it = this.state.items[id];
+    if (!it) {
+      const fid = Object.keys(this.state.items).find(k => this.state.items[k].type === 'script');
+      return { id: fid || '', name: (this.state.items[fid] || {}).name || 'Untitled', raw: this.state.raws[fid] || '', done: (this.state.doneMap || {})[fid] || {} };
+    }
+    return { id, name: it.name, raw: this.state.raws[id] || '', done: (this.state.doneMap || {})[id] || {} };
+  };
+
+  parseSig() {
+    const S = this.effS(), T = this.effT();
+    let ts = '';
+    Object.keys(T).sort().forEach(k => { ts += k + ':' + T[k].render + ':' + (T[k].split || '') + ';'; });
+    return [S.scriptCol, S.visualCol, S.showExtraCols, S.keepBrokenCells, S.resolveNumRefs,
+      S.resolveTitleRefs, S.autoDetect, S.unknownAs, S.defaultSplit].join('|') + '#' + ts;
+  }
+  doc() {
+    const a = this.active();
+    const sig = a.id + '|' + a.raw.length + '|' + hashOf(a.raw) + '|' + this.parseSig();
+    if (this._sig !== sig) {
+      this._sig = sig;
+      this._doc = parseDoc(a.raw, this.effT(), this.effS());
+      const learned = this._doc.learned;
+      if (learned && Object.keys(learned).length && !this.isViewing() && this.state.settings.autoDetect) {
+        setTimeout(() => {
+          const add = {}; let any = false;
+          Object.keys(learned).forEach(k => { if (!this.state.tags[k]) { add[k] = { ...learned[k], auto: true }; any = true; } });
+          if (any) this.setState({ tags: { ...this.state.tags, ...add } }, this.save);
+        }, 0);
+      }
+    }
+    return this._doc;
+  }
+
+  allLines() {
+    const d = this.doc();
+    if (this._alSig !== this._sig) {
+      const out = [];
+      d.sections.forEach((s, si) => s.lines.forEach((l, li) => out.push({ ...l, id: 's' + si + 'r' + li, si })));
+      this._al = out; this._alSig = this._sig;
+      const known = {}; out.forEach(l => l.items.forEach(it => { known[it.k] = 1; }));
+      this._known = known;
+    }
+    return this._al;
+  }
+
+  flow() { return (this._flow && this._flow.length) ? this._flow : this.visibleLines().map(l => l.id); }
+  componentDidUpdate() { this.growMount(); }
+  growMount() {
+    const total = this._flowTotal || 0, m = this.state.mounted || 40;
+    if (m >= total || this._growT || this.state.mode !== 'normal') return;
+    /* small chunks with a breath between them: each one lays out in a frame or
+       two instead of collapsing 200 rows of layout into a single stall */
+    this._growT = setTimeout(() => {
+      this._growT = 0;
+      this.setState({ mounted: Math.min(total, (this.state.mounted || 40) + 25) });
+    }, 45);
+  }
+  step(dir) {
+    const ids = this.flow();
+    if (!ids.length) return;
+    const i = ids.indexOf(this.state.activeLine);
+    const ni = Math.max(0, Math.min(ids.length - 1, i < 0 ? 0 : i + dir));
+    const id = ids[ni];
+    this.setState({ activeLine: id }, () => { this.save(); this.scrollTo('line-' + id); });
+  }
+  scrollTo(domId, retry) {
+    const box = document.getElementById('scrollmain'); const el = document.getElementById(domId);
+    if (!box) return;
+    if (!el) {
+      if (retry) return;
+      /* target sits past the mounted edge — pull it in, then jump */
+      const id = domId.indexOf('line-') === 0 ? domId.slice(5) : null;
+      const i = id ? (this._flow || []).indexOf(id) : -1;
+      if (i >= 0) this.setState({ mounted: i + 70 }, () => setTimeout(() => this.scrollTo(domId, true), 60));
+      return;
+    }
+    const top = el.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop - 70;
+    box.scrollTo({ top, behavior: 'smooth' });
+    setTimeout(() => { this.adjustWindow(); this.checkOffScreen(); }, 420);
+  }
+  haystack(l) {
+    if (!this._hay) this._hay = {};
+    if (this._haySig !== this._sig) { this._hay = {}; this._haySig = this._sig; }
+    if (this._hay[l.id] === undefined) {
+      this._hay[l.id] = (l.text + ' ' + l.items.map(it =>
+        it.k + ' ' + (it.body || '') + ' ' + (it.chips || []).join(' ') + ' ' + (it.links || []).map(x => x.t).join(' ')
+      ).join(' ')).toLowerCase();
+    }
+    return this._hay[l.id];
+  }
+  visibleLines() {
+    const all = this.allLines(), a = this.active();
+    const q = this.state.query.trim().toLowerCase();
+    let f = this.state.filter;
+    if (f !== 'all' && f !== 'pending' && f !== 'done' && !this._known[f]) f = 'all';
+    const doneKeys = Object.keys(a.done).sort().join(',');
+    const sig = this._sig + '|' + q + '|' + f + '|' + doneKeys;
+    if (this._vlSig === sig) return this._vl;
+    const out = all.filter(l => {
+      if (f === 'pending' && a.done[l.id]) return false;
+      if (f === 'done' && !a.done[l.id]) return false;
+      if (f !== 'all' && f !== 'pending' && f !== 'done' && !l.items.some(it => it.k === f)) return false;
+      if (q && this.haystack(l).indexOf(q) < 0) return false;
+      return true;
+    });
+    this._vl = out; this._vlSig = sig;
+    return out;
+  }
+
+  toggleDone(id) {
+    const a = this.active(); const done = { ...a.done };
+    if (done[id]) delete done[id]; else done[id] = true;
+    this.setDone(a.id, done);
+  }
+  copy(txt, label, tag) {
+    const s = this.state.settings;
+    let out = txt;
+    if (s.copyFormat === 'quoted') out = '"' + txt + '"';
+    if (s.copyFormat === 'prefixed') out = '[' + (tag || label || 'SCRIPT') + '] ' + txt;
+    if (navigator.clipboard) navigator.clipboard.writeText(out).catch(() => { });
+    this.flash((label ? label + ': ' : '') + (out.length > 70 ? out.slice(0, 70) + '…' : out));
+  }
+  joiner() { const j = this.effS().copyJoin; return j === 'newline' ? '\n' : j === 'pipe' ? ' | ' : ', '; }
+
+  onClick = (e) => {
+    const S = this.state.settings;
+    const g = (sel) => e.target.closest('[' + sel + ']');
+    let el;
+    const lineOf = (n) => { const p = n.closest('[data-line]'); if (p) { const id = p.getAttribute('data-line'); if (id !== this.state.activeLine) this.setState({ activeLine: id }, this.save); } };
+    if ((el = g('data-chip'))) {
+      const v = el.getAttribute('data-chip');
+      lineOf(el);
+      if (S.chipClick !== 'search') this.copy(v, '', el.getAttribute('data-tag'));
+      if (S.chipClick !== 'copy') window.open(searchUrl(S.searchEngine, v), '_blank', 'noopener');
+      return;
+    }
+    if ((el = g('data-copy'))) { lineOf(el); this.copy(el.getAttribute('data-copy'), '', el.getAttribute('data-tag')); return; }
+    if ((el = g('data-done'))) { this.toggleDone(el.getAttribute('data-done')); return; }
+    if ((el = g('data-copysec'))) {
+      const si = +el.getAttribute('data-copysec');
+      const terms = [];
+      this.doc().sections[si].lines.forEach(l => l.items.forEach(it => { if (it.render === 'chips') terms.push(...it.chips); }));
+      this.copy(terms.join(this.joiner()), terms.length + ' terms'); return;
+    }
+    if ((el = g('data-section'))) {
+      const k = el.getAttribute('data-section');
+      const cur = this.state.collapsed[k] !== undefined ? this.state.collapsed[k] : this.effS().collapseDefault;
+      this._h = {};
+      this.setState({ collapsed: { ...this.state.collapsed, [k]: !cur } }, () => setTimeout(() => this.windowFromScroll(), 30));
+      return;
+    }
+    if ((el = g('data-goto'))) { this.scrollTo('sec-' + el.getAttribute('data-goto')); return; }
+    if ((el = g('data-filter'))) { this.setState({ filter: el.getAttribute('data-filter'), win: { s: 0, e: 28 }, mounted: 40 }, () => setTimeout(() => this.adjustWindow(), 60)); return; }
+    if ((el = g('data-mode'))) { this.setMode(el.getAttribute('data-mode')); return; }
+    if ((el = g('data-tab'))) { this.setState({ tab: el.getAttribute('data-tab') }); return; }
+    if ((el = g('data-toggle'))) {
+      const k = el.getAttribute('data-toggle');
+      if (k === 'collapseAll') {
+        const def = this.effS().collapseDefault;
+        const anyOpen = this.doc().sections.some((s, i) => !(this.state.collapsed[i] !== undefined ? this.state.collapsed[i] : def));
+        const c = {}; this.doc().sections.forEach((s, i) => { c[i] = anyOpen; });
+        this._h = {};
+        this.setState({ collapsed: c }, () => setTimeout(() => this.windowFromScroll(), 30));
+        return;
+      }
+      this.set(k, !this.state.settings[k]); return;
+    }
+    if ((el = g('data-set-color'))) { this.set(el.getAttribute('data-set-color'), el.getAttribute('data-val')); return; }
+    if ((el = g('data-tagcolor'))) {
+      const n = el.getAttribute('data-tag'); const c = el.getAttribute('data-tagcolor');
+      this.setState({ tags: { ...this.state.tags, [n]: { ...this.state.tags[n], color: c, auto: false } } }, this.save); return;
+    }
+    if ((el = g('data-tagdel'))) {
+      const n = el.getAttribute('data-tagdel'); const t = { ...this.state.tags }; delete t[n];
+      this.setState({ tags: t }, this.save); return;
+    }
+    if ((el = g('data-sidetab'))) {
+      const tb = el.getAttribute('data-sidetab');
+      this.setState({ sideTab: tb, showTrash: tb === 'files' ? this.state.showTrash : false }); return;
+    }
+    if ((el = g('data-mnav'))) {
+      const n = el.getAttribute('data-mnav');
+      if (n === 'files') return this.setState({ drawer: true, sideTab: 'files' });
+      if (n === 'review') return this.setState({ drawer: true, sideTab: 'review' });
+      if (n === 'raw') return this.setMode('raw');
+      if (n === 'settings') return this.setMode('settings');
+      return this.setMode('normal');
+    }
+    if ((el = g('data-menu'))) {
+      const id = el.getAttribute('data-menu'); const r = el.getBoundingClientRect();
+      const isFolder = (this.state.items[id] || {}).type === 'folder';
+      const h = isFolder ? 240 : 300;
+      this.setState({
+        menu: {
+          id, x: Math.max(8, Math.min(r.left - 150, window.innerWidth - 210)),
+          y: Math.max(8, Math.min(r.bottom + 4, window.innerHeight - h))
+        }
+      }); return;
+    }
+    if ((el = g('data-mact'))) { this.menuAct(el.getAttribute('data-mact')); return; }
+    if ((el = g('data-row'))) {
+      const id = el.getAttribute('data-row');
+      if (this.isViewing()) {
+        const vit = (this.state.viewer.items || {})[id];
+        if (vit) {
+          if (vit.type === 'folder') { const o = { ...this.state.openFolders }; if (o[id]) delete o[id]; else o[id] = true; this.setState({ openFolders: o }); return; }
+          this._h = {};
+          this.setState({ activeId: id, activeLine: null, draft: null, collapsed: {}, filter: 'all', query: '', win: { s: 0, e: 28 }, mounted: 40, drawer: false, mode: 'normal' }, () => { this.watchDone(); this.windowFromScroll(); });
+          return;
+        }
+      }
+      const it = this.state.items[id];
+      if (!it) {
+        const gr = (this.state.grants || {})[id];
+        if (gr) this.openGrant(gr, id);
+        return;
+      }
+      if (it.type === 'folder') { const o = { ...this.state.openFolders }; if (o[id]) delete o[id]; else o[id] = true; this.setState({ openFolders: o }, this.save); return; }
+      if (location.hash) location.hash = '';
+      this._h = {};
+      this.setState({ activeId: id, viewer: null, viewerToken: null, activeLine: null, filter: 'all', query: '', draft: null, collapsed: {}, win: { s: 0, e: 28 }, mounted: 40, drawer: false, mode: this.state.mode === 'settings' ? 'settings' : 'normal' }, () => { this.save(); this.watchDone(); setTimeout(() => this.adjustWindow(), 60); });
+      return;
+    }
+    if ((el = g('data-unshare'))) { this.removeMember(this.state.shareFor, el.getAttribute('data-unshare')); return; }
+    if ((el = g('data-stop'))) return;
+    if ((el = g('data-open'))) { this.setState({ activeId: el.getAttribute('data-open'), mode: 'normal' }, () => { this.save(); this.watchDone(); }); return; }
+    if ((el = g('data-ren'))) { this.rename(el.getAttribute('data-ren')); return; }
+    if ((el = g('data-dup'))) { this.duplicate(el.getAttribute('data-dup')); return; }
+    if ((el = g('data-del'))) { this.trash(el.getAttribute('data-del')); return; }
+    if ((el = g('data-share'))) { this.setState({ shareFor: el.getAttribute('data-share'), menu: null }); return; }
+    if ((el = g('data-act'))) { this.act(el.getAttribute('data-act')); return; }
+    if ((el = g('data-line'))) { this.setState({ activeLine: el.getAttribute('data-line') }, this.save); return; }
+  };
+
+  duplicate(id) {
+    const it = this.state.items[id]; if (!it) return;
+    const map = {}, ids = this.descendants(id);
+    ids.forEach(k => { map[k] = uid(); });
+    ids.forEach(k => {
+      const src = this.state.items[k];
+      this.putItem(map[k], {
+        type: src.type, name: k === id ? src.name + ' copy' : src.name,
+        parentId: k === id ? (src.parentId || 'root') : map[src.parentId], order: now(), createdAt: now()
+      });
+      if (src.type === 'script') this.putRaw(map[k], this.state.raws[k] || '');
+    });
+    if (it.type === 'script') this.setState({ activeId: map[id], draft: null }, () => this.watchDone());
+    else this.flash('Folder duplicated');
+  }
+  menuAct(a) {
+    const m = this.state.menu; if (!m) return;
+    const id = m.id;
+    this.setState({ menu: null });
+    if (a === 'open') { this.setState({ activeId: id, viewer: null }, () => { this.save(); this.watchDone(); }); return; }
+    if (a === 'rename') return this.rename(id);
+    if (a === 'dup') return this.duplicate(id);
+    if (a === 'share') return this.setState({ shareFor: id, shareRole: this.state.settings.defaultShareRole || 'viewer' });
+    if (a === 'trash') return this.trash(id);
+    if (a === 'restore') return this.restore(id);
+    if (a === 'purge') return this.purge(id);
+    if (a === 'newIn') return this.create('script', id);
+    if (a === 'newFolderIn') return this.create('folder', id);
+    if (a === 'export') { const it = this.state.items[id]; return this.download(it.name + '.md', this.state.raws[id] || '', 'text/markdown'); }
+    if (a === 'moveRoot') return this.putItem(id, { parentId: 'root' });
+    if (a && a.indexOf('move:') === 0) return this.putItem(id, { parentId: a.slice(5) });
+  }
+  create(type, parentId) {
+    const id = uid();
+    const pid = parentId && this.state.items[parentId] && this.state.items[parentId].type === 'folder' ? parentId : 'root';
+    const name = type === 'folder' ? 'New folder' : 'Untitled script';
+    this.putItem(id, { type, name, parentId: pid, order: now(), createdAt: now() });
+    if (type === 'script') {
+      this.putRaw(id, '# New section\n\n| Script Line | Visual Guide |\n|---|---|\n|  |  |\n');
+      this.setState({ activeId: id, mode: 'raw', draft: '# New section\n\n| Script Line | Visual Guide |\n|---|---|\n|  |  |\n', viewer: null }, () => this.watchDone());
+    } else {
+      this.setState({ openFolders: { ...this.state.openFolders, [pid]: true, [id]: true } }, this.save);
+      setTimeout(() => this.rename(id), 60);
+    }
+  }
+  setMode(m) {
+    if (m === 'raw') { this.setState({ mode: 'raw', draft: this.state.draft === null ? this.active().raw : this.state.draft }); return; }
+    if (this.state.mode === 'raw' && this.state.draft !== null && this.state.draft !== this.active().raw) this.flash('Unsaved raw changes rakhe hue hain — Save & render dabayein');
+    this.setState({ mode: m, win: { s: 0, e: 28 }, mounted: 40 }, () => { if (m === 'normal') setTimeout(() => this.adjustWindow(), 60); });
+  }
+  rename(id) {
+    const it = this.state.items[id]; if (!it) return;
+    const n = window.prompt((it.type === 'folder' ? 'Folder' : 'Script') + ' name', it.name);
+    if (n && n.trim()) { this.putItem(id, { name: n.trim(), updatedAt: now() }); this.refreshPubFor(id); }
+  }
+  descendants(id) {
+    const out = [id], items = this.state.items;
+    let added = true;
+    while (added) {
+      added = false;
+      Object.keys(items).forEach(k => { if (out.indexOf(k) < 0 && out.indexOf(items[k].parentId) >= 0) { out.push(k); added = true; } });
+    }
+    return out;
+  }
+  trash(id) {
+    const it = this.state.items[id]; if (!it) return;
+    if (this.state.settings.confirmTrash && !window.confirm('“' + it.name + '” trash me bhej dein?')) return;
+    const ids = this.descendants(id);
+    const items = { ...this.state.items };
+    ids.forEach(k => { items[k] = { ...items[k], trashed: true, trashedAt: now() }; });
+    this.setState({ items }, this.save);
+    ids.forEach(k => { const r = this.uref('items/' + k); if (r) r.update({ trashed: true, trashedAt: now() }).catch(() => { }); });
+    if (ids.indexOf(this.state.activeId) >= 0) {
+      const nxt = Object.keys(items).find(k => items[k].type === 'script' && !items[k].trashed);
+      this.setState({ activeId: nxt || '' }, () => this.watchDone());
+    }
+    this.flash('Trash me bhej diya');
+  }
+  restore(id) {
+    if (!this.state.items[id]) return;
+    const ids = this.descendants(id);
+    const items = { ...this.state.items };
+    ids.forEach(k => { items[k] = { ...items[k], trashed: false }; });
+    let pid = items[id].parentId || 'root';
+    if (pid !== 'root' && (!items[pid] || items[pid].trashed)) items[id] = { ...items[id], parentId: 'root' };
+    this.setState({ items }, this.save);
+    ids.forEach(k => { const r = this.uref('items/' + k); if (r) r.update({ trashed: false, parentId: items[k].parentId }).catch(() => { }); });
+  }
+  purge(id) {
+    const it = this.state.items[id]; if (!it) return;
+    if (!window.confirm('“' + it.name + '” hamesha ke liye delete? Wapas nahi aayega.')) return;
+    this.descendants(id).forEach(k => this.dropItem(k));
+    this.unshare(id);
+  }
+  /* ---- sharing ---- */
+  shareRec(id) { return (this.state.shares || {})[id] || null; }
+  ensureToken(id) {
+    const ex = this.shareRec(id);
+    if (ex && ex.token) return ex.token;
+    const t = tok();
+    const rec = { token: t, public: !!this.state.settings.sharePublicByDefault, members: {}, createdAt: now() };
+    this.setState({ shares: { ...this.state.shares, [id]: rec } });
+    const r = this.uref('shares/' + id); if (r) r.set(rec).catch(() => { });
+    const fb = fbGet();
+    if (fb && this.state.user) fb.db.ref('shares/' + t).set({ ownerUid: this.state.user.uid, itemId: id, type: (this.state.items[id] || {}).type || 'script', createdAt: now() }).catch(() => { });
+    return t;
+  }
+  pubPayload(id) {
+    const items = {}, raw = {};
+    const ids = this.descendants(id);
+    ids.forEach(k => {
+      const it = this.state.items[k]; if (!it || it.trashed) return;
+      items[k] = { type: it.type, name: it.name, parentId: k === id ? 'root' : it.parentId, order: it.order || 0 };
+      if (it.type === 'script') raw[k] = this.state.raws[k] || '';
+    });
+    return {
+      ownerUid: (this.state.user || {}).uid || '',
+      ownerName: (this.state.user || {}).displayName || (this.state.user || {}).email || '',
+      type: (this.state.items[id] || {}).type || 'script',
+      name: (this.state.items[id] || {}).name || '',
+      items, raw, settings: this.state.settings, tags: this.state.tags, updatedAt: now()
+    };
+  }
+  pubHash(id) { const p = this.pubPayload(id); return hashOf(JSON.stringify(p.items) + JSON.stringify(p.raw) + JSON.stringify(p.settings) + JSON.stringify(p.tags)); }
+  writePub(id) {
+    const fb = fbGet(); if (!fb || !this.state.cloud) { this.flash('Sharing ke liye sign in karein'); return null; }
+    const t = this.ensureToken(id);
+    fb.db.ref('pub/' + t).set(this.pubPayload(id)).catch(() => { });
+    const stamps = { ...(this._stamps || {}) }; stamps[id] = this.pubHash(id); this._stamps = stamps;
+    return t;
+  }
+  refreshPubFor(id) {
+    if (!this.state.settings.autoRefreshShare) return;
+    const rec = this.shareRec(id);
+    const owner = Object.keys(this.state.shares || {}).find(k => {
+      const r = this.state.shares[k];
+      return r && r.public && (k === id || this.descendants(k).indexOf(id) >= 0);
+    });
+    if (rec && rec.public) this.writePub(id);
+    else if (owner) this.writePub(owner);
+  }
+  togglePublic(id) {
+    const rec = this.shareRec(id) || {};
+    const on = !rec.public;
+    const t = on ? this.writePub(id) : (rec.token || this.ensureToken(id));
+    if (!t) return;
+    const next = { ...rec, token: t, public: on };
+    this.setState({ shares: { ...this.state.shares, [id]: next } });
+    const r = this.uref('shares/' + id); if (r) r.update({ public: on, token: t }).catch(() => { });
+    const fb = fbGet();
+    if (fb && !on) fb.db.ref('pub/' + t).remove().catch(() => { });
+    this.flash(on ? 'Public link on' : 'Public link off');
+  }
+  invite(id, email, role) {
+    const fb = fbGet();
+    if (!fb || !this.state.cloud) { this.flash('Sharing ke liye sign in karein'); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { this.flash('Sahi email likhein'); return; }
+    const t = this.writePub(id);
+    const k = ekey(email);
+    const rec = this.shareRec(id) || { token: t, public: false, members: {} };
+    const members = { ...(rec.members || {}), [k]: { email: email.trim().toLowerCase(), role } };
+    this.setState({ shares: { ...this.state.shares, [id]: { ...rec, token: t, members } }, shareEmail: '' });
+    const r = this.uref('shares/' + id); if (r) r.update({ token: t, members }).catch(() => { });
+    fb.db.ref('grants/' + k + '/' + id).set({
+      ownerUid: this.state.user.uid, ownerEmail: this.state.user.email || '', role, token: t,
+      name: (this.state.items[id] || {}).name || '', type: (this.state.items[id] || {}).type || 'script', at: now()
+    }).catch(() => { });
+    this.flash('Invited ' + email + ' as ' + ROLE_SHORT[role]);
+  }
+  setMemberRole(id, k, role) {
+    const rec = this.shareRec(id); if (!rec) return;
+    const members = { ...(rec.members || {}) };
+    if (!members[k]) return;
+    members[k] = { ...members[k], role };
+    this.setState({ shares: { ...this.state.shares, [id]: { ...rec, members } } });
+    const r = this.uref('shares/' + id); if (r) r.update({ members }).catch(() => { });
+    const fb = fbGet(); if (fb) fb.db.ref('grants/' + k + '/' + id + '/role').set(role).catch(() => { });
+  }
+  removeMember(id, k) {
+    const rec = this.shareRec(id); if (!rec) return;
+    const members = { ...(rec.members || {}) }; delete members[k];
+    this.setState({ shares: { ...this.state.shares, [id]: { ...rec, members } } });
+    const r = this.uref('shares/' + id); if (r) r.child('members/' + k).remove().catch(() => { });
+    const fb = fbGet(); if (fb) fb.db.ref('grants/' + k + '/' + id).remove().catch(() => { });
+  }
+  unshare(id) {
+    const rec = this.shareRec(id); if (!rec) return;
+    const fb = fbGet();
+    if (fb && rec.token) { fb.db.ref('pub/' + rec.token).remove().catch(() => { }); fb.db.ref('shares/' + rec.token).remove().catch(() => { }); }
+    Object.keys(rec.members || {}).forEach(k => { if (fb) fb.db.ref('grants/' + k + '/' + id).remove().catch(() => { }); });
+    const shares = { ...this.state.shares }; delete shares[id];
+    this.setState({ shares });
+    const r = this.uref('shares/' + id); if (r) r.remove().catch(() => { });
+  }
+  openGrant(g, id) {
+    if (!g || !g.token) { this.flash('Is share ka link nahi mila'); return; }
+    this.watchPub(g.token, g.role || 'viewer', id);
+  }
+
+  download(name, text, type) {
+    const b = new Blob([text], { type: type || 'text/plain' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+  act(k) {
+    const a = this.active();
+    if (k === 'newScript') return this.create('script', this.state.items[this.state.activeId] ? this.state.items[this.state.activeId].parentId : 'root');
+    if (k === 'newFolder') return this.create('folder', 'root');
+    if (k === 'toggleTrash') return this.setState({ showTrash: !this.state.showTrash, sideTab: 'files' });
+    if (k === 'closeOverlay') return this.setState({ menu: null, shareFor: null });
+    if (k === 'openShare') return this.setState({ shareFor: a.id, shareRole: this.state.settings.defaultShareRole || 'viewer' });
+    if (k === 'togglePublic') return this.togglePublic(this.state.shareFor);
+    if (k === 'refreshShare') { this.writePub(this.state.shareFor); this.flash('Public copy updated'); return; }
+    if (k === 'invite') return this.invite(this.state.shareFor, this.state.shareEmail, this.state.shareRole);
+    if (k === 'signIn') {
+      const fb = fbGet();
+      if (!fb) { this.setState({ loginError: 'Firebase load nahi ho saka. Internet check karein.' }); return; }
+      this.setState({ loginBusy: true, loginError: '' });
+      const p = new fb.ns.auth.GoogleAuthProvider();
+      p.setCustomParameters({ prompt: 'select_account' });
+      fb.auth.signInWithPopup(p)
+        .then(() => this.setState({ loginBusy: false, loginOpen: false, skippedLogin: false, drawer: false }))
+        .catch(e => {
+          const c = (e && e.code) || '';
+          const msg = c === 'auth/popup-closed-by-user' ? 'Sign-in window band ho gayi.'
+            : c === 'auth/unauthorized-domain' ? 'Ye domain Firebase me authorized nahi. Console → Authentication → Settings → Authorized domains.'
+              : c === 'auth/operation-not-allowed' ? 'Google sign-in Firebase me enable nahi hai.'
+                : c === 'auth/popup-blocked' ? 'Browser ne popup rok diya — is site ke liye popups allow karein.'
+                  : c === 'auth/network-request-failed' ? 'Network nahi mila. Connection check karein.'
+                    : 'Sign-in fail: ' + (c || 'error');
+          this.setState({ loginBusy: false, loginError: msg });
+        });
+      return;
+    }
+    if (k === 'showLogin') return this.setState({ loginOpen: true, loginError: '', drawer: false });
+    if (k === 'skipLogin') return this.setState({ loginOpen: false, skippedLogin: true });
+    if (k === 'drawer') return this.setState({ drawer: !this.state.drawer });
+    if (k === 'closeDrawer') return this.setState({ drawer: false });
+    if (k === 'signOut') {
+      const fb = fbGet(); if (fb) fb.auth.signOut();
+      this.detach();
+      this.setState({ menu: null, grants: {}, shares: {}, cloud: false, skippedLogin: false, loginOpen: false, drawer: false });
+      return;
+    }
+    if (k === 'account') { this.setState({ menu: { id: '@account', x: window.innerWidth - 222, y: 46 } }); return; }
+    if (k === 'exitShare') {
+      location.hash = '';
+      if (this._pubRef) { try { this._pubRef.off(); } catch (e) { } this._pubRef = null; }
+      this._h = {};
+      this.setState({ viewer: null, viewerToken: null, draft: null, activeLine: null, win: { s: 0, e: 28 }, mounted: 40 }, () => {
+        const s = Object.keys(this.state.items).find(x => this.state.items[x].type === 'script' && !this.state.items[x].trashed);
+        this.setState({ activeId: s }, () => this.watchDone());
+      });
+      return;
+    }
+    if (k === 'rename') return this.rename(a.id);
+    if (k === 'delete') return this.trash(a.id);
+    if (k === 'theme') {
+      if (this.isViewing()) {
+        const v = this.state.viewer, cur = this.effS().theme;
+        this.setState({ viewer: { ...v, settings: { ...(v.settings || {}), theme: cur === 'dark' ? 'light' : 'dark' } } });
+        return;
+      }
+      return this.set('theme', this.state.settings.theme === 'dark' ? 'light' : 'dark');
+    }
+    if (k === 'clearq') return this.setState({ query: '' });
+    if (k === 'save') {
+      if (this.isViewing()) {
+        if (!this.can('edit')) { this.flash('Aap ke paas edit ki ijazat nahi'); return; }
+        const fb = fbGet(); const v = this.state.viewer;
+        if (fb) fb.db.ref('pub/' + v.token + '/raw/' + a.id).set(this.state.draft).catch(() => { });
+        this.setState({ viewer: { ...v, raws: { ...v.raws, [a.id]: this.state.draft } }, mode: 'normal' }, () => this.flash('Saved to shared copy'));
+        return;
+      }
+      this.putRaw(a.id, this.state.draft); this.setState({ mode: 'normal' }, () => this.flash('Saved & re-rendered')); return;
+    }
+    if (k === 'revert') return this.setState({ draft: a.raw });
+    if (k === 'jump') {
+      const id = this.state.activeLine;
+      if (id && this.flow().indexOf(id) < 0) {
+        /* active line ka section band hai — pehle kholo, phir jump */
+        const si = String(id).replace(/^s(\d+)r.*$/, '$1');
+        this.setState({ collapsed: { ...this.state.collapsed, [si]: false } }, () => setTimeout(() => this.scrollTo('line-' + id), 60));
+        return;
+      }
+      return this.scrollTo('line-' + id);
+    }
+    if (k === 'markAll') { const done = {}; this.allLines().forEach(l => done[l.id] = true); this.setDone(a.id, done); return; }
+    if (k === 'clearDone') { this.setDone(a.id, {}); this.flash('Cleared'); return; }
+    if (k === 'emptyTrash') {
+      const ids = Object.keys(this.state.items).filter(x => this.state.items[x].trashed);
+      if (!ids.length) { this.flash('Trash khali hai'); return; }
+      if (!window.confirm(ids.length + ' item hamesha ke liye delete?')) return;
+      ids.forEach(x => { this.unshare(x); this.dropItem(x); }); return;
+    }
+    if (k === 'copyAllTerms' || k === 'exportTerms') {
+      const terms = []; this.allLines().forEach(l => l.items.forEach(it => { if (it.render === 'chips') terms.push(...it.chips); }));
+      if (k === 'exportTerms') this.download(a.name + ' — search terms.txt', terms.join('\n'));
+      else this.copy(terms.join(this.joiner()), terms.length + ' terms');
+      return;
+    }
+    if (k === 'exportMd') return this.download(a.name + '.md', a.raw, 'text/markdown');
+    if (k === 'exportSettings') return this.download('alamza-settings.json', JSON.stringify({ settings: this.state.settings, tags: this.state.tags }, null, 2), 'application/json');
+    if (k === 'resetSettings') { this.setState({ settings: { ...DEFAULTS }, tags: { ...DEFAULT_TAGS } }, this.save); this.flash('Settings reset'); return; }
+    if (k === 'addTag') {
+      const n = (this.state.newTag || '').trim().toUpperCase();
+      if (!n) return;
+      this.setState({ tags: { ...this.state.tags, [n]: { render: 'prose', color: 'slate', split: 'auto' } }, newTag: '' }, this.save); return;
+    }
+  }
+  onSet = (e) => {
+    const k = e.target.getAttribute('data-set'); if (!k) return;
+    let v = e.target.value;
+    if (typeof DEFAULTS[k] === 'number') v = parseFloat(v);
+    this.set(k, v);
+  };
+  onTagSet = (e) => {
+    const n = e.target.getAttribute('data-tag'); const f = e.target.getAttribute('data-tagset');
+    this.setState({ tags: { ...this.state.tags, [n]: { ...this.state.tags[n], [f]: e.target.value, auto: false } } }, this.save);
+  };
+  onQuery = (e) => this.setState({ query: e.target.value, win: { s: 0, e: 28 }, mounted: 40 }, () => setTimeout(() => this.adjustWindow(), 60));
+  onNewTag = (e) => this.setState({ newTag: e.target.value });
+  onDraft = (e) => this.setState({ draft: e.target.value });
+  onShareEmail = (e) => this.setState({ shareEmail: e.target.value });
+  onShareRole = (e) => this.setState({ shareRole: e.target.value });
+  onMemberRole = (e) => this.setMemberRole(this.state.shareFor, e.target.getAttribute('data-member'), e.target.value);
+  onSelectAll = (e) => { try { e.target.select(); } catch (x) { } };
+  onPickScript = (e) => this.setState({ activeId: e.target.value, activeLine: null }, () => { this.save(); this.watchDone(); });
+  onUpload = (e) => {
+    const files = Array.from(e.target.files || []); if (!files.length) return;
+    const parent = this.state.items[this.state.activeId] ? this.state.items[this.state.activeId].parentId : 'root';
+    let last = null;
+    files.forEach(f => {
+      const r = new FileReader();
+      r.onload = () => {
+        const id = uid(); last = id;
+        this.putItem(id, { type: 'script', name: f.name.replace(/\.[^.]+$/, ''), parentId: parent, order: now(), createdAt: now() });
+        this.putRaw(id, String(r.result));
+        this.setState({ activeId: id, mode: 'normal', viewer: null }, () => this.watchDone());
+        this.flash('Loaded ' + f.name);
+      };
+      r.readAsText(f);
+    });
+    e.target.value = '';
+  };
+  imgErr = (e) => { e.target.style.visibility = 'hidden'; };
+
+  renderVals() {
+    const S = this.effS(), dark = S.theme === 'dark';
+    const t = tokens({ ...S, _mobile: this.state.vw < 1080, _narrow: this.state.vw < 760 });
+    const a = this.active(), doc = this.doc();
+    const vis = this.visibleLines(), visIds = {}; vis.forEach(l => visIds[l.id] = 1);
+    const allIds = this.allLines().map(l => l.id);
+    const doneCount = allIds.filter(id => a.done[id]).length;
+    const chipR = S.chipShape === 'pill' ? '20px' : S.chipShape === 'square' ? '3px' : '6px';
+    const col = k => (PALETTE[k] || PALETTE.slate)[dark ? 0 : 1];
+    const soft = k => col(k) + (dark ? '26' : '16');
+    const dim = String(1 - S.dimAmount / 100);
+    const activeId = this.state.activeLine;
+
+    const activeSi = activeId ? +String(activeId).replace(/^s(\d+)r.*$/, '$1') : -1;
+    const dispSig = [S.labelStyle, S.chipClick, S.copyJoin, S.sourcesPosition, S.theme, S.paper, S.accent, S.showFavicons, this._sig].join('|');
+    if (this._dispSig !== dispSig) { this._itemCache = {}; this._dispSig = dispSig; }
+    const itemsFor = (l) => {
+      if (this._itemCache[l.id]) return this._itemCache[l.id];
+      const items = [];
+      const src = [];
+      l.items.forEach(it => {
+        const o = {
+          label: it.k, color: col(it.color), soft: soft(it.color),
+          pillBg: S.labelStyle === 'pill' ? soft(it.color) : 'transparent',
+          pillBd: S.labelStyle === 'outline' ? '1px solid ' + col(it.color) + '66' : 'none',
+          isProse: it.render === 'prose', isChips: it.render === 'chips',
+          isOverlay: it.render === 'overlay', isLinks: it.render === 'links',
+          body: it.body || '', chips: (it.chips || []).map(v => ({ v, tag: it.k, hint: S.chipClick === 'copy' ? 'Click to copy' : 'Click to search' })),
+          links: (it.links || []).map(x => ({
+            ...x, hasUrl: !!x.u, noUrl: !x.u, hasFav: !!(x.d && S.showFavicons),
+            fav: x.d ? 'https://www.google.com/s2/favicons?domain=' + x.d + '&sz=64' : ''
+          })),
+          copyable: it.render === 'chips',
+          all: (it.chips || []).join(this.joiner())
+        };
+        if (o.isLinks && S.sourcesPosition === 'bottom') src.push(o); else items.push(o);
+      });
+      const out = { ordered: items.concat(src), terms: l.items.filter(x => x.render === 'chips').reduce((m, x) => m.concat(x.chips), []) };
+      this._itemCache[l.id] = out;
+      return out;
+    };
+
+    /* one decorated object per line, reused until that line's own state changes —
+       without this every setState rebuilds all 201 line prop trees */
+    if (this._decSig !== dispSig + '|' + S.focusMode + '|' + S.dimAmount + '|' + S.activeStyle + '|' + S.cardBorders + '|' + S.cardShadow) {
+      this._dec = {};
+      this._decSig = dispSig + '|' + S.focusMode + '|' + S.dimAmount + '|' + S.activeStyle + '|' + S.cardBorders + '|' + S.cardShadow + '|' + S.viewStyle + '|' + S.docZebra;
+    }
+    const decorate = (l) => {
+      const on = activeId === l.id, done = !!a.done[l.id];
+      const anyActive = !!activeId;
+      const ck = l.id + '|' + (on ? 1 : 0) + '|' + (done ? 1 : 0) + '|' + (anyActive ? 1 : 0);
+      if (this._dec[ck]) return this._dec[ck];
+      const { ordered, terms } = itemsFor(l);
+      const docV = S.viewStyle === 'doc';
+      let ring = 'none', headBg = 'transparent';
+      /* a table always shows its grid — the borders toggle is a cards-only choice */
+      let bd = (docV || S.cardBorders) ? 'var(--border)' : 'transparent';
+      let rowBg = (docV && S.docZebra && l.n % 2 === 0) ? t.panel : t.surface;
+      if (on) {
+        if (S.activeStyle === 'ring') { ring = '0 0 0 1.5px ' + t.accent; headBg = t.accentSoft; }
+        else if (S.activeStyle === 'tint') headBg = t.accentSoft;
+        else if (S.activeStyle === 'band') { headBg = t.accent + (dark ? '30' : '22'); ring = '0 0 0 1.5px ' + t.accent; bd = t.accent; }
+        else { bd = t.accent; }
+      } else if (S.cardShadow && !docV) ring = t.shadow;
+      const out = {
+        id: l.id, domId: 'line-' + l.id, n: l.n, text: l.text,
+        isVideo: !!l.video, range: l.range ? ' · ' + l.range : '',
+        hasTranscript: !!(l.transcript && S.showTranscript), transcript: l.transcript,
+        hasGuide: ordered.length > 0, items: ordered,
+        allTerms: terms.join(this.joiner()),
+        checkBorder: done ? '#3FA98C' : (dark ? '#3A3A41' : '#D6D2CA'),
+        checkBg: done ? '#3FA98C' : 'transparent', checkTick: done ? (dark ? '#111114' : '#FFFFFF') : 'transparent',
+        ring, headBg, bd, rowBg,
+        /* only the active row needs to lift above its neighbours' borders —
+           200 stacking contexts would cost a full style pass each */
+        pos: on ? 'relative' : 'static', z: on ? '3' : 'auto',
+        dim: (S.focusMode && anyActive && !on) ? dim : '1'
+      };
+      this._dec[ck] = out;
+      return out;
+    };
+
+    /* FLOW = lines that actually reach the DOM, in DOM order (collapsed sections
+       excluded). The window indices, the spacer heights and windowFromScroll()
+       must all count the same list — mixing in collapsed lines spent the window
+       on invisible rows and left the sections below it blank. */
+    const openOf = (si) => !(this.state.collapsed[si] !== undefined ? this.state.collapsed[si] : S.collapseDefault);
+    const gapPx = parseFloat(t.gap) || 8, secGapPx = parseFloat(t.secGap) || 16;
+    const flowIds = [];
+    doc.sections.forEach((s, si) => {
+      if (!openOf(si)) return;
+      s.lines.forEach((l, li) => { const id = 's' + si + 'r' + li; if (visIds[id]) flowIds.push(id); });
+    });
+    this._flow = flowIds;
+    this._flowTotal = flowIds.length;
+    void gapPx; void secGapPx;
+    /* progressive mount: first chunk paints instantly, the rest stream in during
+       idle time and then stay mounted forever — no unmount, so scrolling can
+       never blank and no spacer geometry ever shifts under the scrollbar */
+    const cap = this.state.mounted || 40;
+    let capSet = null;
+    if (flowIds.length > cap) { capSet = {}; for (let i = 0; i < cap; i++) capSet[flowIds[i]] = 1; }
+    /* a signed-out visitor must not pay for a 200-line render behind the
+       login overlay — nothing of the script tree is built while it is up */
+    const loginUp = this.state.loginOpen || (this.state.authReady && !this.state.cloud
+      && !this.state.skippedLogin && !this.state.viewerToken && !this.isViewing());
+    const sections = loginUp ? [] : doc.sections.map((s, si) => {
+      const lines = s.lines.map((l, li) => ({ ...l, id: 's' + si + 'r' + li })).filter(l => visIds[l.id] && (!capSet || capSet[l.id]));
+      const ids = s.lines.map((l, li) => 's' + si + 'r' + li);
+      const dn = ids.filter(id => a.done[id]).length;
+      const open = !(this.state.collapsed[si] !== undefined ? this.state.collapsed[si] : S.collapseDefault);
+      /* every line stays mounted — the browser skips off-screen work through
+         content-visibility, so no spacer geometry is ever rewritten mid-scroll */
+      const slice = open ? lines : [];
+      return {
+        id: String(si), domId: 'sec-' + si, kicker: 'SEC ' + (si + 1), title: s.title || 'Untitled',
+        hasBadge: !!s.badge, badge: s.badge,
+        count: lines.length === s.lines.length ? String(s.lines.length) : lines.length + '/' + s.lines.length,
+        pct: ids.length ? Math.round(dn / ids.length * 100) + '%' : '0%',
+        open, chev: open ? 'rotate(0deg)' : 'rotate(-90deg)',
+        hasLines: s.lines.length > 0,
+        notesOnly: s.lines.length === 0,
+        hasNotes: s.notes.length > 0 && !this.state.query,
+        notes: s.notes.map(x => stripMd(x)),
+
+        lines: slice.map(l => decorate(l))
+      };
+    }).filter(s => !s.open || s.lines.length || s.hasNotes);
+
+    const allCollapsed = doc.sections.length > 0 && doc.sections.every((s, i) => !(this.state.collapsed[i] !== undefined ? !this.state.collapsed[i] : !S.collapseDefault));
+    const tagCounts = {};
+    this.allLines().forEach(l => l.items.forEach(it => { tagCounts[it.k] = (tagCounts[it.k] || 0) + 1; }));
+    const fbase = [
+      { id: 'all', label: 'All', n: String(allIds.length) },
+      { id: 'pending', label: 'Pending', n: String(allIds.length - doneCount) },
+      { id: 'done', label: 'Ready', n: String(doneCount) }
+    ].concat(Object.keys(tagCounts).sort().map(k => ({ id: k, label: k, n: String(tagCounts[k]) })));
+    const activeFilter = fbase.some(f => f.id === this.state.filter) ? this.state.filter : 'all';
+    const filters = fbase.map(f => ({
+      ...f, bg: activeFilter === f.id ? t.accent : 'transparent',
+      fg: activeFilter === f.id ? '#fff' : t.muted,
+      bd: activeFilter === f.id ? t.accent : t.border
+    }));
+
+    const tab = this.state.tab;
+    const tabDef = TABS.find(x => x.id === tab) || TABS[0];
+    const fields = (FIELDS[tab] || []).map((f, i) => {
+      const v = S[f.key];
+      const disp = f.type === 'range' ? (f.unit === '%' ? v + '%' : f.unit ? v + f.unit : String(v)) : '';
+      return {
+        key: f.key, label: f.label, hint: f.hint || '', hasHint: !!f.hint,
+        isToggle: f.type === 'toggle', isSelect: f.type === 'select', isRange: f.type === 'range',
+        isSwatch: f.type === 'swatch', isText: f.type === 'text', isAction: f.type === 'action',
+        actionLabel: f.actionLabel || 'Run',
+        value: f.type === 'action' ? '' : v, display: disp,
+        min: f.min, max: f.max, step: f.step,
+        options: (f.options || []).map(o => ({ v: o[0], l: o[1] })),
+        swatches: PKEYS.map(k => ({ key: k, hex: (PALETTE[k])[dark ? 0 : 1], ring: S[f.key] === k ? '0 0 0 2px ' + t.surface + ',0 0 0 3.5px ' + (PALETTE[k])[dark ? 0 : 1] : 'none' })),
+        tbg: v ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), tx: v ? '16px' : '2px',
+        rowBg: i % 2 ? 'transparent' : t.panel
+      };
+    });
+
+    const tagRows = Object.keys(this.state.tags).sort().map(n => {
+      const d = this.state.tags[n];
+      return {
+        name: n, render: d.render, split: d.split || 'auto', isAuto: !!d.auto, color: col(d.color),
+        swatches: PKEYS.map(k => ({ key: k, hex: (PALETTE[k])[dark ? 0 : 1], ring: d.color === k ? '0 0 0 1.5px ' + t.surface + ',0 0 0 3px ' + (PALETTE[k])[dark ? 0 : 1] : 'none' }))
+      };
+    });
+
+    const raw = this.state.draft === null ? a.raw : this.state.draft;
+    const nl = raw.split('\n').length;
+
+    /* ---------- sidebar: files / shared / trash ---------- */
+    const items = this.state.items, viewing = this.isViewing(), role = this.role();
+    const shares = this.state.shares || {}, grants = this.state.grants || {};
+    const trashIds = Object.keys(items).filter(k => items[k].trashed);
+    const pctOf = (sid) => {
+      const d = (this.state.doneMap || {})[sid] || {};
+      const n = Object.keys(d).length;
+      return n ? n + '✓' : '';
+    };
+    const rowFor = (id, depth, src, extra) => {
+      const it = src[id] || {};
+      const on = this.state.activeId === id;
+      const sh = shares[id];
+      const isF = it.type === 'folder';
+      return {
+        id, isRow: true, isHeader: false, hasMenu: true,
+        isFolder: isF, isScript: !isF, name: it.name || 'Untitled',
+        indent: (7 + depth * 13) + 'px',
+        bg: on ? t.accentSoft : 'transparent',
+        bar: on ? t.accent : 'transparent',
+        ink: on ? t.ink : (isF ? t.ink : t.prose),
+        font: (on || isF ? '600 ' : '400 ') + '11.5px/1.45 ' + t.fUI,
+        iconInk: isF ? t.accent : t.faint,
+        chev: this.state.openFolders[id] ? 'rotate(0deg)' : 'rotate(-90deg)',
+        hasTag: !!(extra && extra.tag) || !!(sh && (sh.public || Object.keys(sh.members || {}).length)),
+        tag: (extra && extra.tag) || (sh && sh.public ? 'LINK' : 'SHARED'),
+        tagBg: (extra && extra.tagBg) || t.accentSoft,
+        tagFg: (extra && extra.tagFg) || t.accent,
+        tagTitle: (extra && extra.tagTitle) || (sh && sh.public ? 'Public link on' : 'Shared with people'),
+        hasPct: !isF && S.showReadyCount && !!pctOf(id), pct: pctOf(id)
+      };
+    };
+    const nameCmp = (x, y) => {
+      const a1 = items[x], b1 = items[y];
+      if (S.foldersFirst && (a1.type === 'folder') !== (b1.type === 'folder')) return a1.type === 'folder' ? -1 : 1;
+      return (a1.name || '').localeCompare(b1.name || '');
+    };
+    const walkSrc = (src, parent, depth, out) => {
+      Object.keys(src).filter(k => !src[k].trashed && (src[k].parentId || 'root') === parent)
+        .sort((x, y) => {
+          const a1 = src[x], b1 = src[y];
+          if (S.foldersFirst && (a1.type === 'folder') !== (b1.type === 'folder')) return a1.type === 'folder' ? -1 : 1;
+          return (a1.name || '').localeCompare(b1.name || '');
+        })
+        .forEach(k => {
+          out.push(rowFor(k, depth, src));
+          if (src[k].type === 'folder' && this.state.openFolders[k]) walkSrc(src, k, depth + 1, out);
+        });
+      return out;
+    };
+    const walk = (parent, depth, out) => walkSrc(items, parent, depth, out);
+    const grantRows = Object.keys(grants).map(k => {
+      const g = grants[k] || {};
+      const on = viewing && this.state.activeId === k;
+      return {
+        id: k, isRow: true, isHeader: false, hasMenu: false,
+        isFolder: g.type === 'folder', isScript: g.type !== 'folder', name: g.name || 'Shared item',
+        indent: '7px', bg: on ? t.accentSoft : 'transparent', bar: on ? t.accent : 'transparent',
+        ink: on ? t.ink : t.prose, font: '400 11.5px/1.45 ' + t.fUI, iconInk: t.faint, chev: 'rotate(-90deg)',
+        hasTag: true, tag: String(ROLE_SHORT[g.role] || 'Viewer').toUpperCase().slice(0, 7),
+        tagBg: t.accentSoft, tagFg: t.accent, tagTitle: (g.ownerEmail || '') + ' — ' + (ROLE_HINT[g.role] || ''),
+        hasPct: false, pct: ''
+      };
+    });
+    let tree = [], treeEmptyMsg = '';
+    if (viewing) {
+      /* shared folder ke andar ki sab scripts sidebar me — warna sirf pehli khulti thi */
+      const vi = this.state.viewer.items || {};
+      tree = [{ id: '@shared', isHeader: true, isRow: false, name: 'SHARED WITH YOU' }]
+        .concat(walkSrc(vi, 'root', 0, []).map(r => ({ ...r, hasMenu: false, hasTag: false, hasPct: false })));
+      treeEmptyMsg = 'Is share me koi script nahi.';
+    } else if (this.state.showTrash) {
+      tree = trashIds.map(k => rowFor(k, 0, items, { tag: 'TRASH', tagBg: t.rule, tagFg: t.muted, tagTitle: 'In trash' }));
+      treeEmptyMsg = 'Trash khali hai.';
+    } else {
+      tree = walk('root', 0, []);
+      if (grantRows.length) tree = tree.concat([{ id: '@shared', isHeader: true, isRow: false, name: 'SHARED WITH ME' }], grantRows);
+      treeEmptyMsg = 'Koi script nahi. “+ Script” se shuru karein.';
+    }
+
+    /* ---------- context menu ---------- */
+    const mid = this.state.menu ? this.state.menu.id : null;
+    let menuItems = [], menuName = '';
+    if (mid === '@account') {
+      menuName = (this.state.user || {}).email || '';
+      menuItems = [{ id: 'signOut', label: 'Sign out', hint: '' }];
+    } else if (mid && items[mid]) {
+      const it = items[mid];
+      menuName = it.name;
+      if (it.trashed) menuItems = [{ id: 'restore', label: 'Restore' }, { divider: true }, { id: 'purge', label: 'Delete forever', danger: true }];
+      else {
+        menuItems = it.type === 'folder'
+          ? [{ id: 'newIn', label: 'New script inside' }, { id: 'newFolderIn', label: 'New folder inside' }, { divider: true }, { id: 'rename', label: 'Rename' }, { id: 'share', label: 'Share…' }]
+          : [{ id: 'open', label: 'Open' }, { id: 'rename', label: 'Rename' }, { id: 'dup', label: 'Duplicate' }, { id: 'share', label: 'Share…' }, { id: 'export', label: 'Download .md' }];
+        const folders = Object.keys(items).filter(k => items[k].type === 'folder' && !items[k].trashed && this.descendants(mid).indexOf(k) < 0);
+        if (folders.length || (it.parentId && it.parentId !== 'root')) {
+          menuItems.push({ divider: true });
+          if (it.parentId && it.parentId !== 'root') menuItems.push({ id: 'moveRoot', label: 'Move to top level' });
+          folders.filter(f => f !== it.parentId).slice(0, 6).forEach(f => menuItems.push({ id: 'move:' + f, label: 'Move to “' + items[f].name + '”' }));
+        }
+        menuItems.push({ divider: true }, { id: 'trash', label: 'Move to trash', danger: true });
+      }
+    }
+    const menu = {
+      show: !!this.state.menu, x: (this.state.menu ? this.state.menu.x : 0) + 'px', y: (this.state.menu ? this.state.menu.y : 0) + 'px',
+      name: menuName,
+      items: menuItems.map(m => ({ id: m.id || '', label: m.label || '', hint: m.hint || '', isDivider: !!m.divider, isItem: !m.divider, ink: m.danger ? '#D9451A' : t.ink }))
+    };
+
+    /* ---------- share dialog ---------- */
+    const sid = this.state.shareFor;
+    const srec = sid ? (shares[sid] || {}) : {};
+    const sitem = sid ? (items[sid] || {}) : {};
+    const stale = !!(srec.public && this._stamps && sid && this._stamps[sid] && this._stamps[sid] !== this.pubHash(sid));
+    const share = {
+      show: !!sid, name: sitem.name || '', isPublic: !!srec.public,
+      subtitle: sitem.type === 'folder' ? 'Poora folder aur uske andar ki tamam scripts share hongi.' : 'Ye script share hogi.',
+      url: srec.token ? shareUrlFor(srec.token) : '',
+      pubBg: srec.public ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), pubX: srec.public ? '16px' : '2px',
+      stale,
+      email: this.state.shareEmail, role: this.state.shareRole,
+      roles: ROLES.map(r => ({ v: r, l: ROLE_SHORT[r] })),
+      roleHint: ROLE_HINT[this.state.shareRole] || '',
+      members: Object.keys(srec.members || {}).map(k => {
+        const m = srec.members[k];
+        return { key: k, email: m.email || '', role: m.role, initial: String(m.email || '?').charAt(0).toUpperCase(), dot: t.accent };
+      }),
+      noMembers: !Object.keys(srec.members || {}).length
+    };
+
+    /* ---------- auth + banner ---------- */
+    const u = this.state.user;
+    const disp = (u && (u.displayName || u.email)) || '?';
+    const auth = {
+      signedIn: !!(u && !u.isAnonymous), signedOut: !!(this.state.authReady && (!u || u.isAnonymous)),
+      email: (u && u.email) || '', name: disp.split(' ')[0], fullName: (u && (u.displayName || u.email)) || '',
+      photo: (u && u.photoURL) || '', initial: disp.charAt(0).toUpperCase()
+    };
+    let banner = { show: false };
+    if (this.state.viewer && this.state.viewer.missing) {
+      banner = { show: true, title: 'Link kaam nahi kar raha', text: 'Ye share hata diya gaya hai ya link ghalat hai.', bg: t.accentSoft, bd: t.accent, dot: t.accent, ink: t.accent, hasAction: true, action: 'exitShare', actionLabel: 'Meri scripts' };
+    } else if (viewing) {
+      banner = {
+        show: true, title: 'Read-only shared view' + (this.state.viewer.granted ? ' · ' + ROLE_SHORT[role] : ''),
+        text: this.can('edit') ? 'Aap raw markdown badal sakte hain aur ready tick kar sakte hain.' : 'Aap sirf “ready” tick kar sakte hain — baqi kuch badla nahi ja sakta.',
+        bg: t.panel, bd: t.border, dot: t.accent, ink: t.ink, hasAction: true, action: 'exitShare', actionLabel: 'Exit'
+      };
+    }
+
+    const canEditRaw = viewing ? this.can('edit') : true;
+    const modeDefs = [['normal', 'Normal']].concat(canEditRaw ? [['raw', 'Raw']] : []).concat(viewing ? [] : [['settings', 'Settings']]);
+
+    /* ---------- responsive ---------- */
+    const vw = this.state.vw, mob = vw < 1080, midW = vw >= 860 && vw < 1180;
+    const showLogin = this.state.loginOpen || (this.state.authReady && !this.state.cloud && !this.state.skippedLogin && !this.state.viewerToken && !viewing);
+    const icon = (d, sw) => ({ __html: '<svg width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="' + (sw || 1.5) + '" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>' });
+    const navDefs = [
+      { id: 'files', label: 'Scripts', icon: icon('<path d="M2.5 4.5h4l1.2 1.5h7.8v8.5a1 1 0 0 1-1 1H3.5a1 1 0 0 1-1-1z"/>') },
+      { id: 'normal', label: 'Read', icon: icon('<path d="M3 3.5h5.2a2 2 0 0 1 2 2v9a1.6 1.6 0 0 0-1.6-1.4H3z"/><path d="M15 3.5H9.8a2 2 0 0 0-2 2v9a1.6 1.6 0 0 1 1.6-1.4H15z"/>') },
+      { id: 'review', label: 'Review', icon: icon('<path d="M3.5 9.5l3 3 8-8"/>') }
+    ].concat(canEditRaw ? [{ id: 'raw', label: 'Raw', icon: icon('<path d="M6.5 5L3 9l3.5 4M11.5 5L15 9l-3.5 4"/>') }] : [])
+      .concat(viewing ? [] : [{ id: 'settings', label: 'Settings', icon: icon('<circle cx="9" cy="9" r="2.4"/><path d="M9 2.6v1.7M9 13.7v1.7M15.4 9h-1.7M4.3 9H2.6M13.5 4.5l-1.2 1.2M5.7 12.3l-1.2 1.2M13.5 13.5l-1.2-1.2M5.7 5.7L4.5 4.5"/>') }]);
+    const navOn = (id) => {
+      if (id === 'files' || id === 'review') return this.state.drawer && this.state.sideTab === id;
+      return !this.state.drawer && this.state.mode === (id === 'normal' ? 'normal' : id);
+    };
+
+    return {
+      isMobile: mob, isDesktop: !mob,
+      minW: mob ? '0' : '1060px',
+      headH: mob ? '56px' : '52px', headPad: mob ? '12px' : '14px',
+      iconBtn: mob ? '38px' : '30px', avatarSz: mob ? '34px' : '30px',
+      tabPad: mob ? '9px 4px' : '6px 4px',
+      dialogW: mob ? '100%' : '520px',
+      jumpX: mob ? '14px' : '26px', jumpY: mob ? '78px' : '26px',
+      sbW: mob ? 'min(84vw,320px)' : 'var(--sidebarW)',
+      sbPos: mob ? 'fixed' : 'relative',
+      sbTx: mob ? (this.state.drawer ? 'translateX(0)' : 'translateX(-104%)') : 'none',
+      sbShadow: mob && this.state.drawer ? '0 0 46px rgba(0,0,0,.34)' : 'none',
+      drawerOpen: mob && this.state.drawer,
+      mobileNav: navDefs.map(n => ({ ...n, bg: navOn(n.id) ? t.accentSoft : 'transparent', fg: navOn(n.id) ? t.accent : t.muted })),
+      showHeadShare: !mob && !viewing && !!this.state.cloud,
+      showHeadAccount: !mob && !!(u && !u.isAnonymous),
+      showHeadSignIn: !mob && this.state.authReady && !(u && !u.isAnonymous),
+      showLogin, loginBusy: this.state.loginBusy, loginError: this.state.loginError,
+      loginDir: mob ? 'column' : 'row',
+      loginArtDisp: mob ? 'none' : 'flex',
+      loginArtFlex: midW ? '1' : '1.15',
+      loginArtPad: '46px 44px',
+      loginFormPad: mob ? '26px 22px' : '40px',
+      loginCompact: mob,
+      loginPoints: [
+        { title: 'Tags apni jagah', text: 'Har tag alag — context, b-roll, overlay, sources.', bg: t.accentSoft, ink: t.accent },
+        { title: 'Click = copy', text: 'Search terms aur article shots ek click me clipboard pe.', bg: t.accentSoft, ink: t.accent },
+        { title: 'Ready tracking', text: 'Har line pe tick, section aur script ka progress.', bg: t.accentSoft, ink: t.accent },
+        { title: 'Share a link', text: 'Read-only link — team dekhe aur ready mark kare.', bg: t.accentSoft, ink: t.accent }
+      ],
+      syncDot: this.state.cloud ? '#3FA98C' : t.faint,
+      syncLabel: this.state.cloud ? 'Synced' : 'Local only',
+      t, isNormal: this.state.mode === 'normal', isRaw: this.state.mode === 'raw', isSettings: this.state.mode === 'settings',
+      modes: modeDefs.map(m => ({
+        id: m[0], label: m[1],
+        bg: this.state.mode === m[0] ? t.surface : 'transparent',
+        fg: this.state.mode === m[0] ? t.ink : t.muted
+      })),
+      tree, treeEmpty: !tree.length, treeEmptyMsg,
+      treeMaxH: (this.state.settings.treeHeight || 300) + 'px',
+      sideTabs: [
+        { id: 'files', label: 'Scripts', n: String(Object.keys(items).filter(k => !items[k].trashed && items[k].type === 'script').length + grantRows.length) },
+        { id: 'review', label: 'Review', n: allIds.length ? doneCount + '/' + allIds.length : '' }
+      ].map(x => ({ ...x, bg: this.state.sideTab === x.id ? t.accentSoft : 'transparent', fg: this.state.sideTab === x.id ? t.accent : t.muted })),
+      isFilesTab: this.state.sideTab === 'files',
+      isReviewTab: this.state.sideTab === 'review',
+      trashCount: String(trashIds.length),
+      trashBg: this.state.showTrash ? t.accentSoft : 'transparent',
+      trashFg: this.state.showTrash ? t.accent : t.muted,
+      menu, share, auth, banner,
+      docName: a.name || 'Untitled',
+      badge: viewing
+        ? { show: true, label: 'READ-ONLY', bg: t.accentSoft, fg: t.accent }
+        : (shares[a.id] && shares[a.id].public ? { show: true, label: 'PUBLIC', bg: t.accentSoft, fg: t.accent } : { show: false }),
+      canShare: !viewing && !!this.state.cloud,
+      canEditDone: true, checkTitle: 'Mark footage ready',
+      activeId: this.state.activeId,
+      query: this.state.query, hasQuery: !!this.state.query, newTag: this.state.newTag,
+      sections, renderScript: !loginUp,
+      outline: doc.sections.map((s, si) => {
+        const ids = s.lines.map((l, li) => 's' + si + 'r' + li);
+        const dn = ids.filter(id => a.done[id]).length;
+        return {
+          id: String(si), num: String(si + 1).padStart(2, '0'), title: s.title || 'Untitled',
+          count: String(s.lines.length), pct: ids.length ? Math.round(dn / ids.length * 100) + '%' : '0%',
+          bg: activeSi === si ? t.accentSoft : 'transparent',
+          ink: activeSi === si ? t.accent : t.ink,
+          barColor: dn === ids.length && ids.length ? '#3FA98C' : t.accent
+        };
+      }),
+      pct: allIds.length ? Math.round(doneCount / allIds.length * 100) + '%' : '0%',
+      filters, noResults: vis.length === 0,
+      showNums: S.showLineNumbers, showChecks: S.showChecks, showCopyBtn: S.showCopyBtn,
+      showFav: S.showFavicons, showDomain: S.showDomain, linkTarget: S.openNewTab ? '_blank' : '_self',
+      chipR, ruleCss: S.columnRule ? '1px solid ' + t.rule : 'none',
+      sidebarDisplay: (S.showSidebar || mob) ? 'flex' : 'none',
+      stickyPos: S.stickyHeaders ? 'sticky' : 'static',
+      focusBg: S.focusMode ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), focusX: S.focusMode ? '14px' : '2px',
+      collapseBg: allCollapsed ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), collapseX: allCollapsed ? '14px' : '2px',
+      autoBg: S.autoDetect ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), autoX: S.autoDetect ? '14px' : '2px',
+      showJump: !!activeId && this.state.mode === 'normal' && this.state.offScreen,
+      activeNum: (() => { const f = this.allLines().find(l => l.id === activeId); return f ? String(f.n) : ''; })(),
+      tabs: TABS.map(x => ({ id: x.id, label: x.label, bg: tab === x.id ? t.accentSoft : 'transparent', fg: tab === x.id ? t.accent : t.prose })),
+      tabTitle: tabDef.title || tabDef.label, tabHint: tabDef.hint || '',
+      isTagsTab: tab === 'tags', isLibTab: tab === 'library', isFieldTab: !!FIELDS[tab],
+      fields, tagRows,
+      libRows: Object.keys(items).filter(k => items[k].type === 'script' && !items[k].trashed).map(k => {
+        const md = this.state.raws[k] || '';
+        const par = items[k].parentId && items[k].parentId !== 'root' && items[items[k].parentId] ? items[items[k].parentId].name + ' / ' : '';
+        const sh = shares[k];
+        return {
+          id: k, name: par + items[k].name, dot: k === a.id ? t.accent : t.faint,
+          bd: k === a.id ? t.accent : t.border,
+          meta: md.split('\n').length + ' lines · ' + Object.keys((this.state.doneMap || {})[k] || {}).length + ' ready'
+            + (sh && sh.public ? ' · public link' : '') + (sh && Object.keys(sh.members || {}).length ? ' · ' + Object.keys(sh.members).length + ' invited' : '')
+        };
+      }),
+      draft: raw, dirty: this.state.draft !== null && this.state.draft !== a.raw,
+      gutter: Array.from({ length: nl }, (_, i) => i + 1).join('\n'),
+      rawStats: nl + ' lines · ' + doc.total + ' script lines · ' + doc.sections.length + ' sections',
+      rawLayer: this.rawLayer(raw, t),
+      toastX: 0,
+      onClick: this.onClick, onSet: this.onSet, onTagSet: this.onTagSet, onQuery: this.onQuery,
+      onNewTag: this.onNewTag, onDraft: this.onDraft, onPickScript: this.onPickScript, onUpload: this.onUpload, imgErr: this.imgErr,
+      onShareEmail: this.onShareEmail, onShareRole: this.onShareRole, onMemberRole: this.onMemberRole, onSelectAll: this.onSelectAll,
+      toast: this.state.toast
+    };
+  }
+
+  rawLayer(raw, t) {
+    if (this.state.mode !== 'raw') return null;
+    const sig = raw.length + ':' + hashOf(raw) + ':' + t.prose;
+    if (this._rlSig !== sig) {
+      this._rlSig = sig;
+      this._rl = React.createElement('pre', {
+        className: 'rawhl', 'aria-hidden': 'true',
+        dangerouslySetInnerHTML: { __html: highlight(raw) },
+        style: { margin: 0, padding: '14px 18px 200px', font: "400 12px/1.65 'JetBrains Mono',monospace", whiteSpace: 'pre', color: t.prose, pointerEvents: 'none', minHeight: '100%' }
+      });
+    }
+    return this._rl;
+  }
+}
+</script>
+</body>
+</html>
