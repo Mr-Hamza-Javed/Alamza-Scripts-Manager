@@ -317,12 +317,6 @@ Sign in</span>
 <span style="font:400 11.5px/1.3 var(--fUI);color:var(--prose)">Collapse all sections</span>
 </label>
 </div>
-<div style="height:1px;background:var(--border);margin:15px 2px"></div>
-<div style="display:flex;flex-direction:column;gap:5px;padding:0 2px">
-<sc-if value="{{ canEditDone }}" hint-placeholder-val="{{ true }}">
-<span data-act="markAll" style="padding:6px 9px;border-radius:7px;border:1px solid var(--border);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer;text-align:center" style-hover="border-color:var(--accent);color:var(--accent)">Mark all as ready</span>
-</sc-if>
-</div>
 </div>
 </sc-if>
 
@@ -415,7 +409,7 @@ Sign in</span>
 <p style="margin:6px 0 0;padding-left:10px;border-left:2px solid var(--border);font-family:var(--fUI);font-size:var(--szBody);font-style:italic;line-height:var(--lhBody);color:var(--muted)">{{ ln.transcript }}</p>
 </sc-if>
 </div>
-<div style="flex:none;display:flex;align-items:center;gap:6px;margin-top:2px">
+<div style="flex:none;display:flex;align-items:center;gap:6px;align-self:center">
 <sc-if value="{{ showChecks }}" hint-placeholder-val="{{ true }}">
 <span data-done="{{ ln.id }}" title="{{ checkTitle }}" style="width:17px;height:17px;border-radius:50%;border:1.5px solid {{ ln.checkBorder }};background:{{ ln.checkBg }};display:flex;align-items:center;justify-content:center;cursor:pointer">
 <svg width="8" height="8" viewBox="0 0 10 10"><path d="M1.5 5.2l2.4 2.4L8.6 2.8" fill="none" stroke="{{ ln.checkTick }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
