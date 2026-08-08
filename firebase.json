@@ -4,7 +4,13 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "REQUIREMENTS.md",
+      "firebase-rules.json",
+      "hosting-guide.html",
+      "archive/**",
+      "screenshots/**",
+      "uploads/**"
     ]
   },
   "database": {

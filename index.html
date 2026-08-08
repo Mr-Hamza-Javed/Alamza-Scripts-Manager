@@ -255,6 +255,12 @@ Share</span>
 <div style="flex:1;height:5px;border-radius:3px;background:var(--rule);overflow:hidden"><div style="width:{{ pct }};height:100%;background:var(--accent);border-radius:3px"></div></div>
 <span style="font:500 10px/1 'JetBrains Mono',monospace;color:var(--muted)">{{ pct }}</span>
 </div>
+<sc-if value="{{ hasAnyTerms }}" hint-placeholder-val="{{ false }}">
+<div data-act="copyAllTerms" title="Copy every search term in this script" style="display:flex;align-items:center;justify-content:center;gap:7px;margin:0 2px 14px;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--panel);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">
+<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg>
+Copy all {{ termCount }} terms
+</div>
+</sc-if>
 <div data-act="toggleFilters" style="display:flex;align-items:center;gap:6px;margin:0 2px 8px;cursor:pointer">
 <span style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint)">FILTER</span>
 <span style="font:600 9.5px/1 var(--fUI);color:var(--muted)">{{ filterLabel }}</span>
@@ -342,6 +348,9 @@ Share</span>
 <span style="padding:2.5px 8px;border-radius:20px;background:var(--accentSoft);color:var(--accent);font:700 8.5px/1.3 'JetBrains Mono',monospace;letter-spacing:.1em;flex:none">{{ sec.badge }}</span>
 </sc-if>
 <sc-if value="{{ sec.hasLines }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ sec.hasTerms }}" hint-placeholder-val="{{ false }}">
+<span data-copy="{{ sec.allTerms }}" data-tag="SEARCH TERMS" title="Copy this section's search terms" style="display:flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:6px;border:1px solid var(--border);color:var(--muted);cursor:pointer;flex:none" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg></span>
+</sc-if>
 <span data-marksec="{{ sec.id }}" title="{{ sec.markTitle }}" style="display:flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:6px;border:1px solid {{ sec.markBd }};background:{{ sec.markBg }};color:{{ sec.markColor }};cursor:pointer;flex:none;transition:color .12s,border-color .12s,background .12s" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg></span>
 <span style="font:400 9.5px/1 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ sec.count }} LINES</span>
 <div style="width:64px;height:4px;border-radius:2px;background:var(--rule);overflow:hidden;flex:none"><div style="width:{{ sec.pct }};height:100%;background:var(--accent)"></div></div>
@@ -384,6 +393,11 @@ Share</span>
 </sc-if>
 </div>
 <div style="flex:none;display:flex;align-items:center;gap:6px;align-self:center">
+<sc-if value="{{ showCopyBtn }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ ln.hasTerms }}" hint-placeholder-val="{{ false }}">
+<span data-copy="{{ ln.allTerms }}" data-tag="SEARCH TERMS" title="Copy this line's search terms" style="width:20px;height:20px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg></span>
+</sc-if>
+</sc-if>
 <sc-if value="{{ showChecks }}" hint-placeholder-val="{{ true }}">
 <span data-done="{{ ln.id }}" title="{{ checkTitle }}" style="width:17px;height:17px;border-radius:50%;border:1.5px solid {{ ln.checkBorder }};background:{{ ln.checkBg }};display:flex;align-items:center;justify-content:center;cursor:pointer">
 <svg width="8" height="8" viewBox="0 0 10 10"><path d="M1.5 5.2l2.4 2.4L8.6 2.8" fill="none" stroke="{{ ln.checkTick }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -595,7 +609,7 @@ Share</span>
 
 <sc-if value="{{ menu.show }}" hint-placeholder-val="{{ false }}">
 <div data-act="closeOverlay" style="position:fixed;inset:0;z-index:50">
-<div style="position:absolute;left:{{ menu.x }};top:{{ menu.y }};min-width:186px;padding:5px;border-radius:9px;background:var(--surface);border:1px solid var(--border);box-shadow:0 10px 34px rgba(0,0,0,.20);animation:pop .11s ease-out">
+<div class="sc" style="position:absolute;left:{{ menu.x }};top:{{ menu.y }};min-width:186px;max-height:calc(100vh - 16px);overflow-y:auto;padding:5px;border-radius:9px;background:var(--surface);border:1px solid var(--border);box-shadow:0 10px 34px rgba(0,0,0,.20);animation:pop .11s ease-out">
 <div style="padding:6px 9px 7px;font:600 11px/1.3 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ menu.name }}</div>
 <sc-for list="{{ menu.items }}" as="mi" hint-placeholder-count="5">
 <sc-if value="{{ mi.isDivider }}" hint-placeholder-val="{{ false }}">
@@ -608,6 +622,32 @@ Share</span>
 </div>
 </sc-if>
 </sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ renameBox.show }}" hint-placeholder-val="{{ false }}">
+<div data-act="cancelRename" style="position:fixed;inset:0;z-index:58;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;padding:18px;animation:fin .12s ease-out">
+<div data-stop style="width:min(100%,390px);padding:18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);box-shadow:0 18px 60px rgba(0,0,0,.28)">
+<div style="font:600 14px/1.35 var(--fUI);color:var(--ink);margin-bottom:12px">{{ renameBox.title }}</div>
+<input value="{{ renameBox.value }}" onChange="{{ onRenameValue }}" onKeyDown="{{ onRenameKey }}" placeholder="Name" style="width:100%;padding:10px 11px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--ink);font:500 13px/1.4 var(--fUI)"/>
+<div style="display:flex;justify-content:flex-end;gap:7px;margin-top:14px">
+<span data-act="cancelRename" style="padding:7px 13px;border-radius:7px;border:1px solid var(--border);font:500 11.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer">Cancel</span>
+<span data-act="commitRename" style="padding:7px 13px;border-radius:7px;background:var(--accent);font:600 11.5px/1.3 var(--fUI);color:#fff;cursor:pointer">Save</span>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ confirmBox.show }}" hint-placeholder-val="{{ false }}">
+<div data-act="cancelConfirm" style="position:fixed;inset:0;z-index:59;background:rgba(0,0,0,.46);display:flex;align-items:center;justify-content:center;padding:18px;animation:fin .12s ease-out">
+<div data-stop style="width:min(100%,410px);padding:18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);box-shadow:0 18px 60px rgba(0,0,0,.3)">
+<div style="font:600 14px/1.35 var(--fUI);color:var(--ink)">{{ confirmBox.title }}</div>
+<p style="margin:7px 0 0;font:400 12px/1.55 var(--fUI);color:var(--prose)">{{ confirmBox.text }}</p>
+<div style="display:flex;justify-content:flex-end;gap:7px;margin-top:16px">
+<span data-act="cancelConfirm" style="padding:7px 13px;border-radius:7px;border:1px solid var(--border);font:500 11.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer">Cancel</span>
+<span data-act="confirmDanger" style="padding:7px 13px;border-radius:7px;background:#D9451A;font:600 11.5px/1.3 var(--fUI);color:#fff;cursor:pointer">{{ confirmBox.action }}</span>
+</div>
 </div>
 </div>
 </sc-if>
@@ -697,12 +737,38 @@ const DEFAULT_TAGS = {
   'B-ROLL': { render: 'prose', color: 'teal', split: 'none' },
   'IMAGE': { render: 'prose', color: 'amber', split: 'none' },
   'ARTICLE SHOT': { render: 'chips', color: 'violet', split: 'auto' },
+  'ARTICLE SHOTS': { render: 'chips', color: 'violet', split: 'auto' },
   'SEARCH TERMS': { render: 'chips', color: 'green', split: 'auto' },
   'TEXT OVERLAY': { render: 'overlay', color: 'pink', split: '—' },
   'INSERT VIDEO': { render: 'prose', color: 'orange', split: 'none' },
   'SOURCES': { render: 'links', color: 'slate', split: 'none' },
   'TRANSCRIPT': { render: 'prose', color: 'slate', split: 'none' }
 };
+function mergeTags(saved) {
+  const incoming = saved || {}, out = { ...DEFAULT_TAGS, ...incoming };
+  Object.keys(DEFAULT_TAGS).forEach(k => { if (incoming[k] && incoming[k].auto) out[k] = { ...DEFAULT_TAGS[k] }; });
+  return out;
+}
+/* Firebase Realtime Database forbids . # $ / [ ] in object keys, while tag
+   names intentionally allow characters such as IMAGE/B-ROLL. Encode every
+   cloud key reversibly; localStorage and the UI keep the original tag name. */
+function tagKeyForFirebase(name) {
+  return encodeURIComponent(String(name || '')).replace(/~/g, '%7E').replace(/\./g, '%2E').replace(/%/g, '~');
+}
+function tagKeyFromFirebase(key) {
+  try { return decodeURIComponent(String(key || '').replace(/~([0-9A-Fa-f]{2})/g, '%$1')); }
+  catch (e) { return String(key || ''); }
+}
+function tagsForFirebase(tags) {
+  const out = {};
+  Object.keys(tags || {}).forEach(k => { out[tagKeyForFirebase(k)] = tags[k]; });
+  return out;
+}
+function tagsFromFirebase(tags) {
+  const out = {};
+  Object.keys(tags || {}).forEach(k => { out[tagKeyFromFirebase(k)] = tags[k]; });
+  return out;
+}
 
 const DEFAULTS = {
   scale: 100,
@@ -921,12 +987,19 @@ function scanBalanced(str, from) {
   return -1;
 }
 function domainOf(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; } }
+function safeHttpUrl(u) {
+  try {
+    const x = new URL(String(u || '').trim());
+    return x.protocol === 'http:' || x.protocol === 'https:' ? x.href : '';
+  } catch (e) { return ''; }
+}
 
 function parseLinks(body, reg, st) {
   const links = []; let rest = body;
   rest = rest.replace(/\[\[(\d+)\]\]\(([^)]+)\)/g, (m, n, u) => {
     const r = st.resolveNumRefs && reg.byNum[n];
-    links.push({ t: r ? r.t : ('Source ' + n), u: u });
+    const safe = safeHttpUrl(u);
+    links.push({ t: r ? r.t : ('Source ' + n), u: safe });
     return ' ';
   });
   rest = rest.replace(/\[([^\]\[]+)\]\((https?:\/\/[^)\s]+)\)/g, (m, t, u) => {
@@ -1285,6 +1358,8 @@ const KEY = 'alamza.scripts.v1';
    THEIR device only, never written back to the owner who shared the file. */
 const VKEY = 'alamza.viewer.prefs';
 function loadViewerPrefs() { try { return JSON.parse(localStorage.getItem(VKEY) || '{}') || {}; } catch (e) { return {}; } }
+const GKEY = 'alamza.guest.accepted';
+function loadGuestChoice() { try { return localStorage.getItem(GKEY) === '1'; } catch (e) { return false; } }
 const SCHEMA = 3;
 /* keys re-baselined in schema 2 — a stale saved value would hide the new defaults */
 const RESET_IN_V2 = ['scriptFont', 'scriptSize', 'scriptWeight', 'scriptLeading', 'bodySize', 'labelSize', 'radius', 'maxWidth', 'density'];
@@ -1314,7 +1389,7 @@ function load() {
       return {
         items, raws: raws || {}, doneMap: doneMap || {},
         activeId: d.activeId && items[d.activeId] ? d.activeId : (Object.keys(items).find(k => items[k].type === 'script') || ''),
-        settings: { ...DEFAULTS, ...saved }, tags: { ...DEFAULT_TAGS, ...(d.tags || {}) },
+        settings: { ...DEFAULTS, ...saved }, tags: mergeTags(d.tags),
         activeLine: d.activeLine || null, openFolders: d.openFolders || {}
       };
     }
@@ -1345,11 +1420,11 @@ class Component extends DCLogic {
       mode: 'normal', tab: 'appearance', query: '', filter: 'all', collapsed: {}, filtersOpen: false,
       activeLine: d.activeLine, draft: null, toast: '', newTag: '', win: { s: 0, e: 28 }, mounted: 40, offScreen: false,
       vw: typeof window !== 'undefined' ? window.innerWidth : 1440,
-      drawer: false, loginOpen: false, loginBusy: false, loginError: '', skippedLogin: false,
+      drawer: false, loginOpen: false, loginBusy: false, loginError: '', skippedLogin: loadGuestChoice(),
       /* Opened through a share link → Review tab by default; otherwise Scripts
          (or the user's saved default). */
       sideTab: vt ? 'review' : (d.settings.defaultSideTab === 'review' ? 'review' : 'files'),
-      showTrash: false, menu: null, shareFor: null,
+      showTrash: false, menu: null, shareFor: null, renameFor: null, renameValue: '', confirmBox: null,
       shares: {}, grants: {}, shareEmail: '', shareRole: d.settings.defaultShareRole || 'viewer',
       user: null, authReady: false, cloud: false, viewer: null, viewerToken: vt,
       viewerPrefs: loadViewerPrefs()
@@ -1365,12 +1440,12 @@ class Component extends DCLogic {
         return;
       }
       if (e.key === 'Escape') {
-        if (this.state.menu || this.state.shareFor || this.state.drawer || this.state.loginOpen) {
-          e.preventDefault(); this.setState({ menu: null, shareFor: null, drawer: false, loginOpen: false });
+        if (this.state.menu || this.state.shareFor || this.state.drawer || this.state.loginOpen || this.state.renameFor || this.state.confirmBox) {
+          e.preventDefault(); this.setState({ menu: null, shareFor: null, drawer: false, loginOpen: false, renameFor: null, renameValue: '', confirmBox: null });
         }
         return;
       }
-      if (this.state.menu || this.state.shareFor || this.state.loginOpen) return;
+      if (this.state.menu || this.state.shareFor || this.state.loginOpen || this.state.renameFor || this.state.confirmBox) return;
       if (e.key === '/') { e.preventDefault(); const el = document.querySelector('input[placeholder^="Search lines"]'); if (el) el.focus(); return; }
       /* j/k and ArrowDown/ArrowUp move the active line up/down */
       if (e.key === 'j' || e.key === 'k' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -1540,7 +1615,7 @@ class Component extends DCLogic {
     this.on(db.ref(base + '/shares'), v => this.setState({ shares: v || {} }));
     this.on(db.ref(base + '/settings'), v => {
       if (!v || this.state.settings.syncSettings === false) return;
-      this.setState({ settings: { ...DEFAULTS, ...(v.settings || {}) }, tags: { ...DEFAULT_TAGS, ...(v.tags || {}) } });
+      this.setState({ settings: { ...DEFAULTS, ...(v.settings || {}) }, tags: mergeTags(tagsFromFirebase(v.tags)) });
     });
     if (u.email) this.on(db.ref('grants/' + ekey(u.email)), v => this.setState({ grants: v || {} }));
     this.watchDone();
@@ -1549,7 +1624,7 @@ class Component extends DCLogic {
   pushLocalToCloud(u) {
     const fb = fbGet(); if (!fb) return;
     const base = 'users/' + u.uid;
-    fb.db.ref(base).update({ items: this.state.items, raw: this.state.raws, settings: { settings: this.state.settings, tags: this.state.tags } }).catch(() => { });
+    fb.db.ref(base).update({ items: this.state.items, raw: this.state.raws, settings: { settings: this.state.settings, tags: tagsForFirebase(this.state.tags) } }).catch(() => { });
     Object.keys(this.state.doneMap || {}).forEach(sid => {
       if (Object.keys(this.state.doneMap[sid] || {}).length) fb.db.ref('done/' + sid).update(this.state.doneMap[sid]).catch(() => { });
     });
@@ -1566,7 +1641,8 @@ class Component extends DCLogic {
     this._doneRef.on('value', s => {
       const v = s.val() || {};
       const cur = (this.state.doneMap || {})[id] || {};
-      if (Object.keys(v).sort().join(',') === Object.keys(cur).sort().join(',')) return;
+      const keys = Object.keys(v), curKeys = Object.keys(cur);
+      if (keys.length === curKeys.length && keys.every(k => v[k] === cur[k])) return;
       this.setState({ doneMap: { ...this.state.doneMap, [id]: v } });
     });
   }
@@ -1628,7 +1704,7 @@ class Component extends DCLogic {
       clearTimeout(this._cloudT);
       this._cloudT = setTimeout(() => {
         const fb = fbGet(), u = this.state.user; if (!fb || !u) return;
-        fb.db.ref('users/' + u.uid + '/settings').set({ settings: this.state.settings, tags: this.state.tags }).catch(() => { });
+        fb.db.ref('users/' + u.uid + '/settings').set({ settings: this.state.settings, tags: tagsForFirebase(this.state.tags) }).catch(() => { });
       }, 500);
     }
   };
@@ -1642,12 +1718,24 @@ class Component extends DCLogic {
     this.setState({ items }, this.save);
     const r = this.uref('items/' + id); if (r) r.update(patch).catch(() => { });
   }
-  dropItem(id) {
-    const items = { ...this.state.items }; delete items[id];
-    const raws = { ...this.state.raws }; delete raws[id];
-    this.setState({ items, raws }, this.save);
-    const r = this.uref('items/' + id); if (r) r.remove().catch(() => { });
-    const r2 = this.uref('raw/' + id); if (r2) r2.remove().catch(() => { });
+  dropItems(ids) {
+    const unique = Array.from(new Set(ids || [])).filter(id => this.state.items[id]);
+    if (!unique.length) return;
+    const items = { ...this.state.items }, raws = { ...this.state.raws }, doneMap = { ...this.state.doneMap };
+    unique.forEach(id => { delete items[id]; delete raws[id]; delete doneMap[id]; });
+    const activeGone = unique.indexOf(this.state.activeId) >= 0;
+    const activeId = activeGone ? (Object.keys(items).find(k => items[k].type === 'script' && !items[k].trashed) || '') : this.state.activeId;
+    this.setState({ items, raws, doneMap, activeId, activeLine: activeGone ? null : this.state.activeLine }, () => { this.save(); if (activeGone) this.watchDone(); });
+    const fb = fbGet(), u = this.state.user;
+    if (fb && u && this.state.cloud) {
+      const updates = {};
+      unique.forEach(id => {
+        updates['users/' + u.uid + '/items/' + id] = null;
+        updates['users/' + u.uid + '/raw/' + id] = null;
+        updates['done/' + id] = null;
+      });
+      fb.db.ref().update(updates).catch(() => { });
+    }
   }
   putRaw(id, md) {
     this.setState({ raws: { ...this.state.raws, [id]: md } }, this.save);
@@ -1655,9 +1743,16 @@ class Component extends DCLogic {
     this.refreshPubFor(id);
   }
   setDone(sid, map) {
+    const prev = (this.state.doneMap || {})[sid] || {};
     this.setState({ doneMap: { ...this.state.doneMap, [sid]: map } }, this.save);
     const fb = fbGet();
-    if (fb && (this.state.cloud || this.state.viewer)) fb.db.ref('done/' + sid).set(map).catch(() => { });
+    if (fb && (this.state.cloud || this.state.viewer)) {
+      const patch = {};
+      Array.from(new Set(Object.keys(prev).concat(Object.keys(map)))).forEach(k => {
+        if (!!prev[k] !== !!map[k]) patch[k] = map[k] ? true : null;
+      });
+      if (Object.keys(patch).length) fb.db.ref('done/' + sid).update(patch).catch(() => { });
+    }
   }
   isViewing() { return !!(this.state.viewer && !this.state.viewer.missing); }
   /* a shared script must look exactly as its owner sees it — settings and the
@@ -1683,7 +1778,7 @@ class Component extends DCLogic {
   }
   effT() {
     const v = this.state.viewer;
-    return (this.isViewing() && v.tags) ? { ...DEFAULT_TAGS, ...v.tags } : this.state.tags;
+    return (this.isViewing() && v.tags) ? mergeTags(tagsFromFirebase(v.tags)) : this.state.tags;
   }
   role() {
     if (this.isViewing()) return this.state.viewer.role || 'viewer';
@@ -1726,7 +1821,7 @@ class Component extends DCLogic {
   parseSig() {
     const S = this.effS(), T = this.effT();
     let ts = '';
-    Object.keys(T).sort().forEach(k => { ts += k + ':' + T[k].render + ':' + (T[k].split || '') + ';'; });
+    Object.keys(T).sort().forEach(k => { ts += k + ':' + T[k].render + ':' + (T[k].split || '') + ':' + (T[k].color || '') + ';'; });
     return [S.scriptCol, S.visualCol, S.showExtraCols, S.keepBrokenCells, S.resolveNumRefs,
       S.resolveTitleRefs, S.autoDetect, S.unknownAs, S.defaultSplit].join('|') + '#' + ts;
   }
@@ -1827,6 +1922,12 @@ class Component extends DCLogic {
   toggleDone(id) {
     const a = this.active(); const done = { ...a.done };
     if (done[id]) delete done[id]; else done[id] = true;
+    const fb = fbGet();
+    if (fb && (this.state.cloud || this.state.viewer)) {
+      this.setState({ doneMap: { ...this.state.doneMap, [a.id]: done } }, this.save);
+      fb.db.ref('done/' + a.id + '/' + id).transaction(v => v ? null : true).catch(() => this.watchDone());
+      return;
+    }
     this.setDone(a.id, done);
   }
   markSection(si) {
@@ -1839,7 +1940,7 @@ class Component extends DCLogic {
     this.setDone(a.id, done);
   }
   copy(txt, label, tag) {
-    const s = this.state.settings;
+    const s = this.effS();
     let out = txt;
     if (s.copyFormat === 'quoted') out = '"' + txt + '"';
     if (s.copyFormat === 'prefixed') out = '[' + (tag || label || 'SCRIPT') + '] ' + txt;
@@ -1849,7 +1950,7 @@ class Component extends DCLogic {
   joiner() { const j = this.effS().copyJoin; return j === 'newline' ? '\n' : j === 'pipe' ? ' | ' : ', '; }
 
   onClick = (e) => {
-    const S = this.state.settings;
+    const S = this.effS();
     const g = (sel) => e.target.closest('[' + sel + ']');
     let el;
     const lineOf = (n) => { const p = n.closest('[data-line]'); if (p) { const id = p.getAttribute('data-line'); if (id !== this.state.activeLine) this.setState({ activeLine: id }, this.save); } };
@@ -1966,16 +2067,27 @@ class Component extends DCLogic {
     const it = this.state.items[id]; if (!it) return;
     const map = {}, ids = this.descendants(id);
     ids.forEach(k => { map[k] = uid(); });
+    const items = { ...this.state.items }, raws = { ...this.state.raws };
     ids.forEach(k => {
       const src = this.state.items[k];
-      this.putItem(map[k], {
+      items[map[k]] = {
         type: src.type, name: k === id ? src.name + ' copy' : src.name,
         parentId: k === id ? (src.parentId || 'root') : map[src.parentId], order: now(), createdAt: now()
-      });
-      if (src.type === 'script') this.putRaw(map[k], this.state.raws[k] || '');
+      };
+      if (src.type === 'script') raws[map[k]] = this.state.raws[k] || '';
     });
-    if (it.type === 'script') this.setState({ activeId: map[id], draft: null }, () => this.watchDone());
-    else this.flash('Folder duplicated');
+    const next = { items, raws };
+    if (it.type === 'script') { next.activeId = map[id]; next.draft = null; }
+    this.setState(next, () => { this.save(); if (it.type === 'script') this.watchDone(); else this.flash('Folder duplicated'); });
+    const fb = fbGet(), u = this.state.user;
+    if (fb && u && this.state.cloud) {
+      const updates = {};
+      ids.forEach(k => {
+        updates['items/' + map[k]] = items[map[k]];
+        if (this.state.items[k].type === 'script') updates['raw/' + map[k]] = raws[map[k]];
+      });
+      fb.db.ref('users/' + u.uid).update(updates).catch(() => { });
+    }
   }
   menuAct(a) {
     const m = this.state.menu; if (!m) return;
@@ -2020,8 +2132,7 @@ class Component extends DCLogic {
   }
   rename(id) {
     const it = this.state.items[id]; if (!it) return;
-    const n = window.prompt((it.type === 'folder' ? 'Folder' : 'Script') + ' name', it.name);
-    if (n && n.trim()) { this.putItem(id, { name: n.trim(), updatedAt: now() }); this.refreshPubFor(id); }
+    this.setState({ renameFor: id, renameValue: it.name || '' });
   }
   descendants(id) {
     const out = [id], items = this.state.items;
@@ -2032,9 +2143,12 @@ class Component extends DCLogic {
     }
     return out;
   }
-  trash(id) {
+  trash(id, confirmed) {
     const it = this.state.items[id]; if (!it) return;
-    if (this.state.settings.confirmTrash && !window.confirm('“' + it.name + '” trash me bhej dein?')) return;
+    if (this.state.settings.confirmTrash && !confirmed) {
+      this.setState({ confirmBox: { kind: 'trash', id, title: 'Move to trash?', text: '“' + it.name + '” aur iske andar ki cheezen trash me chali jayengi.', action: 'Move to trash' } });
+      return;
+    }
     const ids = this.descendants(id);
     const items = { ...this.state.items };
     ids.forEach(k => { items[k] = { ...items[k], trashed: true, trashedAt: now() }; });
@@ -2056,11 +2170,24 @@ class Component extends DCLogic {
     this.setState({ items }, this.save);
     ids.forEach(k => { const r = this.uref('items/' + k); if (r) r.update({ trashed: false, parentId: items[k].parentId }).catch(() => { }); });
   }
-  purge(id) {
+  purge(id, confirmed) {
     const it = this.state.items[id]; if (!it) return;
-    if (!window.confirm('“' + it.name + '” hamesha ke liye delete? Wapas nahi aayega.')) return;
-    this.descendants(id).forEach(k => this.dropItem(k));
-    this.unshare(id);
+    if (!confirmed) {
+      this.setState({ confirmBox: { kind: 'purge', id, title: 'Delete forever?', text: '“' + it.name + '” aur iske andar ki cheezen wapas nahi aayengi.', action: 'Delete forever' } });
+      return;
+    }
+    const ids = this.descendants(id);
+    this.unshareMany(ids);
+    this.dropItems(ids);
+  }
+  emptyTrash(confirmed) {
+    const ids = Object.keys(this.state.items).filter(x => this.state.items[x].trashed);
+    if (!ids.length) { this.flash('Trash khali hai'); return; }
+    if (!confirmed) {
+      this.setState({ confirmBox: { kind: 'emptyTrash', title: 'Empty trash?', text: ids.length + ' item hamesha ke liye delete honge. Ye action undo nahi ho sakta.', action: 'Delete forever' } });
+      return;
+    }
+    this.unshareMany(ids); this.dropItems(ids);
   }
   /* ---- sharing ---- */
   shareRec(id) { return (this.state.shares || {})[id] || null; }
@@ -2085,19 +2212,29 @@ class Component extends DCLogic {
     });
     return {
       ownerUid: (this.state.user || {}).uid || '',
+      shareId: id,
       ownerName: (this.state.user || {}).displayName || (this.state.user || {}).email || '',
       type: (this.state.items[id] || {}).type || 'script',
       name: (this.state.items[id] || {}).name || '',
-      items, raw, settings: this.state.settings, tags: this.state.tags, updatedAt: now()
+      items, raw, settings: this.state.settings, tags: tagsForFirebase(this.state.tags), updatedAt: now()
     };
   }
   pubHash(id) { const p = this.pubPayload(id); return hashOf(JSON.stringify(p.items) + JSON.stringify(p.raw) + JSON.stringify(p.settings) + JSON.stringify(p.tags)); }
   writePub(id) {
     const fb = fbGet(); if (!fb || !this.state.cloud) { this.flash('Sharing ke liye sign in karein'); return null; }
     const t = this.ensureToken(id);
-    fb.db.ref('pub/' + t).set(this.pubPayload(id)).catch(() => { });
-    const stamps = { ...(this._stamps || {}) }; stamps[id] = this.pubHash(id); this._stamps = stamps;
-    return t;
+    try {
+      fb.db.ref('pub/' + t).set(this.pubPayload(id)).catch(e => {
+        console.error('Public share publish failed', e);
+        this.flash('Public share save nahi hua');
+      });
+      const stamps = { ...(this._stamps || {}) }; stamps[id] = this.pubHash(id); this._stamps = stamps;
+      return t;
+    } catch (e) {
+      console.error('Public share payload invalid', e);
+      this.flash('Public share me invalid data mila');
+      return null;
+    }
   }
   refreshPubFor(id) {
     if (!this.state.settings.autoRefreshShare) return;
@@ -2132,7 +2269,7 @@ class Component extends DCLogic {
     this.setState({ shares: { ...this.state.shares, [id]: { ...rec, token: t, members } }, shareEmail: '' });
     const r = this.uref('shares/' + id); if (r) r.update({ token: t, members }).catch(() => { });
     fb.db.ref('grants/' + k + '/' + id).set({
-      ownerUid: this.state.user.uid, ownerEmail: this.state.user.email || '', role, token: t,
+      ownerUid: this.state.user.uid, ownerEmail: this.state.user.email || '', recipientEmail: email.trim().toLowerCase(), role, token: t,
       name: (this.state.items[id] || {}).name || '', type: (this.state.items[id] || {}).type || 'script', at: now()
     }).catch(() => { });
     this.flash('Invited ' + email + ' as ' + ROLE_SHORT[role]);
@@ -2144,7 +2281,7 @@ class Component extends DCLogic {
     members[k] = { ...members[k], role };
     this.setState({ shares: { ...this.state.shares, [id]: { ...rec, members } } });
     const r = this.uref('shares/' + id); if (r) r.update({ members }).catch(() => { });
-    const fb = fbGet(); if (fb) fb.db.ref('grants/' + k + '/' + id + '/role').set(role).catch(() => { });
+    const fb = fbGet(); if (fb) fb.db.ref('grants/' + k + '/' + id).update({ role, recipientEmail: members[k].email || '' }).catch(() => { });
   }
   removeMember(id, k) {
     const rec = this.shareRec(id); if (!rec) return;
@@ -2153,15 +2290,21 @@ class Component extends DCLogic {
     const r = this.uref('shares/' + id); if (r) r.child('members/' + k).remove().catch(() => { });
     const fb = fbGet(); if (fb) fb.db.ref('grants/' + k + '/' + id).remove().catch(() => { });
   }
-  unshare(id) {
-    const rec = this.shareRec(id); if (!rec) return;
+  unshareMany(ids) {
+    const targets = Array.from(new Set(ids || [])).filter(id => this.shareRec(id));
+    if (!targets.length) return;
     const fb = fbGet();
-    if (fb && rec.token) { fb.db.ref('pub/' + rec.token).remove().catch(() => { }); fb.db.ref('shares/' + rec.token).remove().catch(() => { }); }
-    Object.keys(rec.members || {}).forEach(k => { if (fb) fb.db.ref('grants/' + k + '/' + id).remove().catch(() => { }); });
-    const shares = { ...this.state.shares }; delete shares[id];
+    const shares = { ...this.state.shares };
+    targets.forEach(id => {
+      const rec = shares[id];
+      if (fb && rec.token) { fb.db.ref('pub/' + rec.token).remove().catch(() => { }); fb.db.ref('shares/' + rec.token).remove().catch(() => { }); }
+      Object.keys(rec.members || {}).forEach(k => { if (fb) fb.db.ref('grants/' + k + '/' + id).remove().catch(() => { }); });
+      const r = this.uref('shares/' + id); if (r) r.remove().catch(() => { });
+      delete shares[id];
+    });
     this.setState({ shares });
-    const r = this.uref('shares/' + id); if (r) r.remove().catch(() => { });
   }
+  unshare(id) { this.unshareMany([id]); }
   openGrant(g, id) {
     if (!g || !g.token) { this.flash('Is share ka link nahi mila'); return; }
     this.watchPub(g.token, g.role || 'viewer', id);
@@ -2183,6 +2326,23 @@ class Component extends DCLogic {
     if (k === 'toggleTrash') return this.setState({ showTrash: !this.state.showTrash, sideTab: 'files' });
     if (k === 'toggleFilters') return this.setState({ filtersOpen: !this.state.filtersOpen });
     if (k === 'closeOverlay') return this.setState({ menu: null, shareFor: null });
+    if (k === 'cancelRename') return this.setState({ renameFor: null, renameValue: '' });
+    if (k === 'cancelConfirm') return this.setState({ confirmBox: null });
+    if (k === 'confirmDanger') {
+      const c = this.state.confirmBox; if (!c) return;
+      this.setState({ confirmBox: null }, () => {
+        if (c.kind === 'trash') this.trash(c.id, true);
+        else if (c.kind === 'purge') this.purge(c.id, true);
+        else if (c.kind === 'emptyTrash') this.emptyTrash(true);
+      });
+      return;
+    }
+    if (k === 'commitRename') {
+      const id = this.state.renameFor, n = (this.state.renameValue || '').trim();
+      if (!id || !n) return;
+      this.putItem(id, { name: n, updatedAt: now() }); this.refreshPubFor(id);
+      this.setState({ renameFor: null, renameValue: '' }); return;
+    }
     if (k === 'openShare') return this.setState({ shareFor: a.id, shareRole: this.state.settings.defaultShareRole || 'viewer' });
     if (k === 'togglePublic') return this.togglePublic(this.state.shareFor);
     if (k === 'refreshShare') { this.writePub(this.state.shareFor); this.flash('Public copy updated'); return; }
@@ -2194,7 +2354,7 @@ class Component extends DCLogic {
       const p = new fb.ns.auth.GoogleAuthProvider();
       p.setCustomParameters({ prompt: 'select_account' });
       fb.auth.signInWithPopup(p)
-        .then(() => this.setState({ loginBusy: false, loginOpen: false, skippedLogin: false, drawer: false }))
+        .then(() => { try { localStorage.removeItem(GKEY); } catch (e) { } this.setState({ loginBusy: false, loginOpen: false, skippedLogin: false, drawer: false }); })
         .catch(e => {
           const c = (e && e.code) || '';
           const msg = c === 'auth/popup-closed-by-user' ? 'Sign-in window band ho gayi.'
@@ -2208,7 +2368,7 @@ class Component extends DCLogic {
       return;
     }
     if (k === 'showLogin') return this.setState({ loginOpen: true, loginError: '', drawer: false });
-    if (k === 'skipLogin') return this.setState({ loginOpen: false, skippedLogin: true });
+    if (k === 'skipLogin') { try { localStorage.setItem(GKEY, '1'); } catch (e) { } return this.setState({ loginOpen: false, skippedLogin: true }); }
     if (k === 'drawer') return this.setState({ drawer: !this.state.drawer });
     if (k === 'closeDrawer') return this.setState({ drawer: false });
     if (k === 'signOut') {
@@ -2219,7 +2379,7 @@ class Component extends DCLogic {
          without an account" — starts completely clean and can't reach the
          previous user's scripts. */
       clearTimeout(this._saveT);
-      try { localStorage.removeItem(KEY); } catch (e) { }
+      try { localStorage.removeItem(KEY); localStorage.removeItem(GKEY); } catch (e) { }
       this._pushed = false; this._stamps = {}; this._sig = null; this._doneId = null;
       this.setState({
         menu: null, grants: {}, shares: {}, cloud: false, user: null,
@@ -2273,12 +2433,7 @@ class Component extends DCLogic {
     }
     if (k === 'markAll') { const done = {}; this.allLines().forEach(l => done[l.id] = true); this.setDone(a.id, done); return; }
     if (k === 'clearDone') { this.setDone(a.id, {}); this.flash('Cleared'); return; }
-    if (k === 'emptyTrash') {
-      const ids = Object.keys(this.state.items).filter(x => this.state.items[x].trashed);
-      if (!ids.length) { this.flash('Trash khali hai'); return; }
-      if (!window.confirm(ids.length + ' item hamesha ke liye delete?')) return;
-      ids.forEach(x => { this.unshare(x); this.dropItem(x); }); return;
-    }
+    if (k === 'emptyTrash') return this.emptyTrash(false);
     if (k === 'copyAllTerms' || k === 'exportTerms') {
       const terms = []; this.allLines().forEach(l => l.items.forEach(it => { if (it.render === 'chips') terms.push(...it.chips); }));
       if (k === 'exportTerms') this.download(a.name + ' — search terms.txt', terms.join('\n'));
@@ -2306,6 +2461,8 @@ class Component extends DCLogic {
   };
   onQuery = (e) => this.setState({ query: e.target.value, win: { s: 0, e: 28 }, mounted: 40 }, () => setTimeout(() => this.adjustWindow(), 60));
   onNewTag = (e) => this.setState({ newTag: e.target.value });
+  onRenameValue = (e) => this.setState({ renameValue: e.target.value });
+  onRenameKey = (e) => { if (e.key === 'Enter') { e.preventDefault(); this.act('commitRename'); } if (e.key === 'Escape') { e.preventDefault(); this.act('cancelRename'); } };
   onDraft = (e) => this.setState({ draft: e.target.value });
   onShareEmail = (e) => this.setState({ shareEmail: e.target.value });
   onShareRole = (e) => this.setState({ shareRole: e.target.value });
@@ -2337,7 +2494,10 @@ class Component extends DCLogic {
     const t = tokens({ ...S, _mobile: this.state.vw < 760, _narrow: this.state.vw < 560 });
     const a = this.active(), doc = this.doc();
     const vis = this.visibleLines(), visIds = {}; vis.forEach(l => visIds[l.id] = 1);
-    const allIds = this.allLines().map(l => l.id);
+    const allLines = this.allLines();
+    const allIds = allLines.map(l => l.id);
+    const allTerms = [];
+    allLines.forEach(l => l.items.forEach(it => { if (it.render === 'chips') allTerms.push(...(it.chips || [])); }));
     const doneCount = allIds.filter(id => a.done[id]).length;
     const chipR = S.chipShape === 'pill' ? '20px' : S.chipShape === 'square' ? '3px' : '6px';
     const col = k => (PALETTE[k] || PALETTE.slate)[dark ? 0 : 1];
@@ -2376,9 +2536,10 @@ class Component extends DCLogic {
 
     /* one decorated object per line, reused until that line's own state changes —
        without this every setState rebuilds all 201 line prop trees */
-    if (this._decSig !== dispSig + '|' + S.focusMode + '|' + S.dimAmount + '|' + S.activeStyle + '|' + S.cardBorders + '|' + S.cardShadow) {
+    const decSig = dispSig + '|' + S.focusMode + '|' + S.dimAmount + '|' + S.activeStyle + '|' + S.cardBorders + '|' + S.cardShadow + '|' + S.viewStyle + '|' + S.docZebra;
+    if (this._decSig !== decSig) {
       this._dec = {};
-      this._decSig = dispSig + '|' + S.focusMode + '|' + S.dimAmount + '|' + S.activeStyle + '|' + S.cardBorders + '|' + S.cardShadow + '|' + S.viewStyle + '|' + S.docZebra;
+      this._decSig = decSig;
     }
     const decorate = (l) => {
       const on = activeId === l.id, done = !!a.done[l.id];
@@ -2402,6 +2563,7 @@ class Component extends DCLogic {
         isVideo: !!l.video, range: l.range ? ' · ' + l.range : '',
         hasTranscript: !!(l.transcript && S.showTranscript), transcript: l.transcript,
         hasGuide: ordered.length > 0, items: ordered,
+        hasTerms: terms.length > 0,
         allTerms: terms.join(this.joiner()),
         checkBorder: done ? '#3FA98C' : (dark ? '#3A3A41' : '#D6D2CA'),
         checkBg: done ? '#3FA98C' : 'transparent', checkTick: done ? (dark ? '#111114' : '#FFFFFF') : 'transparent',
@@ -2445,6 +2607,8 @@ class Component extends DCLogic {
       const dn = ids.filter(id => a.done[id]).length;
       const allReady = ids.length > 0 && dn === ids.length;
       const open = !(this.state.collapsed[si] !== undefined ? this.state.collapsed[si] : S.collapseDefault);
+      const sectionTerms = [];
+      s.lines.forEach(l => l.items.forEach(it => { if (it.render === 'chips') sectionTerms.push(...(it.chips || [])); }));
       /* every line stays mounted — the browser skips off-screen work through
          content-visibility, so no spacer geometry is ever rewritten mid-scroll */
       const slice = open ? lines : [];
@@ -2460,6 +2624,8 @@ class Component extends DCLogic {
         markBg: allReady ? '#3FA98C22' : 'transparent',
         open, chev: open ? 'rotate(0deg)' : 'rotate(-90deg)',
         hasLines: s.lines.length > 0,
+        hasTerms: sectionTerms.length > 0,
+        allTerms: sectionTerms.join(this.joiner()),
         notesOnly: s.lines.length === 0,
         hasNotes: s.notes.length > 0 && !this.state.query,
         notes: s.notes.map(x => stripMd(x)),
@@ -2520,7 +2686,7 @@ class Component extends DCLogic {
     const trashIds = Object.keys(items).filter(k => items[k].trashed);
     const pctOf = (sid) => {
       const d = (this.state.doneMap || {})[sid] || {};
-      const n = Object.keys(d).length;
+      const n = Object.keys(d).filter(k => d[k]).length;
       return n ? n + '✓' : '';
     };
     const rowFor = (id, depth, src, extra) => {
@@ -2608,13 +2774,13 @@ class Component extends DCLogic {
       if (it.trashed) menuItems = [{ id: 'restore', label: 'Restore' }, { divider: true }, { id: 'purge', label: 'Delete forever', danger: true }];
       else {
         menuItems = it.type === 'folder'
-          ? [{ id: 'newIn', label: 'New script inside' }, { id: 'newFolderIn', label: 'New folder inside' }, { divider: true }, { id: 'rename', label: 'Rename' }, { id: 'share', label: 'Share…' }]
+          ? [{ id: 'newIn', label: 'New script inside' }, { id: 'newFolderIn', label: 'New folder inside' }, { divider: true }, { id: 'rename', label: 'Rename' }, { id: 'dup', label: 'Duplicate' }, { id: 'share', label: 'Share…' }]
           : [{ id: 'open', label: 'Open' }, { id: 'rename', label: 'Rename' }, { id: 'dup', label: 'Duplicate' }, { id: 'share', label: 'Share…' }, { id: 'export', label: 'Download .md' }];
         const folders = Object.keys(items).filter(k => items[k].type === 'folder' && !items[k].trashed && this.descendants(mid).indexOf(k) < 0);
         if (folders.length || (it.parentId && it.parentId !== 'root')) {
           menuItems.push({ divider: true });
           if (it.parentId && it.parentId !== 'root') menuItems.push({ id: 'moveRoot', label: 'Move to top level' });
-          folders.filter(f => f !== it.parentId).slice(0, 6).forEach(f => menuItems.push({ id: 'move:' + f, label: 'Move to “' + items[f].name + '”' }));
+          folders.filter(f => f !== it.parentId).forEach(f => menuItems.push({ id: 'move:' + f, label: 'Move to “' + items[f].name + '”' }));
         }
         menuItems.push({ divider: true }, { id: 'trash', label: 'Move to trash', danger: true });
       }
@@ -2623,6 +2789,19 @@ class Component extends DCLogic {
       show: !!this.state.menu, x: (this.state.menu ? this.state.menu.x : 0) + 'px', y: (this.state.menu ? this.state.menu.y : 0) + 'px',
       name: menuName,
       items: menuItems.map(m => ({ id: m.id || '', label: m.label || '', hint: m.hint || '', isDivider: !!m.divider, isItem: !m.divider, ink: m.danger ? '#D9451A' : t.ink }))
+    };
+    const renameItem = this.state.renameFor ? items[this.state.renameFor] : null;
+    const renameBox = {
+      show: !!renameItem,
+      title: renameItem ? (renameItem.type === 'folder' ? 'Folder name' : 'Script name') : '',
+      value: this.state.renameValue
+    };
+    const pendingConfirm = this.state.confirmBox;
+    const confirmBox = {
+      show: !!pendingConfirm,
+      title: pendingConfirm ? pendingConfirm.title : '',
+      text: pendingConfirm ? pendingConfirm.text : '',
+      action: pendingConfirm ? pendingConfirm.action : ''
     };
 
     /* ---------- share dialog ---------- */
@@ -2740,7 +2919,7 @@ class Component extends DCLogic {
       trashCount: String(trashIds.length),
       trashBg: this.state.showTrash ? t.accentSoft : 'transparent',
       trashFg: this.state.showTrash ? t.accent : t.muted,
-      menu, share, auth, banner,
+      menu, renameBox, confirmBox, share, auth, banner,
       docName: a.name || 'Untitled',
       badge: viewing
         ? { show: true, label: 'READ-ONLY', bg: t.accentSoft, fg: t.accent, action: 'exitShare', title: 'Exit shared view', cursor: 'pointer' }
@@ -2763,6 +2942,7 @@ class Component extends DCLogic {
         };
       }),
       pct: allIds.length ? Math.round(doneCount / allIds.length * 100) + '%' : '0%',
+      hasAnyTerms: allTerms.length > 0, termCount: String(allTerms.length),
       filters, filtersOpen: this.state.filtersOpen, filterLabel: activeFilterLabel,
       filtersChev: this.state.filtersOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
       noResults: vis.length === 0,
@@ -2797,7 +2977,8 @@ class Component extends DCLogic {
       rawLayer: this.rawLayer(raw, t),
       toastX: 0,
       onClick: this.onClick, onSet: this.onSet, onTagSet: this.onTagSet, onQuery: this.onQuery,
-      onNewTag: this.onNewTag, onDraft: this.onDraft, onPickScript: this.onPickScript, onUpload: this.onUpload, imgErr: this.imgErr,
+      onNewTag: this.onNewTag, onRenameValue: this.onRenameValue, onRenameKey: this.onRenameKey,
+      onDraft: this.onDraft, onPickScript: this.onPickScript, onUpload: this.onUpload, imgErr: this.imgErr,
       onShareEmail: this.onShareEmail, onShareRole: this.onShareRole, onMemberRole: this.onMemberRole, onSelectAll: this.onSelectAll,
       toast: this.state.toast
     };
