@@ -1881,7 +1881,14 @@ class Component extends DCLogic {
       return;
     }
     if ((el = g('data-unshare'))) { this.removeMember(this.state.shareFor, el.getAttribute('data-unshare')); return; }
-    if ((el = g('data-stop'))) return;
+    if ((el = g('data-stop'))) {
+      /* data-stop marks a modal body. A click on empty space inside it bubbles
+         up to the backdrop's closeOverlay, so swallow that (keep the modal
+         open) — but let real buttons inside the modal (public toggle, invite,
+         update-now) fall through to their data-act handler below. */
+      const a = g('data-act');
+      if (!(a && el.contains(a))) return;
+    }
     if ((el = g('data-open'))) { this.setState({ activeId: el.getAttribute('data-open'), mode: 'normal' }, () => { this.save(); this.watchDone(); }); return; }
     if ((el = g('data-ren'))) { this.rename(el.getAttribute('data-ren')); return; }
     if ((el = g('data-dup'))) { this.duplicate(el.getAttribute('data-dup')); return; }
