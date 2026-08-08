@@ -1907,6 +1907,7 @@ class Component extends DCLogic {
     const m = this.state.menu; if (!m) return;
     const id = m.id;
     this.setState({ menu: null });
+    if (a === 'signOut') return this.act('signOut');
     if (a === 'open') { this.setState({ activeId: id, viewer: null }, () => { this.save(); this.watchDone(); }); return; }
     if (a === 'rename') return this.rename(id);
     if (a === 'dup') return this.duplicate(id);
@@ -2138,7 +2139,20 @@ class Component extends DCLogic {
     if (k === 'signOut') {
       const fb = fbGet(); if (fb) fb.auth.signOut();
       this.detach();
-      this.setState({ menu: null, grants: {}, shares: {}, cloud: false, skippedLogin: false, loginOpen: false, drawer: false });
+      /* An account's data must never linger after sign-out. Wipe it from memory
+         and local storage so the signed-out browser — including "Continue
+         without an account" — starts completely clean and can't reach the
+         previous user's scripts. */
+      clearTimeout(this._saveT);
+      try { localStorage.removeItem(KEY); } catch (e) { }
+      this._pushed = false; this._stamps = {}; this._sig = null; this._doneId = null;
+      this.setState({
+        menu: null, grants: {}, shares: {}, cloud: false, user: null,
+        items: {}, raws: {}, doneMap: {}, activeId: '', activeLine: null,
+        openFolders: {}, draft: null, mode: 'normal', showTrash: false, filter: 'all', query: '',
+        viewer: null, viewerToken: null,
+        skippedLogin: false, loginOpen: false, drawer: false
+      });
       return;
     }
     if (k === 'account') { this.setState({ menu: { id: '@account', x: window.innerWidth - 222, y: 46 } }); return; }
