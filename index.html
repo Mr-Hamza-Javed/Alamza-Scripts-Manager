@@ -139,7 +139,7 @@ Signing in…</div>
 <div style="display:flex;align-items:center;gap:7px;flex:none;min-width:0;max-width:300px">
 <span style="font:600 12.5px/1.3 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ docName }}</span>
 <sc-if value="{{ badge.show }}" hint-placeholder-val="{{ false }}">
-<span style="flex:none;padding:2.5px 8px;border-radius:20px;background:{{ badge.bg }};color:{{ badge.fg }};font:700 8.5px/1.3 'JetBrains Mono',monospace;letter-spacing:.09em">{{ badge.label }}</span>
+<span data-act="{{ badge.action }}" title="{{ badge.title }}" style="flex:none;padding:2.5px 8px;border-radius:20px;background:{{ badge.bg }};color:{{ badge.fg }};font:700 8.5px/1.3 'JetBrains Mono',monospace;letter-spacing:.09em;cursor:{{ badge.cursor }}">{{ badge.label }}</span>
 </sc-if>
 </div>
 <span style="flex:1"></span>
@@ -2485,12 +2485,14 @@ class Component extends DCLogic {
       };
     });
     let tree = [], treeEmptyMsg = '';
-    if (viewing) {
-      /* shared folder ke andar ki sab scripts sidebar me — warna sirf pehli khulti thi */
-      const vi = this.state.viewer.items || {};
+    if (viewing || this.state.viewerToken) {
+      /* Opened through a share link: the sidebar shows ONLY the shared page —
+         never the visitor's own/local scripts, even while the link is still
+         loading or if the token is invalid. */
+      const vi = (this.state.viewer && this.state.viewer.items) || {};
       tree = [{ id: '@shared', isHeader: true, isRow: false, name: 'SHARED WITH YOU' }]
         .concat(walkSrc(vi, 'root', 0, []).map(r => ({ ...r, hasMenu: false, hasTag: false, hasPct: false })));
-      treeEmptyMsg = 'Is share me koi script nahi.';
+      treeEmptyMsg = (this.state.viewer && this.state.viewer.missing) ? 'Ye share link kaam nahi kar raha.' : 'Share load ho raha hai…';
     } else if (this.state.showTrash) {
       tree = trashIds.map(k => rowFor(k, 0, items, { tag: 'TRASH', tagBg: t.rule, tagFg: t.muted, tagTitle: 'In trash' }));
       treeEmptyMsg = 'Trash khali hai.';
@@ -2558,15 +2560,12 @@ class Component extends DCLogic {
       email: (u && u.email) || '', name: disp.split(' ')[0], fullName: (u && (u.displayName || u.email)) || '',
       photo: (u && u.photoURL) || '', initial: disp.charAt(0).toUpperCase()
     };
+    /* No read-only banner line while viewing — it wasted a full row. The
+       compact READ-ONLY badge by the title carries the state (and doubles as
+       the exit affordance). The only banner kept is the broken-link notice. */
     let banner = { show: false };
     if (this.state.viewer && this.state.viewer.missing) {
       banner = { show: true, title: 'Link kaam nahi kar raha', text: 'Ye share hata diya gaya hai ya link ghalat hai.', bg: t.accentSoft, bd: t.accent, dot: t.accent, ink: t.accent, hasAction: true, action: 'exitShare', actionLabel: 'Meri scripts' };
-    } else if (viewing) {
-      banner = {
-        show: true, title: 'Read-only shared view' + (this.state.viewer.granted ? ' · ' + ROLE_SHORT[role] : ''),
-        text: this.can('edit') ? 'Aap raw markdown badal sakte hain aur ready tick kar sakte hain.' : 'Aap sirf “ready” tick kar sakte hain — baqi kuch badla nahi ja sakta.',
-        bg: t.panel, bd: t.border, dot: t.accent, ink: t.ink, hasAction: true, action: 'exitShare', actionLabel: 'Exit'
-      };
     }
 
     const canEditRaw = viewing ? this.can('edit') : true;
@@ -2639,8 +2638,8 @@ class Component extends DCLogic {
       menu, share, auth, banner,
       docName: a.name || 'Untitled',
       badge: viewing
-        ? { show: true, label: 'READ-ONLY', bg: t.accentSoft, fg: t.accent }
-        : (shares[a.id] && shares[a.id].public ? { show: true, label: 'PUBLIC', bg: t.accentSoft, fg: t.accent } : { show: false }),
+        ? { show: true, label: 'READ-ONLY', bg: t.accentSoft, fg: t.accent, action: 'exitShare', title: 'Exit shared view', cursor: 'pointer' }
+        : (shares[a.id] && shares[a.id].public ? { show: true, label: 'PUBLIC', bg: t.accentSoft, fg: t.accent, action: '', title: '', cursor: 'default' } : { show: false, action: '', title: '', cursor: 'default' }),
       canShare: !viewing && !!this.state.cloud && !!a.id,
       showLibraryTools: !viewing,
       canEditDone: true, checkTitle: 'Mark footage ready',
