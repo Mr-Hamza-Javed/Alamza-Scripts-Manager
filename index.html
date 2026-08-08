@@ -280,12 +280,19 @@ Sign in</span>
 <div style="flex:1;height:5px;border-radius:3px;background:var(--rule);overflow:hidden"><div style="width:{{ pct }};height:100%;background:var(--accent);border-radius:3px"></div></div>
 <span style="font:500 10px/1 'JetBrains Mono',monospace;color:var(--muted)">{{ pct }}</span>
 </div>
-<div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 2px 8px">FILTER</div>
+<div data-act="toggleFilters" style="display:flex;align-items:center;gap:6px;margin:0 2px 8px;cursor:pointer">
+<span style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint)">FILTER</span>
+<span style="font:600 9.5px/1 var(--fUI);color:var(--muted)">{{ filterLabel }}</span>
+<span style="flex:1"></span>
+<svg width="9" height="9" viewBox="0 0 10 10" style="flex:none;color:var(--faint);transform:{{ filtersChev }};transition:transform .13s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+</div>
+<sc-if value="{{ filtersOpen }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-wrap:wrap;gap:4px;margin:0 0 15px">
 <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
 <span data-filter="{{ f.id }}" style="padding:4px 9px;border-radius:20px;font:500 10.5px/1.3 var(--fUI);cursor:pointer;background:{{ f.bg }};color:{{ f.fg }};border:1px solid {{ f.bd }}">{{ f.label }} <span style="opacity:.55">{{ f.n }}</span></span>
 </sc-for>
 </div>
+</sc-if>
 <div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 2px 8px">SECTIONS</div>
 <div style="display:flex;flex-direction:column;gap:1px">
 <sc-for list="{{ outline }}" as="o" hint-placeholder-count="4">
@@ -1344,14 +1351,17 @@ class Component extends DCLogic {
   constructor(p) {
     super(p);
     const d = load();
+    const vt = readHashToken();
     this.state = {
       items: d.items, raws: d.raws, doneMap: d.doneMap, activeId: d.activeId,
       settings: d.settings, tags: d.tags, openFolders: d.openFolders,
-      mode: 'normal', tab: 'appearance', query: '', filter: 'all', collapsed: {},
+      mode: 'normal', tab: 'appearance', query: '', filter: 'all', collapsed: {}, filtersOpen: false,
       activeLine: d.activeLine, draft: null, toast: '', newTag: '', win: { s: 0, e: 28 }, mounted: 40, offScreen: false,
       vw: typeof window !== 'undefined' ? window.innerWidth : 1440,
       drawer: false, loginOpen: false, loginBusy: false, loginError: '', skippedLogin: false,
-      sideTab: d.settings.defaultSideTab === 'review' ? 'review' : 'files',
+      /* Opened through a share link → Review tab by default; otherwise Scripts
+         (or the user's saved default). */
+      sideTab: vt ? 'review' : (d.settings.defaultSideTab === 'review' ? 'review' : 'files'),
       showTrash: false, menu: null, shareFor: null,
       shares: {}, grants: {}, shareEmail: '', shareRole: d.settings.defaultShareRole || 'viewer',
       user: null, authReady: false, cloud: false, viewer: null, viewerToken: readHashToken()
@@ -1374,12 +1384,22 @@ class Component extends DCLogic {
       }
       if (this.state.menu || this.state.shareFor || this.state.loginOpen) return;
       if (e.key === '/') { e.preventDefault(); const el = document.querySelector('input[placeholder^="Search lines"]'); if (el) el.focus(); return; }
-      if (e.key === 'j' || e.key === 'k') { e.preventDefault(); this.step(e.key === 'j' ? 1 : -1); }
-      if (e.key === 'f') this.set('focusMode', !this.state.settings.focusMode);
-      if (e.key === 'Enter' && this.state.activeLine) { e.preventDefault(); this.toggleDone(this.state.activeLine); }
+      /* j/k and ArrowDown/ArrowUp move the active line up/down */
+      if (e.key === 'j' || e.key === 'k' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault(); this.step((e.key === 'j' || e.key === 'ArrowDown') ? 1 : -1); return;
+      }
+      if (e.key === 'f') { this.set('focusMode', !this.state.settings.focusMode); return; }
+      /* Enter or Space toggles the active line's "ready" mark (mark / unmark) */
+      if ((e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') && this.state.activeLine) {
+        e.preventDefault(); this.toggleDone(this.state.activeLine); return;
+      }
     };
     window.addEventListener('keydown', this._key);
-    this._hash = () => this.setState({ viewerToken: readHashToken() }, () => this.bootViewer());
+    this._hash = () => {
+      const vt = readHashToken();
+      /* landing on a share link switches to the Review tab */
+      this.setState({ viewerToken: vt, sideTab: vt ? 'review' : this.state.sideTab }, () => this.bootViewer());
+    };
     window.addEventListener('hashchange', this._hash);
     this._onScroll = () => {
       /* scrolling must never trigger a render — that was the source of the jitter */
@@ -2152,6 +2172,7 @@ class Component extends DCLogic {
     if (k === 'newScript') return this.create('script', this.state.items[this.state.activeId] ? this.state.items[this.state.activeId].parentId : 'root');
     if (k === 'newFolder') return this.create('folder', 'root');
     if (k === 'toggleTrash') return this.setState({ showTrash: !this.state.showTrash, sideTab: 'files' });
+    if (k === 'toggleFilters') return this.setState({ filtersOpen: !this.state.filtersOpen });
     if (k === 'closeOverlay') return this.setState({ menu: null, shareFor: null });
     if (k === 'openShare') return this.setState({ shareFor: a.id, shareRole: this.state.settings.defaultShareRole || 'viewer' });
     if (k === 'togglePublic') return this.togglePublic(this.state.shareFor);
@@ -2205,7 +2226,7 @@ class Component extends DCLogic {
       location.hash = '';
       if (this._pubRef) { try { this._pubRef.off(); } catch (e) { } this._pubRef = null; }
       this._h = {};
-      this.setState({ viewer: null, viewerToken: null, draft: null, activeLine: null, win: { s: 0, e: 28 }, mounted: 40 }, () => {
+      this.setState({ viewer: null, viewerToken: null, draft: null, activeLine: null, win: { s: 0, e: 28 }, mounted: 40, sideTab: this.state.settings.defaultSideTab === 'review' ? 'review' : 'files' }, () => {
         const s = Object.keys(this.state.items).find(x => this.state.items[x].type === 'script' && !this.state.items[x].trashed);
         this.setState({ activeId: s }, () => this.watchDone());
       });
@@ -2448,6 +2469,7 @@ class Component extends DCLogic {
       fg: activeFilter === f.id ? '#fff' : t.muted,
       bd: activeFilter === f.id ? t.accent : t.border
     }));
+    const activeFilterLabel = (fbase.find(f => f.id === activeFilter) || fbase[0]).label;
 
     const tab = this.state.tab;
     const tabDef = TABS.find(x => x.id === tab) || TABS[0];
@@ -2717,7 +2739,9 @@ class Component extends DCLogic {
         };
       }),
       pct: allIds.length ? Math.round(doneCount / allIds.length * 100) + '%' : '0%',
-      filters, noResults: vis.length === 0,
+      filters, filtersOpen: this.state.filtersOpen, filterLabel: activeFilterLabel,
+      filtersChev: this.state.filtersOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
+      noResults: vis.length === 0,
       showNums: S.showLineNumbers, showChecks: S.showChecks, showCopyBtn: S.showCopyBtn,
       showFav: S.showFavicons, showDomain: S.showDomain, linkTarget: S.openNewTab ? '_blank' : '_self',
       chipR, ruleCss: S.columnRule ? '1px solid ' + t.rule : 'none',
