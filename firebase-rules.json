@@ -9,27 +9,38 @@
     "done": {
       "$scriptId": {
         ".read": true,
-        ".write": true,
-        "$lineId": { ".validate": "newData.isBoolean()" }
+        ".write": "$scriptId.matches(/^[A-Za-z0-9_-]{6,64}$/)",
+        "$lineId": { ".validate": "$lineId.matches(/^s[0-9]+r[0-9]+$/) && newData.isBoolean()" }
       }
     },
     "shares": {
       "$token": {
         ".read": true,
-        ".write": "auth != null && (!data.exists() || data.child('ownerUid').val() === auth.uid)"
+        ".write": "auth != null && ((!data.exists() && newData.child('ownerUid').val() === auth.uid) || data.child('ownerUid').val() === auth.uid)",
+        "ownerUid": { ".validate": "newData.isString() && (!data.exists() || newData.val() === data.val())" }
       }
     },
     "pub": {
       "$token": {
         ".read": true,
-        ".write": "auth != null",
-        "ownerUid": { ".validate": "!data.exists() || data.val() === newData.val() || data.parent().child('ownerUid').val() === auth.uid" }
+        ".write": "auth != null && ((!data.exists() && newData.child('ownerUid').val() === auth.uid) || data.child('ownerUid').val() === auth.uid)",
+        "ownerUid": { ".validate": "newData.isString() && (!data.exists() || data.val() === newData.val())" },
+        "shareId": { ".validate": "newData.isString() && (!data.exists() || data.val() === newData.val())" },
+        "raw": {
+          "$scriptId": {
+            ".write": "auth != null && auth.token.email != null && auth.token.email_verified === true && root.child('grants').child(auth.token.email.toLowerCase().replace('.', ',')).child(root.child('pub').child($token).child('shareId').val()).child('token').val() === $token && (root.child('grants').child(auth.token.email.toLowerCase().replace('.', ',')).child(root.child('pub').child($token).child('shareId').val()).child('role').val() === 'editor' || root.child('grants').child(auth.token.email.toLowerCase().replace('.', ',')).child(root.child('pub').child($token).child('shareId').val()).child('role').val() === 'manager' || root.child('grants').child(auth.token.email.toLowerCase().replace('.', ',')).child(root.child('pub').child($token).child('shareId').val()).child('role').val() === 'owner')",
+            ".validate": "newData.isString()"
+          }
+        }
       }
     },
     "grants": {
       "$emailKey": {
-        ".read": "auth != null",
-        ".write": "auth != null"
+        ".read": "auth != null && auth.token.email != null && auth.token.email_verified === true && $emailKey === auth.token.email.toLowerCase().replace('.', ',')",
+        "$itemId": {
+          ".write": "auth != null && ((!data.exists() && newData.child('ownerUid').val() === auth.uid) || data.child('ownerUid').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['ownerUid', 'recipientEmail', 'role', 'token']) && newData.child('ownerUid').isString() && (!data.exists() || newData.child('ownerUid').val() === data.child('ownerUid').val()) && newData.child('recipientEmail').isString() && $emailKey === newData.child('recipientEmail').val().toLowerCase().replace('.', ',') && (newData.child('role').val() === 'viewer' || newData.child('role').val() === 'commenter' || newData.child('role').val() === 'editor' || newData.child('role').val() === 'manager' || newData.child('role').val() === 'owner') && newData.child('token').isString()"
+        }
       }
     }
   }
