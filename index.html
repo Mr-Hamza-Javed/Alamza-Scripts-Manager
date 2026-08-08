@@ -225,6 +225,7 @@ Sign in</span>
 </div>
 
 <sc-if value="{{ isFilesTab }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ showLibraryTools }}" hint-placeholder-val="{{ true }}">
 <div style="flex:none;display:flex;align-items:center;gap:4px;padding:8px 10px 7px">
 <span data-act="newScript" title="New script" style="display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:6px;border:1px solid var(--border);font:500 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Script</span>
 <span data-act="newFolder" title="New folder" style="display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:6px;border:1px solid var(--border);font:500 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Folder</span>
@@ -233,6 +234,7 @@ Sign in</span>
 <span data-act="toggleTrash" title="Trash" style="display:flex;align-items:center;gap:5px;padding:4px 8px;border-radius:6px;font:500 10.5px/1.3 var(--fUI);color:{{ trashFg }};background:{{ trashBg }};cursor:pointer">
 <svg width="11" height="11" viewBox="0 0 14 14"><path d="M3 4h8M5.5 4V2.8h3V4M4.2 4l.5 7.2h4.6L9.8 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ trashCount }}</span>
 </div>
+</sc-if>
 
 <div class="sc" style="flex:1;min-height:0;overflow-y:auto;padding:0 7px 24px">
 <sc-if value="{{ treeEmpty }}" hint-placeholder-val="{{ false }}">
@@ -1250,11 +1252,9 @@ const RESET_IN_V2 = ['scriptFont', 'scriptSize', 'scriptWeight', 'scriptLeading'
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 function seed() {
-  const id = uid();
-  return {
-    items: { [id]: { type: 'script', name: 'Sample script', parentId: 'root', order: 0 } },
-    raws: { [id]: SAMPLE }, doneMap: {}, activeId: id
-  };
+  /* The app opens clean — no demo/sample documents, before or after sign-in.
+     (SAMPLE is kept in source for reference only, never loaded.) */
+  return { items: {}, raws: {}, doneMap: {}, activeId: '' };
 }
 function load() {
   try {
@@ -1271,10 +1271,10 @@ function load() {
           raws[s.id] = s.raw; doneMap[s.id] = s.done || {};
         });
       }
-      if (!items || !Object.keys(items).length) { const s = seed(); items = s.items; raws = s.raws; doneMap = s.doneMap; }
+      if (!items) { const s = seed(); items = s.items; raws = s.raws; doneMap = s.doneMap; }
       return {
         items, raws: raws || {}, doneMap: doneMap || {},
-        activeId: d.activeId && items[d.activeId] ? d.activeId : Object.keys(items).find(k => items[k].type === 'script'),
+        activeId: d.activeId && items[d.activeId] ? d.activeId : (Object.keys(items).find(k => items[k].type === 'script') || ''),
         settings: { ...DEFAULTS, ...saved }, tags: { ...DEFAULT_TAGS, ...(d.tags || {}) },
         activeLine: d.activeLine || null, openFolders: d.openFolders || {}
       };
@@ -1348,17 +1348,7 @@ class Component extends DCLogic {
     };
     window.addEventListener('resize', this._resize);
     setTimeout(() => this.windowFromScroll(), 120);
-    if (!localStorage.getItem(KEY)) {
-      fetch('uploads/New%20Text%20Document.txt').then(r => r.ok ? r.text() : null).then(t => {
-        if (t && t.length > 500) {
-          const id = uid();
-          this.setState({
-            items: { ...this.state.items, [id]: { type: 'script', name: 'Disney / Gen Alpha script', parentId: 'root', order: -1 } },
-            raws: { ...this.state.raws, [id]: t }, activeId: id
-          }, this.save);
-        }
-      }).catch(() => { });
-    }
+    /* No demo/sample document is loaded — the app opens clean. */
     this.waitForFb(0);
   }
   componentWillUnmount() {
@@ -1590,7 +1580,7 @@ class Component extends DCLogic {
     }
   };
   flash = (msg) => { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 1800); };
-  set = (k, v) => this.setState({ settings: { ...this.state.settings, [k]: v } }, this.save);
+  set = (k, v) => { if (this.isViewing()) return; this.setState({ settings: { ...this.state.settings, [k]: v } }, this.save); };
 
   /* ---- data access: cloud when signed in, localStorage otherwise ---- */
   uref(p) { const fb = fbGet(), u = this.state.user; return (fb && u && this.state.cloud) ? fb.db.ref('users/' + u.uid + '/' + p) : null; }
@@ -1931,6 +1921,7 @@ class Component extends DCLogic {
     if (a && a.indexOf('move:') === 0) return this.putItem(id, { parentId: a.slice(5) });
   }
   create(type, parentId) {
+    if (this.isViewing()) return;
     const id = uid();
     const pid = parentId && this.state.items[parentId] && this.state.items[parentId].type === 'folder' ? parentId : 'root';
     const name = type === 'folder' ? 'New folder' : 'Untitled script';
@@ -1944,6 +1935,10 @@ class Component extends DCLogic {
     }
   }
   setMode(m) {
+    /* Raw and Settings are never available in a read-only shared view (Raw only
+       if the viewer was granted edit rights). */
+    if (m === 'settings' && this.isViewing()) return;
+    if (m === 'raw' && this.isViewing() && !this.can('edit')) return;
     if (m === 'raw') { this.setState({ mode: 'raw', draft: this.state.draft === null ? this.active().raw : this.state.draft }); return; }
     if (this.state.mode === 'raw' && this.state.draft !== null && this.state.draft !== this.active().raw) this.flash('Unsaved raw changes rakhe hue hain — Save & render dabayein');
     this.setState({ mode: m, win: { s: 0, e: 28 }, mounted: 40 }, () => { if (m === 'normal') setTimeout(() => this.adjustWindow(), 60); });
@@ -2104,6 +2099,10 @@ class Component extends DCLogic {
   }
   act(k) {
     const a = this.active();
+    /* Read-only shared view: block every action that could create, rename,
+       delete or otherwise mutate data. Only viewing + the "ready" tick are
+       allowed for a public link. */
+    if (this.isViewing() && ['newScript', 'newFolder', 'toggleTrash', 'openShare', 'togglePublic', 'refreshShare', 'invite', 'rename', 'delete'].indexOf(k) >= 0) return;
     if (k === 'newScript') return this.create('script', this.state.items[this.state.activeId] ? this.state.items[this.state.activeId].parentId : 'root');
     if (k === 'newFolder') return this.create('folder', 'root');
     if (k === 'toggleTrash') return this.setState({ showTrash: !this.state.showTrash, sideTab: 'files' });
@@ -2227,6 +2226,7 @@ class Component extends DCLogic {
   onSelectAll = (e) => { try { e.target.select(); } catch (x) { } };
   onPickScript = (e) => this.setState({ activeId: e.target.value, activeLine: null }, () => { this.save(); this.watchDone(); });
   onUpload = (e) => {
+    if (this.isViewing()) { e.target.value = ''; return; }
     const files = Array.from(e.target.files || []); if (!files.length) return;
     const parent = this.state.items[this.state.activeId] ? this.state.items[this.state.activeId].parentId : 'root';
     let last = null;
@@ -2601,7 +2601,7 @@ class Component extends DCLogic {
       sbShadow: mob && this.state.drawer ? '0 0 46px rgba(0,0,0,.34)' : 'none',
       drawerOpen: mob && this.state.drawer,
       mobileNav: navDefs.map(n => ({ ...n, bg: navOn(n.id) ? t.accentSoft : 'transparent', fg: navOn(n.id) ? t.accent : t.muted })),
-      showHeadShare: !mob && !viewing && !!this.state.cloud,
+      showHeadShare: !mob && !viewing && !!this.state.cloud && !!a.id,
       showHeadAccount: !mob && !!(u && !u.isAnonymous),
       showHeadSignIn: !mob && this.state.authReady && !(u && !u.isAnonymous),
       showLogin, loginBusy: this.state.loginBusy, loginError: this.state.loginError,
@@ -2641,7 +2641,8 @@ class Component extends DCLogic {
       badge: viewing
         ? { show: true, label: 'READ-ONLY', bg: t.accentSoft, fg: t.accent }
         : (shares[a.id] && shares[a.id].public ? { show: true, label: 'PUBLIC', bg: t.accentSoft, fg: t.accent } : { show: false }),
-      canShare: !viewing && !!this.state.cloud,
+      canShare: !viewing && !!this.state.cloud && !!a.id,
+      showLibraryTools: !viewing,
       canEditDone: true, checkTitle: 'Mark footage ready',
       activeId: this.state.activeId,
       query: this.state.query, hasQuery: !!this.state.query, newTag: this.state.newTag,
