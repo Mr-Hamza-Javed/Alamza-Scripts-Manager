@@ -750,7 +750,7 @@ const DEFAULTS = {
   chipClick: 'copy', searchEngine: 'youtube', copyFormat: 'plain', copyJoin: 'comma',
   openNewTab: true, showFavicons: true, showDomain: false,
   autoDetect: true, defaultSplit: 'auto', unknownAs: 'auto',
-  scriptCol: 'script line', visualCol: 'visual guide', showExtraCols: false,
+  scriptCol: 'script line', visualCol: 'visual guide', showExtraCols: true,
   resolveNumRefs: true, resolveTitleRefs: true, keepBrokenCells: true
 };
 
@@ -847,7 +847,7 @@ const FIELDS = {
     { key: 'defaultSplit', type: 'select', label: 'Default chip split', options: [['auto', 'Auto (; then ,)'], [';', 'Semicolon'], [',', 'Comma']] },
     { key: 'scriptCol', type: 'text', label: 'Script column header', hint: 'Column ka naam pehchanne ke liye' },
     { key: 'visualCol', type: 'text', label: 'Visual guide column header' },
-    { key: 'showExtraCols', type: 'toggle', label: 'Show extra columns', hint: '2 se zyada columns ho to' },
+    { key: 'showExtraCols', type: 'toggle', label: 'Show extra columns', hint: '2 se zyada columns ho to — column ka naam label banega (visual guide se pehle ho to upar, baad me ho to aakhir me), aur us naam ka tag defined ho to uska color lagega' },
     { key: 'resolveNumRefs', type: 'toggle', label: 'Resolve [[10]] numbered refs' },
     { key: 'resolveTitleRefs', type: 'toggle', label: 'Resolve ▶️(Title) refs by name' },
     { key: 'keepBrokenCells', type: 'toggle', label: 'Repair broken table cells', hint: 'Link ke andar | ho to cell na toote' }
@@ -1041,6 +1041,40 @@ function parseGuide(cell, tags, reg, st, learned) {
   return items;
 }
 
+/* Case-insensitive tag-registry lookup (tags are keyed uppercase by convention,
+   but a user may have added one with different casing). */
+function findTag(tags, name) {
+  if (!name) return null;
+  if (tags[name]) return tags[name];
+  const up = String(name).toUpperCase();
+  if (tags[up]) return tags[up];
+  const k = Object.keys(tags).find(t => t.toUpperCase() === up);
+  return k ? tags[k] : null;
+}
+
+/* An extra table column (anything that isn't the script or visual-guide column)
+   becomes its own guide item. Its label is the column's header name; if a tag
+   of that name exists in the registry, its render type + colour are used,
+   otherwise it falls back to plain prose. */
+function extraColItem(colName, content, tags, reg, st) {
+  const label = String(colName || '').trim().toUpperCase();
+  if (!label) return null;
+  const def = findTag(tags, label);
+  const render = def ? def.render : 'prose';
+  if (render === 'hidden') return null;
+  const item = { k: label, render, color: def ? def.color : 'slate' };
+  if (render === 'links') {
+    item.links = parseLinks(content, reg, st);
+    if (!item.links.length) return null;
+  } else {
+    const body = cleanBody(stripMd(content));
+    if (!body) return null;
+    if (render === 'chips' || render === 'overlay') item.chips = splitChips(body, def ? def.split : 'auto', st.defaultSplit);
+    item.body = body;
+  }
+  return item;
+}
+
 function parseScriptCell(cell) {
   const t = cell.trim();
   const vid = t.match(/^`{1,3}\s*insert video:\s*([\s\S]*)$/i);
@@ -1094,11 +1128,22 @@ function parseDoc(md, tags, st) {
         const cells = splitCells(lines[r], st.keepBrokenCells);
         const sc = cells[sIdx] || ''; const vc = cells[vIdx] || '';
         if (!sc && !vc) { j = r + 1; continue; }
-        const extra = st.showExtraCols ? cells.filter((c, ci) => ci !== sIdx && ci !== vIdx && c).join(' · ') : '';
         const parsed = parseScriptCell(sc);
         lineNo++;
-        const items = parseGuide(vc, tags, reg, st, learned);
-        if (extra) items.push({ k: 'EXTRA', render: 'prose', body: stripMd(extra), color: 'slate' });
+        /* Extra columns: each keeps its header name as the label. Columns that
+           sit BEFORE the visual-guide column render before the guide items;
+           columns AFTER it render at the end. */
+        const before = [], after = [];
+        if (st.showExtraCols) {
+          for (let ci = 0; ci < cells.length; ci++) {
+            if (ci === sIdx || ci === vIdx) continue;
+            const content = cells[ci];
+            if (!content || !content.trim()) continue;
+            const xi = extraColItem(header[ci] || ('Column ' + (ci + 1)), content, tags, reg, st);
+            if (xi) (ci < vIdx ? before : after).push(xi);
+          }
+        }
+        const items = before.concat(parseGuide(vc, tags, reg, st, learned), after);
         cur.lines.push({ n: lineNo, text: parsed.text, video: parsed.video, range: parsed.range, transcript: parsed.transcript, items: items });
         j = r + 1;
       }
