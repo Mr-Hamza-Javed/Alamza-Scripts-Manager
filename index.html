@@ -22,6 +22,42 @@ button{appearance:none;-webkit-appearance:none}
 .hscroll::-webkit-scrollbar{display:none}
 .settings-card{transition:border-color .15s ease,background .15s ease,box-shadow .15s ease}
 .settings-card:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accentSoft)}
+.library-command-strip{width:max-content;display:grid;grid-template-columns:repeat(5,34px);gap:3px;padding:4px;border:1px solid var(--border);border-radius:12px;background:color-mix(in srgb,var(--panel) 74%,var(--surface));box-shadow:0 1px 2px rgba(0,0,0,.025),inset 0 1px rgba(255,255,255,.22)}
+.library-primary,.library-icon-btn,.script-tree-row,.tree-icon,.tree-row-actions,.tree-name{transition:background-color .16s ease,border-color .16s ease,color .16s ease,transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease,margin-right .18s cubic-bezier(.2,.8,.2,1)}
+.library-primary:hover{border-color:color-mix(in srgb,var(--accent) 42%,var(--border))!important;background:color-mix(in srgb,var(--accentSoft) 72%,var(--surface))!important;transform:translateY(-1px)}
+.library-icon-btn:hover{border-color:color-mix(in srgb,var(--accent) 32%,var(--border))!important;background:var(--panel)!important;color:var(--accent)!important;transform:translateY(-1px)}
+.library-search{transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
+.library-search:focus-within{border-color:color-mix(in srgb,var(--accent) 48%,var(--border))!important;box-shadow:0 0 0 3px var(--accentSoft);background:var(--surface)!important}
+.script-tree-row{isolation:isolate;border:1px solid transparent!important}
+.script-tree-row::before{content:"";position:absolute;z-index:2;left:-1px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--accent);opacity:0;transform:scaleY(.35);transition:opacity .16s ease,transform .2s cubic-bezier(.2,.8,.2,1)}
+.script-tree-row[aria-current="true"]{border-color:color-mix(in srgb,var(--accent) 18%,transparent)!important;box-shadow:0 2px 8px rgba(25,18,12,.035)}
+.script-tree-row[aria-current="true"]::before{opacity:1;transform:scaleY(1)}
+.script-tree-row:hover{background:var(--tree-hover-bg)!important;transform:translateX(1px)}
+.script-tree-row:hover .tree-icon{color:var(--accent)!important;background:var(--accentSoft)!important}
+.tree-icon{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--tree-icon-bg);color:var(--tree-icon-ink)}
+.tree-row-actions{display:flex;align-items:center;gap:3px;flex:none}
+@media (hover:hover) and (pointer:fine){
+  .tree-hover-actions .tree-row-actions{position:absolute;z-index:3;right:4px;top:50%;padding:3px 2px 3px 7px;border-radius:7px;background:var(--tree-action-bg);box-shadow:-13px 0 11px 2px var(--tree-action-bg);opacity:0;visibility:hidden;pointer-events:none;transform:translate(4px,-50%);transition:opacity .14s ease,transform .14s ease,visibility .14s ease}
+  .tree-hover-actions:hover .tree-name{margin-right:var(--tree-action-reserve)}
+  .tree-hover-actions:hover .tree-row-actions{opacity:1;visibility:visible;pointer-events:auto;transform:translate(0,-50%)}
+}
+.outline-list{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.025)}
+.outline-row{position:relative;isolation:isolate;transition:background-color .16s ease,box-shadow .16s ease}
+.outline-row::before{content:"";position:absolute;z-index:2;left:0;top:7px;bottom:7px;width:3px;border-radius:0 3px 3px 0;background:var(--accent);opacity:0;transform:scaleY(.35);transform-origin:center;transition:opacity .16s ease,transform .2s cubic-bezier(.2,.8,.2,1)}
+.outline-row[aria-current="true"]{background:var(--accentSoft);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent)}
+.outline-row[aria-current="true"]::before{opacity:1;transform:scaleY(1)}
+.outline-number,.outline-title,.outline-status,.outline-chevron,.outline-progress{transition:transform .18s cubic-bezier(.2,.8,.2,1),color .16s ease,background-color .16s ease,opacity .16s ease}
+.outline-chevron{opacity:.28}
+.outline-progress{transform-origin:center}
+@media (hover:hover) and (pointer:fine){
+  .outline-row:hover{background:var(--panel);box-shadow:inset 0 0 0 1px var(--border)}
+  .outline-row[aria-current="true"]:hover{background:var(--accentSoft);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent)}
+  .outline-row:hover .outline-number{transform:scale(1.07);background:var(--accentSoft)!important;color:var(--accent)!important}
+  .outline-row:hover .outline-title{transform:translateX(1px)}
+  .outline-row:hover .outline-status{transform:translateX(-1px)}
+  .outline-row:hover .outline-chevron{opacity:.85;transform:translateX(2px);color:var(--accent)}
+  .outline-row:hover .outline-progress{transform:scaleY(1.55)}
+}
 .sc::-webkit-scrollbar{width:11px;height:11px}
 .sc::-webkit-scrollbar-thumb{background:var(--faint);border-radius:8px;border:3px solid transparent;background-clip:content-box}
 .sc::-webkit-scrollbar-track{background:transparent}
@@ -35,6 +71,31 @@ button{appearance:none;-webkit-appearance:none}
 .rawhl .b{color:var(--ink);font-weight:700}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes lineCompleteOut{0%{opacity:1;max-height:2400px;transform:translateX(0) scale(1)}62%{opacity:0;max-height:2400px;transform:translateX(14px) scale(.992)}100%{opacity:0;max-height:0;transform:translateX(18px) scale(.985);margin-top:0;padding-top:0;padding-bottom:0;border-width:0}}
+@keyframes linePromoteIn{from{transform:translateY(7px);filter:saturate(.85)}to{transform:translateY(0);filter:saturate(1)}}
+@keyframes completionTrace{0%{opacity:0;background-position:145% 0}14%{opacity:.4}46%{opacity:.62}82%{opacity:.3}100%{opacity:0;background-position:-45% 0}}
+@keyframes checkSnap{0%{transform:scale(.88)}40%{transform:scale(1.12)}72%{transform:scale(.98)}100%{transform:scale(1)}}
+@keyframes checkDraw{0%{opacity:.15;stroke-dashoffset:14}65%{opacity:1;stroke-dashoffset:0}100%{opacity:1;stroke-dashoffset:0}}
+@keyframes checkRipple{0%{opacity:0;transform:scale(.72)}22%{opacity:.38}100%{opacity:0;transform:scale(1.55)}}
+@keyframes sectionGlint{0%{opacity:0;transform:translateX(-120%) skewX(-18deg)}20%{opacity:.5}75%{opacity:.25}100%{opacity:0;transform:translateX(150%) skewX(-18deg)}}
+@keyframes scriptWave{0%{opacity:0;transform:translateX(-115%)}18%{opacity:.9}75%{opacity:.55}100%{opacity:0;transform:translateX(115%)}}
+@keyframes progressResolve{0%{transform:scale(1)}38%{transform:scale(1.025)}100%{transform:scale(1)}}
+.line-card{position:relative!important;transform-origin:center;overflow:hidden}
+.line-card.line-exit{pointer-events:none;animation:lineCompleteOut .3s cubic-bezier(.4,0,.2,1) forwards}
+.line-card.line-promote{animation:linePromoteIn .28s cubic-bezier(.2,.8,.2,1)}
+.line-card.line-achieved::after{content:"";position:absolute;inset:0;z-index:5;padding:1.5px;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 24%,var(--accent) 42%,#6FC9AE 49%,transparent 64%);background-size:340% 100%;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:completionTrace 1.45s cubic-bezier(.22,.61,.36,1) .06s forwards}
+.ready-check{position:relative;transition:background .18s ease,border-color .18s ease}
+.ready-check.ready-achieved{animation:checkSnap .62s cubic-bezier(.2,.8,.2,1)}
+.ready-check.ready-achieved svg path{stroke-dasharray:14;stroke-dashoffset:14;animation:checkDraw .56s cubic-bezier(.25,.7,.25,1) .04s forwards}
+.ready-check.ready-achieved::before{content:"";position:absolute;inset:-4px;border:1px solid rgba(63,169,140,.38);border-radius:50%;pointer-events:none;animation:checkRipple .72s cubic-bezier(.2,.7,.2,1) .06s forwards}
+.section-achieved{overflow:hidden;isolation:isolate}
+.section-achieved::after{content:"";position:absolute;inset:-1px auto -1px 0;width:38%;z-index:1;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(63,169,140,.14),rgba(255,255,255,.18),transparent);animation:sectionGlint 1s cubic-bezier(.2,.75,.2,1) forwards}
+.section-achieved [data-marksec] svg{animation:checkSnap .5s cubic-bezier(.18,.9,.25,1.25)}
+.script-complete-wave{position:fixed;left:0;right:0;top:60px;height:2px;z-index:58;overflow:hidden;pointer-events:none}
+.script-complete-wave::after{content:"";display:block;width:42%;height:100%;background:linear-gradient(90deg,transparent,var(--accent),#69C6A9,transparent);animation:scriptWave 1.35s cubic-bezier(.2,.75,.2,1) forwards}
+.review-progress.script-achieved{animation:progressResolve .72s cubic-bezier(.2,.8,.2,1);overflow:hidden}
+.review-progress.script-achieved::after{content:"";position:absolute;inset:0;width:45%;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(63,169,140,.1),transparent);animation:sectionGlint 1.05s cubic-bezier(.2,.75,.2,1) forwards}
+.review-progress.script-achieved [data-progress-value]{animation:checkSnap .5s cubic-bezier(.18,.9,.25,1.25)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 <script>
@@ -67,7 +128,7 @@ button{appearance:none;-webkit-appearance:none}
 <div style="position:absolute;inset:0;z-index:80;display:flex;background:var(--bg);animation:fin .2s ease-out;flex-direction:{{ loginDir }}">
 <div style="flex:{{ loginArtFlex }};min-width:0;display:{{ loginArtDisp }};flex-direction:column;justify-content:space-between;padding:{{ loginArtPad }};background:var(--surface);border-right:1px solid var(--border);position:relative;overflow:hidden">
 <div style="display:flex;align-items:center;gap:9px">
-<div style="width:26px;height:26px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 1.2l8.2 4.8L2 10.8z" fill="#fff"/></svg></div>
+<img src="./favicon.svg" alt="" aria-hidden="true" style="width:26px;height:26px;border-radius:7px;display:block;flex:none"/>
 <span style="font:600 14px/1 var(--fUI);letter-spacing:-.01em;color:var(--ink)">Alamza</span>
 <span style="font:400 14px/1 var(--fUI);color:var(--muted)">Scripts</span>
 </div>
@@ -98,7 +159,7 @@ button{appearance:none;-webkit-appearance:none}
 <div style="width:100%;max-width:360px">
 <sc-if value="{{ loginCompact }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;align-items:center;gap:9px;margin-bottom:26px">
-<div style="width:26px;height:26px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 1.2l8.2 4.8L2 10.8z" fill="#fff"/></svg></div>
+<img src="./favicon.svg" alt="" aria-hidden="true" style="width:26px;height:26px;border-radius:7px;display:block;flex:none"/>
 <span style="font:600 14px/1 var(--fUI);color:var(--ink)">Alamza</span>
 <span style="font:400 14px/1 var(--fUI);color:var(--muted)">Scripts</span>
 </div>
@@ -140,7 +201,7 @@ Signing in…</div>
 </sc-if>
 <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;align-items:center;gap:8px;flex:none">
-<div style="width:22px;height:22px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 1.2l8.2 4.8L2 10.8z" fill="#fff"/></svg></div>
+<img src="./favicon.svg" alt="" aria-hidden="true" style="width:22px;height:22px;border-radius:6px;display:block;flex:none"/>
 <span style="font:600 13px/1 var(--fUI);letter-spacing:-.01em">Alamza</span>
 <span style="font:400 13px/1 var(--fUI);color:var(--muted)">Scripts</span>
 </div>
@@ -212,7 +273,7 @@ Share</span>
 
 <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
 <div style="flex:none;display:flex;align-items:center;gap:9px;padding:14px 13px 10px;border-bottom:1px solid var(--border)">
-<div style="width:24px;height:24px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex:none"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 1.2l8.2 4.8L2 10.8z" fill="#fff"/></svg></div>
+<img src="./favicon.svg" alt="" aria-hidden="true" style="width:24px;height:24px;border-radius:7px;display:block;flex:none"/>
 <span style="font:600 13.5px/1 var(--fUI);color:var(--ink)">Alamza</span>
 <span style="font:400 13.5px/1 var(--fUI);color:var(--muted)">Scripts</span>
 <span style="flex:1"></span>
@@ -227,19 +288,42 @@ Share</span>
 
 <sc-if value="{{ isFilesTab }}" hint-placeholder-val="{{ true }}">
 <sc-if value="{{ showLibraryTools }}" hint-placeholder-val="{{ true }}">
-<div style="flex:none;display:flex;align-items:center;gap:5px;padding:9px 10px 8px">
-<span data-act="newScript" tabindex="0" role="button" title="New script" class="ui-control" style="display:flex;align-items:center;gap:5px;min-height:30px;padding:6px 10px;border-radius:7px;border:1px solid var(--border);font:600 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Script</span>
-<span data-act="newFolder" tabindex="0" role="button" title="New folder" class="ui-control" style="display:flex;align-items:center;gap:5px;min-height:30px;padding:6px 10px;border-radius:7px;border:1px solid var(--border);font:600 10.5px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">+ Folder</span>
-<label title="Upload .md / .txt" tabindex="0" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:31px;height:30px;border-radius:7px;border:1px solid var(--border);color:var(--muted);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M7 10V2M4 5l3-3 3 3M2 11.5h10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><input type="file" accept=".md,.txt,.markdown,text/*" multiple="{{ true }}" onChange="{{ onUpload }}" style="display:none"/></label>
-<span style="flex:1"></span>
-<span data-act="toggleTrash" tabindex="0" role="button" title="Trash" class="ui-control" style="display:flex;align-items:center;gap:5px;min-width:31px;min-height:30px;justify-content:center;padding:6px 8px;border-radius:7px;font:600 10.5px/1.3 var(--fUI);color:{{ trashFg }};background:{{ trashBg }};cursor:pointer">
-<svg width="11" height="11" viewBox="0 0 14 14"><path d="M3 4h8M5.5 4V2.8h3V4M4.2 4l.5 7.2h4.6L9.8 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ trashCount }}</span>
+<div style="flex:none;padding:10px 10px 8px">
+<div class="library-command-strip">
+<button type="button" data-act="newScript" aria-label="New script" title="New script" class="ui-control library-primary" style="min-width:0;height:34px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:9px;border:1px solid color-mix(in srgb,var(--accent) 26%,var(--border));background:var(--accentSoft);color:var(--accent);cursor:pointer">
+<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.8h5l3 3v7.4H3z"/><path d="M7 6v4M5 8h4"/></svg>
+</button>
+<button type="button" data-act="newFolder" aria-label="New folder" title="New folder" class="ui-control library-icon-btn" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer">
+<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M1.8 4.5h4l1.2 1.4h7.2v6.6a1 1 0 0 1-1 1H2.8a1 1 0 0 1-1-1z"/><path d="M10.7 8v3M9.2 9.5h3"/></svg>
+</button>
+<button type="button" data-act="toggleTreeSearch" aria-label="Search scripts and folders" aria-expanded="{{ treeSearchOpen }}" title="Search" class="ui-control library-icon-btn" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid {{ searchBorder }};background:{{ searchBg }};color:{{ searchFg }};cursor:pointer"><svg width="14" height="14" viewBox="0 0 16 16"><circle cx="6.8" cy="6.8" r="4.2" fill="none" stroke="currentColor" stroke-width="1.45"/><path d="m10 10 3.5 3.5" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/></svg></button>
+<label aria-label="Import scripts" title="Import .md or .txt" tabindex="0" role="button" onKeyDown="{{ onImportKey }}" class="ui-control library-icon-btn" style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10V2.2M5.3 5 8 2.2 10.7 5M2.2 10.5v2.2a1 1 0 0 0 1 1h9.6a1 1 0 0 0 1-1v-2.2"/></svg><input type="file" accept=".md,.txt,.markdown,text/*" multiple="{{ true }}" onChange="{{ onUpload }}" style="display:none"/></label>
+<button type="button" data-act="toggleTrash" aria-label="{{ trashLabel }}" title="{{ trashLabel }}" class="ui-control library-icon-btn" style="position:relative;width:34px;height:34px;display:flex;align-items:center;justify-content:center;padding:0;border:1px solid {{ trashBorder }};border-radius:9px;color:{{ trashFg }};background:{{ trashBg }};cursor:pointer"><svg width="12" height="12" viewBox="0 0 14 14"><path d="M3 4h8M5.5 4V2.8h3V4M4.2 4l.5 7.2h4.6L9.8 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><sc-if value="{{ hasTrash }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:-4px;top:-5px;min-width:16px;height:16px;padding:0 3px;border:2px solid var(--surface);border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--accent);color:#fff;font:700 8px/1 'JetBrains Mono',monospace;box-shadow:0 1px 3px rgba(0,0,0,.16)">{{ trashCount }}</span></sc-if></button>
 </div>
+</div>
+<sc-if value="{{ treeSearchOpen }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;padding:0 10px 9px;animation:fin .14s ease-out">
+<div class="library-search" style="height:32px;flex:1;min-width:0;display:flex;align-items:center;gap:7px;padding:0 8px;border:1px solid var(--border);border-radius:8px;background:var(--panel)">
+<svg width="12" height="12" viewBox="0 0 16 16" style="flex:none;color:var(--faint)"><circle cx="6.8" cy="6.8" r="4.2" fill="none" stroke="currentColor" stroke-width="1.45"/><path d="m10 10 3.5 3.5" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/></svg>
+<input id="tree-search-input" value="{{ treeQuery }}" onChange="{{ onTreeQuery }}" onKeyDown="{{ onTreeSearchKey }}" aria-label="Search scripts and folders" placeholder="{{ treeSearchPlaceholder }}" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:450 10.5px/1.3 var(--fUI)"/>
+<sc-if value="{{ hasTreeQuery }}" hint-placeholder-val="{{ false }}"><button type="button" data-act="clearTreeQuery" aria-label="Clear library search" class="ui-control" style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;border:0;border-radius:6px;background:transparent;color:var(--faint);font:400 14px/1 var(--fUI);cursor:pointer">×</button></sc-if>
+</div>
+</div>
+</sc-if>
 </sc-if>
 
 <div class="sc" style="flex:1;min-height:0;overflow-y:auto;padding:0 7px 24px">
+<div style="display:flex;align-items:center;gap:7px;padding:5px 5px 7px">
+<span style="font:700 8px/1 var(--fUI);letter-spacing:.13em;color:var(--faint)">{{ treeHeading }}</span>
+<span style="min-width:17px;padding:2px 5px;border-radius:999px;background:var(--panel);color:var(--muted);text-align:center;font:700 7.5px/1 'JetBrains Mono',monospace">{{ treeVisibleCount }}</span>
+<span style="flex:1;height:1px;background:var(--rule)"></span>
+</div>
 <sc-if value="{{ treeEmpty }}" hint-placeholder-val="{{ false }}">
-<div style="padding:22px 12px;text-align:center;font:400 11.5px/1.65 var(--fUI);color:var(--muted)">{{ treeEmptyMsg }}</div>
+<div style="margin:4px 3px;padding:22px 14px;border:1px dashed var(--border);border-radius:10px;background:var(--panel);text-align:center">
+<span style="width:30px;height:30px;margin:0 auto 9px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--surface);color:var(--faint)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h4l1.2 1.4H14v6.1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></svg></span>
+<div style="font:500 10.5px/1.5 var(--fUI);color:var(--muted)">{{ treeEmptyMsg }}</div>
+<sc-if value="{{ hasTreeQuery }}" hint-placeholder-val="{{ false }}"><button type="button" data-act="clearTreeQuery" class="ui-control" style="margin-top:10px;padding:6px 10px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--prose);font:600 9.5px/1 var(--fUI);cursor:pointer">Clear search</button></sc-if>
+</div>
 </sc-if>
 <sc-for list="{{ tree }}" as="it" hint-placeholder-count="5">
 <sc-if value="{{ it.isHeader }}" hint-placeholder-val="{{ false }}">
@@ -249,25 +333,27 @@ Share</span>
 </div>
 </sc-if>
 <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}">
-<div data-row="{{ it.id }}" tabindex="0" role="button" class="ui-control" style="display:flex;align-items:center;gap:7px;min-height:35px;padding:7px 5px 7px {{ it.indent }};border-radius:8px;cursor:pointer;background:{{ it.bg }};border-left:3px solid {{ it.bar }}" style-hover="background:var(--panel)">
+<div data-row="{{ it.id }}" tabindex="0" role="button" aria-current="{{ it.current }}" aria-label="{{ it.ariaLabel }}" onKeyDown="{{ onTreeRowKey }}" class="ui-control tree-hover-actions script-tree-row" style="--tree-hover-bg:{{ it.hoverBg }};--tree-action-bg:{{ it.actionBg }};--tree-action-reserve:{{ it.actionReserve }};position:relative;display:flex;align-items:center;gap:7px;min-height:40px;padding:6px 5px 6px {{ it.indent }};margin-bottom:3px;border-radius:9px;cursor:pointer;background:{{ it.bg }}">
 <sc-if value="{{ it.isFolder }}" hint-placeholder-val="{{ false }}">
-<svg width="9" height="9" viewBox="0 0 10 10" style="flex:none;color:var(--faint);transform:{{ it.chev }};transition:transform .13s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-<svg width="13" height="13" viewBox="0 0 14 14" style="flex:none;color:{{ it.iconInk }}"><path d="M1.6 3.6h3.4l1 1.2h6.4v6.2a.8.8 0 0 1-.8.8H2.4a.8.8 0 0 1-.8-.8z" fill="currentColor" opacity=".9"/></svg>
+<svg width="8" height="8" viewBox="0 0 10 10" style="flex:none;color:var(--faint);transform:{{ it.chev }};transition:transform .16s cubic-bezier(.2,.8,.2,1)"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+<span class="tree-icon" style="--tree-icon-bg:{{ it.iconBg }};--tree-icon-ink:{{ it.iconInk }}"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M1.8 4.4h4l1.2 1.4h7.2v6.8a1 1 0 0 1-1 1H2.8a1 1 0 0 1-1-1z" fill="currentColor" opacity=".88"/></svg></span>
 </sc-if>
 <sc-if value="{{ it.isScript }}" hint-placeholder-val="{{ true }}">
-<span style="width:9px;flex:none"></span>
-<svg width="12" height="12" viewBox="0 0 14 14" style="flex:none;color:{{ it.iconInk }}"><path d="M3.2 1.8h5l3 3v7.4H3.2z" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M4.9 6.2h4.2M4.9 8.4h4.2M4.9 10.2h2.6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+<span style="width:8px;flex:none"></span>
+<span class="tree-icon" style="--tree-icon-bg:{{ it.iconBg }};--tree-icon-ink:{{ it.iconInk }}"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M3.1 1.6h5.2l2.8 2.9v7.8h-8z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M4.8 6.2h4.5M4.8 8.4h4.5M4.8 10.2h2.8" stroke="currentColor" stroke-width="1.05" stroke-linecap="round"/></svg></span>
 </sc-if>
-<span style="flex:1;min-width:0;font:{{ it.font }};color:{{ it.ink }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.name }}</span>
+<span class="tree-name" title="{{ it.name }}" style="flex:1;min-width:0;font:{{ it.font }};color:{{ it.ink }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.name }}</span>
+<div class="tree-row-actions">
 <sc-if value="{{ it.hasTag }}" hint-placeholder-val="{{ false }}">
-<span title="{{ it.tagTitle }}" style="flex:none;padding:1.5px 5px;border-radius:4px;background:{{ it.tagBg }};color:{{ it.tagFg }};font:700 7.5px/1.35 'JetBrains Mono',monospace;letter-spacing:.06em">{{ it.tag }}</span>
+<span title="{{ it.tagTitle }}" style="flex:none;padding:3px 5px;border-radius:5px;background:{{ it.tagBg }};color:{{ it.tagFg }};font:700 7px/1 'JetBrains Mono',monospace;letter-spacing:.06em">{{ it.tag }}</span>
 </sc-if>
 <sc-if value="{{ it.hasPct }}" hint-placeholder-val="{{ false }}">
-<span style="flex:none;font:400 8.5px/1.35 'JetBrains Mono',monospace;color:var(--faint)">{{ it.pct }}</span>
+<span title="Ready lines" style="height:20px;display:flex;align-items:center;gap:3px;flex:none;padding:0 5px;border-radius:5px;background:var(--surface);color:#3FA98C;font:700 7.5px/1 'JetBrains Mono',monospace"><svg width="8" height="8" viewBox="0 0 10 10"><path d="M1.3 5.2 3.7 7.6 8.7 2.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ it.pct }}</span>
 </sc-if>
 <sc-if value="{{ it.hasMenu }}" hint-placeholder-val="{{ true }}">
-<span data-menu="{{ it.id }}" tabindex="0" role="button" aria-label="More options for {{ it.name }}" title="More" class="ui-control" style="flex:none;display:flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-4px -2px -4px 0;border-radius:7px;color:var(--muted);font:700 14px/1 var(--fUI);cursor:pointer" style-hover="background:var(--surface);color:var(--ink)">⋯</span>
+<span data-menu="{{ it.id }}" tabindex="0" role="button" aria-label="More options for {{ it.name }}" title="More options" class="ui-control" style="flex:none;display:flex;align-items:center;justify-content:center;width:26px;height:26px;margin:-3px -2px -3px 0;border-radius:7px;color:var(--muted);cursor:pointer" style-hover="background:var(--surface);color:var(--ink)"><svg width="14" height="4" viewBox="0 0 14 4" fill="currentColor"><circle cx="2" cy="2" r="1.35"/><circle cx="7" cy="2" r="1.35"/><circle cx="12" cy="2" r="1.35"/></svg></span>
 </sc-if>
+</div>
 </div>
 </sc-if>
 </sc-for>
@@ -275,54 +361,75 @@ Share</span>
 </sc-if>
 
 <sc-if value="{{ isReviewTab }}" hint-placeholder-val="{{ false }}">
-<div class="sc" style="flex:1;min-height:0;overflow-y:auto;padding:11px 11px 40px">
-<div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 2px 8px">PROGRESS</div>
-<div style="display:flex;align-items:center;gap:9px;margin:0 2px 14px">
-<div style="flex:1;height:5px;border-radius:3px;background:var(--rule);overflow:hidden"><div style="width:{{ pct }};height:100%;background:var(--accent);border-radius:3px"></div></div>
-<span style="font:500 10px/1 'JetBrains Mono',monospace;color:var(--muted)">{{ pct }}</span>
+<div class="sc" style="flex:1;min-height:0;overflow-y:auto;padding:9px 10px 36px">
+<div class="review-progress {{ progressFxClass }}" style="position:relative;margin:0 0 11px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.028)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<div style="display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:50%;background:#3FA98C;box-shadow:0 0 0 4px rgba(63,169,140,.12)"></span><span style="font:700 8.5px/1 var(--fUI);letter-spacing:.13em;color:var(--faint)">REVIEW PROGRESS</span></div>
+<span data-progress-value style="position:relative;z-index:2;flex:none;font:700 10.5px/1 'JetBrains Mono',monospace;color:#23846A">{{ pct }}</span>
 </div>
-<sc-if value="{{ hasAnyTerms }}" hint-placeholder-val="{{ false }}">
-<div data-act="copyAllTerms" title="Copy every search term in this script" style="display:flex;align-items:center;justify-content:center;gap:7px;margin:0 2px 14px;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--panel);font:500 11px/1.3 var(--fUI);color:var(--prose);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)">
-<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg>
-Copy all {{ termCount }} terms
+<div style="height:5px;margin-top:9px;border-radius:999px;background:var(--rule);overflow:hidden"><div style="{{ progressFillStyle }}"></div></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:9px;padding-top:9px;border-top:1px solid var(--rule)">
+<div style="min-width:0;text-align:center"><div style="font:700 13px/1 var(--fUI);color:#23846A">{{ doneLines }}</div><div style="margin-top:4px;font:700 7px/1 var(--fUI);letter-spacing:.1em;color:#3FA98C">READY</div></div>
+<div style="min-width:0;text-align:center;border-left:1px solid var(--rule);border-right:1px solid var(--rule)"><div style="font:700 13px/1 var(--fUI);color:var(--accent)">{{ pendingLines }}</div><div style="margin-top:4px;font:700 7px/1 var(--fUI);letter-spacing:.1em;color:var(--faint)">LEFT</div></div>
+<div style="min-width:0;text-align:center"><div style="font:700 13px/1 var(--fUI);color:var(--ink)">{{ totalLines }}</div><div style="margin-top:4px;font:700 7px/1 var(--fUI);letter-spacing:.1em;color:var(--faint)">TOTAL</div></div>
 </div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 6px">
+<span style="font:700 8px/1 var(--fUI);letter-spacing:.13em;color:var(--faint)">FILTER LINES</span>
+<sc-if value="{{ hasTagFilters }}" hint-placeholder-val="{{ false }}">
+<button type="button" data-act="toggleFilters" tabindex="0" aria-expanded="{{ filtersOpen }}" class="ui-control" style="display:flex;align-items:center;gap:4px;padding:3px 5px;border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer">
+<svg width="10" height="10" viewBox="0 0 14 14"><path d="M2 3h10L8.2 7.3v3.5l-2.4 1V7.3z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+<span style="font:650 8px/1 var(--fUI)">Tags</span><span style="font:650 7.5px/1 'JetBrains Mono',monospace;color:var(--faint)">{{ tagFilterCount }}</span>
+<sc-if value="{{ hasActiveTagFilter }}" hint-placeholder-val="{{ false }}"><span style="width:5px;height:5px;border-radius:50%;background:var(--accent)"></span></sc-if>
+<svg width="8" height="8" viewBox="0 0 10 10" style="transform:{{ filtersChev }};transition:transform .13s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+</button>
 </sc-if>
-<div data-act="toggleFilters" style="display:flex;align-items:center;gap:6px;margin:0 2px 8px;cursor:pointer">
-<span style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint)">FILTER</span>
-<span style="font:600 9.5px/1 var(--fUI);color:var(--muted)">{{ filterLabel }}</span>
-<span style="flex:1"></span>
-<svg width="9" height="9" viewBox="0 0 10 10" style="flex:none;color:var(--faint);transform:{{ filtersChev }};transition:transform .13s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
 </div>
+<div role="tablist" aria-label="Filter script lines" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;margin-bottom:9px;padding:3px;border:1px solid var(--border);border-radius:9px;background:var(--panel)">
+<sc-for list="{{ primaryFilters }}" as="f" hint-placeholder-count="3">
+<button type="button" data-filter="{{ f.id }}" tabindex="0" role="tab" aria-selected="{{ f.selected }}" onKeyDown="{{ onReviewKey }}" class="ui-control" style="{{ f.primaryStyle }}">
+<span style="font:650 8.5px/1 var(--fUI)">{{ f.label }}</span><span style="font:700 8px/1 'JetBrains Mono',monospace;opacity:.7">{{ f.n }}</span>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{ hasTagFilters }}" hint-placeholder-val="{{ false }}">
 <sc-if value="{{ filtersOpen }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;flex-wrap:wrap;gap:4px;margin:0 0 15px">
-<sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
-<span data-filter="{{ f.id }}" style="padding:4px 9px;border-radius:20px;font:500 10.5px/1.3 var(--fUI);cursor:pointer;background:{{ f.bg }};color:{{ f.fg }};border:1px solid {{ f.bd }}">{{ f.label }} <span style="opacity:.55">{{ f.n }}</span></span>
+<div style="display:flex;flex-wrap:wrap;gap:4px;margin:-3px 0 10px;padding:7px;border-radius:8px;background:var(--panel)">
+<sc-for list="{{ tagFilters }}" as="f" hint-placeholder-count="4">
+<button type="button" data-filter="{{ f.id }}" tabindex="0" aria-pressed="{{ f.selected }}" onKeyDown="{{ onReviewKey }}" class="ui-control" style="{{ f.tagStyle }}">{{ f.label }} <span style="opacity:.62">{{ f.n }}</span></button>
 </sc-for>
 </div>
 </sc-if>
-<div style="font:500 9px/1 var(--fUI);letter-spacing:.14em;color:var(--faint);margin:0 2px 8px">SECTIONS</div>
-<div style="display:flex;flex-direction:column;gap:1px">
-<sc-for list="{{ outline }}" as="o" hint-placeholder-count="4">
-<div data-goto="{{ o.id }}" style="padding:7px 8px;border-radius:7px;cursor:pointer;background:{{ o.bg }}" style-hover="background:var(--panel)">
-<div style="display:flex;align-items:baseline;gap:7px">
-<span style="font:500 9px/1.5 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ o.num }}</span>
-<span style="flex:1;min-width:0;font:500 11.5px/1.4 var(--fUI);color:{{ o.ink }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ o.title }}</span>
-<span style="font:400 9.5px/1.5 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ o.count }}</span>
+</sc-if>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 6px">
+<span style="font:700 8px/1 var(--fUI);letter-spacing:.13em;color:var(--faint)">SECTIONS</span>
+<span style="font:650 7.5px/1 'JetBrains Mono',monospace;color:{{ sectionSummaryColor }}">{{ readySectionCount }}/{{ sectionCount }} READY</span>
 </div>
-<div style="height:3px;border-radius:2px;background:var(--rule);margin-top:6px;overflow:hidden"><div style="width:{{ o.pct }};height:100%;background:{{ o.barColor }}"></div></div>
+<div class="outline-list">
+<sc-for list="{{ outline }}" as="o" hint-placeholder-count="4">
+<div data-goto="{{ o.id }}" tabindex="0" role="button" aria-current="{{ o.active }}" aria-label="Go to section {{ o.num }}, {{ o.title }}, {{ o.readyLabel }} ready" title="Jump to {{ o.title }}" onKeyDown="{{ onReviewKey }}" class="ui-control outline-row" style="{{ o.rowStyle }}">
+<div style="display:flex;align-items:center;gap:7px">
+<span class="outline-number" style="{{ o.numStyle }}">{{ o.num }}</span>
+<span class="outline-title" style="flex:1;min-width:0;font:600 10.5px/1.35 var(--fUI);color:{{ o.ink }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ o.title }}</span>
+<span class="outline-status" style="flex:none;display:flex;align-items:center;gap:3px;font:600 8px/1 'JetBrains Mono',monospace;color:{{ o.statusColor }}"><sc-if value="{{ o.complete }}" hint-placeholder-val="{{ false }}"><svg width="8" height="8" viewBox="0 0 10 10"><path d="M1.5 5.2 4 7.5 8.5 2.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>{{ o.readyLabel }}</span>
+<svg class="outline-chevron" width="8" height="8" viewBox="0 0 10 10" style="flex:none;color:var(--faint)"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<div class="outline-progress" style="height:2px;margin:5px 8px 0 27px;border-radius:999px;background:var(--rule);overflow:hidden"><div style="{{ o.barStyle }}"></div></div>
 </div>
 </sc-for>
 </div>
-<div style="height:1px;background:var(--border);margin:15px 2px"></div>
-<div style="display:flex;flex-direction:column;gap:7px;padding:0 2px">
-<label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-<span data-toggle="focusMode" style="width:28px;height:16px;border-radius:10px;background:{{ focusBg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ focusX }};width:12px;height:12px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
-<span style="font:400 11.5px/1.3 var(--fUI);color:var(--prose)">Focus mode</span>
-</label>
-<label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-<span data-toggle="collapseAll" style="width:28px;height:16px;border-radius:10px;background:{{ collapseBg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ collapseX }};width:12px;height:12px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
-<span style="font:400 11.5px/1.3 var(--fUI);color:var(--prose)">Collapse all sections</span>
-</label>
+<div style="font:700 8px/1 var(--fUI);letter-spacing:.13em;color:var(--faint);margin:12px 2px 6px">VIEW</div>
+<div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)">
+<button type="button" data-toggle="focusMode" tabindex="0" role="switch" aria-checked="{{ focusChecked }}" class="ui-control" style="{{ focusToolStyle }}">
+<span style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--accentSoft);color:var(--accent)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.35"><circle cx="8" cy="8" r="2.2"/><path d="M2.2 6V3.5A1.3 1.3 0 0 1 3.5 2.2H6M10 2.2h2.5a1.3 1.3 0 0 1 1.3 1.3V6M13.8 10v2.5a1.3 1.3 0 0 1-1.3 1.3H10M6 13.8H3.5a1.3 1.3 0 0 1-1.3-1.3V10"/></svg></span>
+<span style="flex:1;min-width:0;text-align:left"><span style="display:block;font:600 10px/1.2 var(--fUI);color:var(--ink)">Focus mode</span><span style="display:block;margin-top:2px;font:400 8px/1.2 var(--fUI);color:var(--muted)">Highlight active line</span></span>
+<span style="width:32px;height:18px;border-radius:10px;background:{{ focusBg }};position:relative;flex:none;transition:background .15s"><span style="position:absolute;top:2px;left:{{ focusX }};width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)"></span></span>
+</button>
+<button type="button" data-toggle="collapseAll" tabindex="0" aria-label="{{ collapseLabel }}" class="ui-control" style="width:100%;display:flex;align-items:center;gap:8px;padding:7px 8px;border:0;border-top:1px solid var(--rule);background:transparent;cursor:pointer">
+<span style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--panel);color:var(--muted)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5h10M3 10.5h10"/><path d="{{ collapseIconPath }}"/></svg></span>
+<span style="flex:1;min-width:0;text-align:left"><span style="display:block;font:600 10px/1.2 var(--fUI);color:var(--ink)">{{ collapseLabel }}</span><span style="display:block;margin-top:2px;font:400 8px/1.2 var(--fUI);color:var(--muted)">{{ collapseHint }}</span></span>
+<svg width="10" height="10" viewBox="0 0 10 10" style="flex:none;color:var(--faint)"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
 </div>
 </div>
 </sc-if>
@@ -330,7 +437,7 @@ Copy all {{ termCount }} terms
 <div style="flex:none;border-top:1px solid var(--border);padding:11px 12px;background:var(--surface)">
 <sc-if value="{{ auth.signedIn }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;align-items:center;gap:10px">
-<span style="width:{{ avatarSz }};height:{{ avatarSz }};border-radius:50%;flex:none;background:var(--accent) center/cover no-repeat url({{ auth.photo }});display:flex;align-items:center;justify-content:center;font:700 11px/1 var(--fUI);color:#fff">{{ auth.initial }}</span>
+<span style="position:relative;width:{{ avatarSz }};height:{{ avatarSz }};border-radius:50%;overflow:hidden;flex:none;background:var(--accent);display:flex;align-items:center;justify-content:center;font:700 11px/1 var(--fUI);color:#fff">{{ auth.initial }}<sc-if value="{{ auth.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ auth.photo }}" alt="" onError="{{ imgErr }}" style="position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;background:var(--surface)"/></sc-if></span>
 <div style="flex:1;min-width:0">
 <div style="font:600 12px/1.35 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ auth.fullName }}</div>
 <div style="display:flex;align-items:center;gap:5px">
@@ -366,7 +473,7 @@ Copy all {{ termCount }} terms
 <sc-if value="{{ renderScript }}" hint-placeholder-val="{{ true }}">
 <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="2">
 <div id="{{ sec.domId }}" style="margin-bottom:var(--secGap);scroll-margin-top:20px">
-<div data-section="{{ sec.id }}" data-sechead="{{ sec.id }}" style="position:{{ stickyPos }};top:0;z-index:9;display:flex;align-items:center;gap:10px;padding:var(--secHeadPad);margin-bottom:var(--secHeadMB);background:var(--secHeadBg);border:1px solid var(--border);border-radius:var(--secHeadR);cursor:pointer">
+<div data-section="{{ sec.id }}" data-sechead="{{ sec.id }}" class="{{ sec.achievementClass }}" style="position:{{ stickyPos }};top:0;z-index:9;display:flex;align-items:center;gap:10px;padding:var(--secHeadPad);margin-bottom:var(--secHeadMB);background:var(--secHeadBg);border:1px solid var(--border);border-radius:var(--secHeadR);cursor:pointer">
 <svg width="10" height="10" viewBox="0 0 10 10" style="flex:none;color:var(--faint);transform:{{ sec.chev }};transition:transform .15s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
 <span style="font:500 9.5px/1 'JetBrains Mono',monospace;letter-spacing:.13em;color:var(--faint);flex:none">{{ sec.kicker }}</span>
 <span title="{{ sec.title }}" style="font:600 14px/1.3 var(--fUI);color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ sec.title }}</span>
@@ -401,7 +508,7 @@ Copy all {{ termCount }} terms
 </sc-if>
 <div style="display:flex;flex-direction:column;gap:var(--gap)">
 <sc-for list="{{ sec.lines }}" as="ln" hint-placeholder-count="4">
-<div id="{{ ln.domId }}" data-line="{{ ln.id }}" style="position:{{ ln.pos }};z-index:{{ ln.z }};border:1px solid {{ ln.bd }};border-radius:var(--rowR);background:{{ ln.rowBg }};padding:var(--rowPad);margin-top:var(--rowMT);box-shadow:{{ ln.ring }};opacity:{{ ln.dim }};transition:opacity .18s,box-shadow .12s;scroll-margin-top:64px">
+<div id="{{ ln.domId }}" data-line="{{ ln.id }}" class="{{ ln.motionClass }}" aria-current="{{ ln.isActive }}" style="position:{{ ln.pos }};z-index:{{ ln.z }};border:1px solid {{ ln.bd }};border-radius:var(--rowR);background:{{ ln.rowBg }};padding:var(--rowPad);margin-top:var(--rowMT);box-shadow:{{ ln.ring }};opacity:{{ ln.dim }};transition:opacity .18s,box-shadow .12s;scroll-margin-top:64px">
 <div style="display:flex;gap:var(--gapHead);align-items:flex-start;padding:var(--padHeadT) var(--padHeadX) var(--padHeadB) calc(var(--padHeadX) - 3px);background:{{ ln.headBg }};border-radius:var(--guideR)">
 <sc-if value="{{ showNums }}" hint-placeholder-val="{{ true }}">
 <span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:var(--szNum);font-weight:var(--wNum);line-height:var(--numLH);color:var(--numInk);background:var(--numBg);border:var(--numBd);border-radius:var(--numR);padding:var(--numPad);min-width:var(--numW);margin-top:var(--numMT);text-align:center">{{ ln.n }}</span>
@@ -425,7 +532,7 @@ Copy all {{ termCount }} terms
 </sc-if>
 </sc-if>
 <sc-if value="{{ showChecks }}" hint-placeholder-val="{{ true }}">
-<span data-done="{{ ln.id }}" title="{{ checkTitle }}" style="width:17px;height:17px;border-radius:50%;border:1.5px solid {{ ln.checkBorder }};background:{{ ln.checkBg }};display:flex;align-items:center;justify-content:center;cursor:pointer">
+<span data-done="{{ ln.id }}" title="{{ checkTitle }}" class="{{ ln.checkFxClass }}" style="width:17px;height:17px;border-radius:50%;border:1.5px solid {{ ln.checkBorder }};background:{{ ln.checkBg }};display:flex;align-items:center;justify-content:center;cursor:pointer">
 <svg width="8" height="8" viewBox="0 0 10 10"><path d="M1.5 5.2l2.4 2.4L8.6 2.8" fill="none" stroke="{{ ln.checkTick }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </span>
 </sc-if>
@@ -678,10 +785,10 @@ Copy all {{ termCount }} terms
 </sc-if>
 
 <sc-if value="{{ showJump }}" hint-placeholder-val="{{ false }}">
-<div data-act="jump" style="position:fixed;right:{{ jumpX }};bottom:{{ jumpY }};z-index:40;display:flex;align-items:center;gap:9px;padding:10px 15px 10px 12px;border-radius:30px;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 6px 22px rgba(0,0,0,.22);animation:fin .2s ease-out">
+<button type="button" data-act="jump" style="position:fixed;right:{{ jumpX }};bottom:{{ jumpY }};z-index:40;display:flex;align-items:center;gap:9px;padding:10px 15px 10px 12px;border:0;border-radius:30px;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 6px 22px rgba(0,0,0,.22);animation:fin .2s ease-out">
 <svg width="13" height="13" viewBox="0 0 14 14"><path d="M7 2.5v9M3.5 8L7 11.5 10.5 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
 <span style="font:600 11.5px/1 var(--fUI)">Back to line {{ activeNum }}</span>
-</div>
+</button>
 </sc-if>
 
 <sc-if value="{{ menu.show }}" hint-placeholder-val="{{ false }}">
@@ -791,6 +898,13 @@ Copy all {{ termCount }} terms
 </div>
 </div>
 </div>
+</sc-if>
+
+<sc-if value="{{ achievement.has }}" hint-placeholder-val="{{ false }}">
+<span role="status" aria-live="polite" style="position:fixed;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">{{ achievement.label }}</span>
+</sc-if>
+<sc-if value="{{ achievement.isScript }}" hint-placeholder-val="{{ false }}">
+<div class="script-complete-wave" aria-hidden="true"></div>
 </sc-if>
 
 <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
@@ -1497,8 +1611,9 @@ class Component extends DCLogic {
     this.state = {
       items: d.items, raws: d.raws, doneMap: d.doneMap, activeId: d.activeId,
       settings: d.settings, tags: d.tags, openFolders: d.openFolders,
-      mode: 'normal', tab: 'appearance', query: '', mobileSearch: false, filter: 'all', collapsed: {}, filtersOpen: false,
+      mode: 'normal', tab: 'appearance', query: '', treeQuery: '', treeSearchOpen: false, mobileSearch: false, filter: 'all', collapsed: {}, filtersOpen: false,
       activeLine: d.activeLine, draft: null, toast: '', newTag: '', win: { s: 0, e: 28 }, mounted: 40, offScreen: false,
+      exitingLine: null, promotedLine: null, achievement: null,
       vw: typeof window !== 'undefined' ? window.innerWidth : 1440,
       drawer: false, loginOpen: false, loginBusy: false, loginError: '', skippedLogin: loadGuestChoice(),
       /* Opened through a share link → Review tab by default; otherwise Scripts
@@ -1571,6 +1686,7 @@ class Component extends DCLogic {
     window.removeEventListener('resize', this._resize);
     clearTimeout(this._t); clearTimeout(this._cloudT); clearTimeout(this._saveT); clearTimeout(this._pubT); clearTimeout(this._growT);
     clearTimeout(this._scrollT); clearTimeout(this._rzT); clearTimeout(this._settleT);
+    clearTimeout(this._doneExitT); clearTimeout(this._promoteT); clearTimeout(this._achievementT);
     if (this._measRaf) cancelAnimationFrame(this._measRaf);
     if (this._sRaf) cancelAnimationFrame(this._sRaf);
     if (this._scrollRaf) cancelAnimationFrame(this._scrollRaf);
@@ -1827,9 +1943,13 @@ class Component extends DCLogic {
     const r = this.uref('raw/' + id); if (r) r.set(md).catch(() => { });
     this.refreshPubFor(id);
   }
-  setDone(sid, map) {
+  setDone(sid, map, extra, after) {
+    if (typeof extra === 'function') { after = extra; extra = null; }
     const prev = (this.state.doneMap || {})[sid] || {};
-    this.setState({ doneMap: { ...this.state.doneMap, [sid]: map } }, this.save);
+    this.setState({ doneMap: { ...this.state.doneMap, [sid]: map }, ...(extra || {}) }, () => {
+      this.save();
+      if (after) after();
+    });
     const fb = fbGet();
     if (fb && (this.state.cloud || this.state.viewer)) {
       const patch = {};
@@ -1838,6 +1958,38 @@ class Component extends DCLogic {
       });
       if (Object.keys(patch).length) fb.db.ref('done/' + sid).update(patch).catch(() => { });
     }
+  }
+  clearCompletionFeedback() {
+    clearTimeout(this._achievementT);
+    if (this.state.achievement) this.setState({ achievement: null });
+  }
+  completionFeedback(map, previous, lineId, sectionHint) {
+    const lines = this.allLines();
+    if (!lines.length) return;
+    const before = previous || {};
+    const scriptReady = lines.every(l => !!map[l.id]);
+    const scriptWasReady = lines.every(l => !!before[l.id]);
+    const line = lineId ? lines.find(l => l.id === lineId) : null;
+    const si = sectionHint !== undefined && sectionHint !== null ? +sectionHint : (line ? line.si : null);
+    const sectionLines = si === null ? [] : lines.filter(l => l.si === si);
+    const sectionReady = sectionLines.length > 0 && sectionLines.every(l => !!map[l.id]);
+    const sectionWasReady = sectionLines.length > 0 && sectionLines.every(l => !!before[l.id]);
+    let achievement = null;
+    if (scriptReady && !scriptWasReady) {
+      achievement = { level: 'script', lineId: lineId || null, sectionId: si, label: 'Script ready', detail: lines.length + ' lines complete' };
+    } else if (sectionReady && !sectionWasReady) {
+      const section = this.doc().sections[si];
+      achievement = { level: 'section', lineId: lineId || null, sectionId: si, label: 'Section ready', detail: (section && section.title) || ('Section ' + (si + 1)) };
+    } else if (lineId && this.state.filter === 'all') {
+      achievement = { level: 'line', lineId, sectionId: si, label: 'Line ready', detail: line ? ('Line ' + line.n) : '' };
+    }
+    if (!achievement) return;
+    clearTimeout(this._achievementT);
+    this.setState({ achievement });
+    const duration = achievement.level === 'script' ? 2200 : (achievement.level === 'section' ? 1600 : 1750);
+    this._achievementT = setTimeout(() => {
+      if (this.state.achievement === achievement) this.setState({ achievement: null });
+    }, duration);
   }
   isViewing() { return !!(this.state.viewer && !this.state.viewer.missing); }
   /* a shared script must look exactly as its owner sees it — settings and the
@@ -1975,6 +2127,63 @@ class Component extends DCLogic {
     box.scrollTo({ top, behavior: 'smooth' });
     setTimeout(() => { this.adjustWindow(); this.checkOffScreen(); }, 420);
   }
+  scrollWhenReady(id, attempt) {
+    if (document.getElementById('line-' + id)) return this.scrollTo('line-' + id);
+    const tries = attempt || 0;
+    if (tries >= 14) { this.checkOffScreen(); return; }
+    setTimeout(() => this.scrollWhenReady(id, tries + 1), 45);
+  }
+  keepLineVisible(id, attempt) {
+    const box = document.getElementById('scrollmain');
+    const el = document.getElementById('line-' + id);
+    const tries = attempt || 0;
+    if (!box || !el) {
+      if (tries < 14) setTimeout(() => this.keepLineVisible(id, tries + 1), 45);
+      else this.checkOffScreen();
+      return;
+    }
+    const b = box.getBoundingClientRect(), r = el.getBoundingClientRect();
+    let top = box.scrollTop;
+    if (r.top < b.top + 60) top += r.top - b.top - 70;
+    else if (r.bottom > b.bottom - 24) top += r.bottom - b.bottom + 24;
+    if (Math.abs(top - box.scrollTop) > 1) box.scrollTo({ top, behavior: 'smooth' });
+    setTimeout(() => this.checkOffScreen(), 420);
+  }
+  revealLine(id, options) {
+    if (!id) return;
+    const match = /^s(\d+)r/.exec(String(id));
+    if (!match) return;
+    const si = match[1];
+    const all = this.allLines();
+    const absoluteIndex = all.findIndex(l => l.id === id);
+    const visible = this.visibleLines().some(l => l.id === id);
+    const patch = {
+      activeLine: id,
+      collapsed: { ...this.state.collapsed, [si]: false },
+      mounted: Math.max(this.state.mounted || 40, absoluteIndex >= 0 ? absoluteIndex + 70 : 40)
+    };
+    /* Back to line is a recovery action: if the active row is hidden by search
+       or a state filter, reveal it instead of leaving the button apparently dead. */
+    if (!visible && !(options && options.preserveFilter)) {
+      patch.filter = 'all';
+      patch.query = '';
+    }
+    this._h = {};
+    this.setState(patch, () => {
+      this.save();
+      setTimeout(() => this.scrollWhenReady(id, 0), 30);
+    });
+  }
+  gotoSection(sectionId) {
+    const si = +sectionId;
+    const section = this.doc().sections[si];
+    const firstLine = section && section.lines && section.lines.length ? 's' + si + 'r0' : null;
+    if (!firstLine) return this.scrollTo('sec-' + si);
+    this.setState({ activeLine: firstLine }, () => {
+      this.save();
+      setTimeout(() => this.scrollTo('sec-' + si), 20);
+    });
+  }
   haystack(l) {
     if (!this._hay) this._hay = {};
     if (this._haySig !== this._sig) { this._hay = {}; this._haySig = this._sig; }
@@ -2005,15 +2214,62 @@ class Component extends DCLogic {
   }
 
   toggleDone(id) {
-    const a = this.active(); const done = { ...a.done };
+    const a = this.active();
+    const markingDone = !a.done[id];
+    if (!markingDone) this.clearCompletionFeedback();
+    /* In Left, a completed row exits deliberately instead of vanishing during
+       the click. Pick its replacement from the pre-change flow so navigation
+       naturally continues across section boundaries. */
+    if (markingDone && this.state.filter === 'pending') {
+      if (this.state.exitingLine) return;
+      const sid = a.id;
+      const pendingIds = this.visibleLines().map(l => l.id);
+      const index = pendingIds.indexOf(id);
+      const target = index >= 0 ? (pendingIds[index + 1] || pendingIds[index - 1] || null) : null;
+      const targetIndex = target ? this.allLines().findIndex(l => l.id === target) : -1;
+      const collapsed = { ...this.state.collapsed };
+      const targetMatch = target && /^s(\d+)r/.exec(target);
+      if (targetMatch) collapsed[targetMatch[1]] = false;
+      this.setState({ exitingLine: id }, () => {
+        clearTimeout(this._doneExitT);
+        this._doneExitT = setTimeout(() => {
+          const latest = { ...((this.state.doneMap || {})[sid] || {}) };
+          latest[id] = true;
+          if (this.state.activeId !== sid) {
+            this.setDone(sid, latest, { exitingLine: null, promotedLine: null });
+            return;
+          }
+          this._h = {};
+          this.setDone(sid, latest, {
+            activeLine: target,
+            collapsed,
+            mounted: Math.max(this.state.mounted || 40, targetIndex >= 0 ? targetIndex + 70 : 40),
+            exitingLine: null,
+            promotedLine: target
+          }, () => {
+            this.completionFeedback(latest, a.done, id);
+            if (target) setTimeout(() => this.keepLineVisible(target, 0), 35);
+            clearTimeout(this._promoteT);
+            this._promoteT = setTimeout(() => {
+              if (this.state.promotedLine === target) this.setState({ promotedLine: null });
+            }, 360);
+          });
+        }, 300);
+      });
+      return;
+    }
+    const done = { ...a.done };
     if (done[id]) delete done[id]; else done[id] = true;
     const fb = fbGet();
     if (fb && (this.state.cloud || this.state.viewer)) {
-      this.setState({ doneMap: { ...this.state.doneMap, [a.id]: done } }, this.save);
+      this.setState({ doneMap: { ...this.state.doneMap, [a.id]: done } }, () => {
+        this.save();
+        if (markingDone) this.completionFeedback(done, a.done, id);
+      });
       fb.db.ref('done/' + a.id + '/' + id).transaction(v => v ? null : true).catch(() => this.watchDone());
       return;
     }
-    this.setDone(a.id, done);
+    this.setDone(a.id, done, () => { if (markingDone) this.completionFeedback(done, a.done, id); });
   }
   markSection(si) {
     const a = this.active();
@@ -2022,7 +2278,8 @@ class Component extends DCLogic {
     const done = { ...a.done };
     const allDone = lines.every(l => done[l.id]);   // toggle: all ready -> clear, else mark all ready
     lines.forEach(l => { if (allDone) delete done[l.id]; else done[l.id] = true; });
-    this.setDone(a.id, done);
+    if (allDone) this.clearCompletionFeedback();
+    this.setDone(a.id, done, () => { if (!allDone) this.completionFeedback(done, a.done, null, si); });
   }
   copy(txt, label, tag) {
     const s = this.effS();
@@ -2053,10 +2310,13 @@ class Component extends DCLogic {
       const k = el.getAttribute('data-section');
       const cur = this.state.collapsed[k] !== undefined ? this.state.collapsed[k] : this.effS().collapseDefault;
       this._h = {};
-      this.setState({ collapsed: { ...this.state.collapsed, [k]: !cur } }, () => setTimeout(() => this.windowFromScroll(), 30));
+      this.setState({ collapsed: { ...this.state.collapsed, [k]: !cur } }, () => setTimeout(() => {
+        this.windowFromScroll();
+        this.checkOffScreen();
+      }, 30));
       return;
     }
-    if ((el = g('data-goto'))) { this.scrollTo('sec-' + el.getAttribute('data-goto')); return; }
+    if ((el = g('data-goto'))) { this.gotoSection(el.getAttribute('data-goto')); return; }
     if ((el = g('data-filter'))) { this.setState({ filter: el.getAttribute('data-filter'), win: { s: 0, e: 28 }, mounted: 40 }, () => setTimeout(() => this.adjustWindow(), 60)); return; }
     if ((el = g('data-mode'))) { this.setMode(el.getAttribute('data-mode')); return; }
     if ((el = g('data-tab'))) { this.setState({ tab: el.getAttribute('data-tab') }); return; }
@@ -2067,7 +2327,10 @@ class Component extends DCLogic {
         const anyOpen = this.doc().sections.some((s, i) => !(this.state.collapsed[i] !== undefined ? this.state.collapsed[i] : def));
         const c = {}; this.doc().sections.forEach((s, i) => { c[i] = anyOpen; });
         this._h = {};
-        this.setState({ collapsed: c }, () => setTimeout(() => this.windowFromScroll(), 30));
+        this.setState({ collapsed: c }, () => setTimeout(() => {
+          this.windowFromScroll();
+          this.checkOffScreen();
+        }, 30));
         return;
       }
       /* focus mode is viewer-toggleable in a shared view (saved locally) */
@@ -2114,9 +2377,9 @@ class Component extends DCLogic {
       if (this.isViewing()) {
         const vit = (this.state.viewer.items || {})[id];
         if (vit) {
-          if (vit.type === 'folder') { const o = { ...this.state.openFolders }; if (o[id]) delete o[id]; else o[id] = true; this.setState({ openFolders: o }); return; }
+          if (vit.type === 'folder') { const o = { ...this.state.openFolders }; if (o[id]) delete o[id]; else o[id] = true; this.setState({ openFolders: o, treeQuery: '', treeSearchOpen: false }); return; }
           this._h = {};
-          this.setState({ activeId: id, activeLine: null, draft: null, collapsed: {}, filter: 'all', query: '', win: { s: 0, e: 28 }, mounted: 40, drawer: false, mode: 'normal' }, () => { this.watchDone(); this.windowFromScroll(); });
+          this.setState({ activeId: id, activeLine: null, draft: null, collapsed: {}, filter: 'all', query: '', treeQuery: '', treeSearchOpen: false, win: { s: 0, e: 28 }, mounted: 40, drawer: false, mode: 'normal' }, () => { this.watchDone(); this.windowFromScroll(); });
           return;
         }
       }
@@ -2126,10 +2389,15 @@ class Component extends DCLogic {
         if (gr) this.openGrant(gr, id);
         return;
       }
-      if (it.type === 'folder') { const o = { ...this.state.openFolders }; if (o[id]) delete o[id]; else o[id] = true; this.setState({ openFolders: o }, this.save); return; }
+      if (it.type === 'folder') {
+        const o = { ...this.state.openFolders };
+        if (this.state.treeQuery) o[id] = true;
+        else if (o[id]) delete o[id]; else o[id] = true;
+        this.setState({ openFolders: o, treeQuery: '', treeSearchOpen: false }, this.save); return;
+      }
       if (location.hash) location.hash = '';
       this._h = {};
-      this.setState({ activeId: id, viewer: null, viewerToken: null, activeLine: null, filter: 'all', query: '', draft: null, collapsed: {}, win: { s: 0, e: 28 }, mounted: 40, drawer: false, mode: this.state.mode === 'settings' ? 'settings' : 'normal' }, () => { this.save(); this.watchDone(); setTimeout(() => this.adjustWindow(), 60); });
+      this.setState({ activeId: id, viewer: null, viewerToken: null, activeLine: null, filter: 'all', query: '', treeQuery: '', treeSearchOpen: false, draft: null, collapsed: {}, win: { s: 0, e: 28 }, mounted: 40, drawer: false, mode: this.state.mode === 'settings' ? 'settings' : 'normal' }, () => { this.save(); this.watchDone(); setTimeout(() => this.adjustWindow(), 60); });
       return;
     }
     if ((el = g('data-unshare'))) { this.removeMember(this.state.shareFor, el.getAttribute('data-unshare')); return; }
@@ -2201,10 +2469,11 @@ class Component extends DCLogic {
     const name = type === 'folder' ? 'New folder' : 'Untitled script';
     this.putItem(id, { type, name, parentId: pid, order: now(), createdAt: now() });
     if (type === 'script') {
+      this.setState({ treeQuery: '', treeSearchOpen: false });
       this.putRaw(id, '# New section\n\n| Script Line | Visual Guide |\n|---|---|\n|  |  |\n');
       this.setState({ activeId: id, mode: 'raw', draft: '# New section\n\n| Script Line | Visual Guide |\n|---|---|\n|  |  |\n', viewer: null }, () => this.watchDone());
     } else {
-      this.setState({ openFolders: { ...this.state.openFolders, [pid]: true, [id]: true } }, this.save);
+      this.setState({ openFolders: { ...this.state.openFolders, [pid]: true, [id]: true }, treeQuery: '', treeSearchOpen: false }, this.save);
       setTimeout(() => this.rename(id), 60);
     }
   }
@@ -2410,7 +2679,14 @@ class Component extends DCLogic {
     if (this.isViewing() && ['newScript', 'newFolder', 'toggleTrash', 'openShare', 'togglePublic', 'refreshShare', 'invite', 'rename', 'delete'].indexOf(k) >= 0) return;
     if (k === 'newScript') return this.create('script', this.state.items[this.state.activeId] ? this.state.items[this.state.activeId].parentId : 'root');
     if (k === 'newFolder') return this.create('folder', 'root');
-    if (k === 'toggleTrash') return this.setState({ showTrash: !this.state.showTrash, sideTab: 'files' });
+    if (k === 'toggleTreeSearch') {
+      const open = !this.state.treeSearchOpen;
+      return this.setState({ treeSearchOpen: open, treeQuery: open ? this.state.treeQuery : '' }, () => {
+        if (open) setTimeout(() => { const input = document.getElementById('tree-search-input'); if (input) input.focus(); }, 30);
+      });
+    }
+    if (k === 'toggleTrash') return this.setState({ showTrash: !this.state.showTrash, sideTab: 'files', treeQuery: '', treeSearchOpen: false });
+    if (k === 'clearTreeQuery') return this.setState({ treeQuery: '' });
     if (k === 'toggleFilters') return this.setState({ filtersOpen: !this.state.filtersOpen });
     if (k === 'closeOverlay') return this.setState({ menu: null, shareFor: null });
     if (k === 'cancelRename') return this.setState({ renameFor: null, renameValue: '' });
@@ -2474,7 +2750,7 @@ class Component extends DCLogic {
       this.setState({
         menu: null, grants: {}, shares: {}, cloud: false, user: null,
         items: {}, raws: {}, doneMap: {}, activeId: '', activeLine: null,
-        openFolders: {}, draft: null, mode: 'normal', showTrash: false, filter: 'all', query: '',
+        openFolders: {}, draft: null, mode: 'normal', showTrash: false, filter: 'all', query: '', treeQuery: '', treeSearchOpen: false,
         viewer: null, viewerToken: null,
         skippedLogin: false, loginOpen: false, drawer: false
       });
@@ -2518,18 +2794,13 @@ class Component extends DCLogic {
       this.putRaw(a.id, this.state.draft); this.setState({ mode: 'normal' }, () => this.flash('Saved & re-rendered')); return;
     }
     if (k === 'revert') return this.setState({ draft: a.raw });
-    if (k === 'jump') {
-      const id = this.state.activeLine;
-      if (id && this.flow().indexOf(id) < 0) {
-        /* active line ka section band hai — pehle kholo, phir jump */
-        const si = String(id).replace(/^s(\d+)r.*$/, '$1');
-        this.setState({ collapsed: { ...this.state.collapsed, [si]: false } }, () => setTimeout(() => this.scrollTo('line-' + id), 60));
-        return;
-      }
-      return this.scrollTo('line-' + id);
+    if (k === 'jump') return this.revealLine(this.state.activeLine);
+    if (k === 'markAll') {
+      const done = {}; this.allLines().forEach(l => done[l.id] = true);
+      this.setDone(a.id, done, () => this.completionFeedback(done, a.done, null, null));
+      return;
     }
-    if (k === 'markAll') { const done = {}; this.allLines().forEach(l => done[l.id] = true); this.setDone(a.id, done); return; }
-    if (k === 'clearDone') { this.setDone(a.id, {}); this.flash('Cleared'); return; }
+    if (k === 'clearDone') { this.clearCompletionFeedback(); this.setDone(a.id, {}); this.flash('Cleared'); return; }
     if (k === 'emptyTrash') return this.emptyTrash(false);
     if (k === 'copyAllTerms' || k === 'exportTerms') {
       const terms = []; this.allLines().forEach(l => l.items.forEach(it => { if (it.render === 'chips') terms.push(...it.chips); }));
@@ -2563,7 +2834,48 @@ class Component extends DCLogic {
   onNewTag = (e) => this.setState({ newTag: e.target.value });
   onRenameValue = (e) => this.setState({ renameValue: e.target.value });
   onRenameKey = (e) => { if (e.key === 'Enter') { e.preventDefault(); this.act('commitRename'); } if (e.key === 'Escape') { e.preventDefault(); this.act('cancelRename'); } };
+  onReviewKey = (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    const el = e.currentTarget;
+    e.preventDefault(); e.stopPropagation();
+    if (el.hasAttribute('data-filter')) {
+      this.setState({ filter: el.getAttribute('data-filter'), win: { s: 0, e: 28 }, mounted: 40 }, () => setTimeout(() => this.adjustWindow(), 60));
+      return;
+    }
+    if (el.hasAttribute('data-goto')) this.gotoSection(el.getAttribute('data-goto'));
+  };
   onDraft = (e) => this.setState({ draft: e.target.value });
+  onTreeQuery = (e) => this.setState({ treeQuery: e.target.value });
+  onTreeSearchKey = (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault(); e.stopPropagation();
+      this.setState({ treeQuery: '', treeSearchOpen: false });
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      const first = document.querySelector('[data-row]');
+      if (first) { e.preventDefault(); e.stopPropagation(); first.focus(); }
+    }
+  };
+  onTreeRowKey = (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      const rows = Array.from(document.querySelectorAll('[data-row]'));
+      const index = rows.indexOf(e.currentTarget);
+      const next = rows[index + (e.key === 'ArrowDown' ? 1 : -1)];
+      if (next) { e.preventDefault(); e.stopPropagation(); next.focus(); }
+      return;
+    }
+    if (e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) {
+      const menu = e.currentTarget.querySelector('[data-menu]');
+      if (menu) { e.preventDefault(); e.stopPropagation(); menu.click(); }
+    }
+  };
+  onImportKey = (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    e.preventDefault();
+    const input = e.currentTarget && e.currentTarget.querySelector('input[type="file"]');
+    if (input) input.click();
+  };
   onShareEmail = (e) => this.setState({ shareEmail: e.target.value });
   onShareRole = (e) => this.setState({ shareRole: e.target.value });
   onSettingsTab = (e) => this.setState({ tab: e.target.value });
@@ -2597,9 +2909,8 @@ class Component extends DCLogic {
     const vis = this.visibleLines(), visIds = {}; vis.forEach(l => visIds[l.id] = 1);
     const allLines = this.allLines();
     const allIds = allLines.map(l => l.id);
-    const allTerms = [];
-    allLines.forEach(l => l.items.forEach(it => { if (it.render === 'chips') allTerms.push(...(it.chips || [])); }));
     const doneCount = allIds.filter(id => a.done[id]).length;
+    const progressPct = allIds.length ? Math.round(doneCount / allIds.length * 100) : 0;
     const chipR = S.chipShape === 'pill' ? '20px' : S.chipShape === 'square' ? '3px' : '6px';
     const col = k => (PALETTE[k] || PALETTE.slate)[dark ? 0 : 1];
     const soft = k => col(k) + (dark ? '26' : '16');
@@ -2661,6 +2972,7 @@ class Component extends DCLogic {
       } else if (S.cardShadow && !docV) ring = t.shadow;
       const out = {
         id: l.id, domId: 'line-' + l.id, n: l.n, text: l.text,
+        isActive: on ? 'true' : 'false',
         isVideo: !!l.video, range: l.range ? ' · ' + l.range : '',
         hasTranscript: !!(l.transcript && S.showTranscript), transcript: l.transcript,
         hasGuide: ordered.length > 0, items: ordered,
@@ -2723,6 +3035,7 @@ class Component extends DCLogic {
         markColor: allReady ? '#3FA98C' : t.faint,
         markBd: allReady ? '#3FA98C' : t.border,
         markBg: allReady ? '#3FA98C22' : 'transparent',
+        achievementClass: this.state.achievement && (this.state.achievement.level === 'section' || this.state.achievement.level === 'script') && this.state.achievement.sectionId === si ? 'section-achieved' : '',
         open, chev: open ? 'rotate(0deg)' : 'rotate(-90deg)',
         hasLines: s.lines.length > 0,
         hasTerms: sectionTerms.length > 0,
@@ -2731,24 +3044,43 @@ class Component extends DCLogic {
         hasNotes: s.notes.length > 0 && !this.state.query,
         notes: s.notes.map(x => stripMd(x)),
 
-        lines: slice.map(l => decorate(l))
+        lines: slice.map(l => {
+          const decorated = decorate(l);
+          let motion = l.id === this.state.exitingLine ? ' line-exit' : (l.id === this.state.promotedLine ? ' line-promote' : '');
+          const lineAchieved = !!(this.state.achievement && this.state.achievement.lineId === l.id);
+          if (lineAchieved) motion += ' line-achieved';
+          return { ...decorated, motionClass: 'line-card' + motion, checkFxClass: 'ready-check' + (lineAchieved ? ' ready-achieved' : '') };
+        })
       };
     }).filter(s => !s.open || s.lines.length || s.hasNotes);
 
     const allCollapsed = doc.sections.length > 0 && doc.sections.every((s, i) => !(this.state.collapsed[i] !== undefined ? !this.state.collapsed[i] : !S.collapseDefault));
+    const readySectionCount = doc.sections.filter((s, si) => s.lines.length > 0 && s.lines.every((l, li) => !!a.done['s' + si + 'r' + li])).length;
     const tagCounts = {};
     this.allLines().forEach(l => l.items.forEach(it => { tagCounts[it.k] = (tagCounts[it.k] || 0) + 1; }));
     const fbase = [
       { id: 'all', label: 'All', n: String(allIds.length) },
-      { id: 'pending', label: 'Pending', n: String(allIds.length - doneCount) },
+      { id: 'pending', label: 'Left', n: String(allIds.length - doneCount) },
       { id: 'done', label: 'Ready', n: String(doneCount) }
     ].concat(Object.keys(tagCounts).sort().map(k => ({ id: k, label: k, n: String(tagCounts[k]) })));
     const activeFilter = fbase.some(f => f.id === this.state.filter) ? this.state.filter : 'all';
-    const filters = fbase.map(f => ({
-      ...f, bg: activeFilter === f.id ? t.accent : 'transparent',
-      fg: activeFilter === f.id ? '#fff' : t.muted,
-      bd: activeFilter === f.id ? t.accent : t.border
-    }));
+    const filters = fbase.map(f => {
+      const selected = activeFilter === f.id;
+      return {
+        ...f, selected,
+        primaryStyle: [
+          'min-width:0', 'height:28px', 'display:flex', 'align-items:center', 'justify-content:center', 'gap:5px',
+          'padding:5px 4px', 'border-radius:6px', 'border:0',
+          'background:' + (selected ? t.surface : 'transparent'), 'color:' + (selected ? t.accent : t.muted),
+          'box-shadow:' + (selected ? '0 1px 3px rgba(0,0,0,.09)' : 'none'), 'cursor:pointer'
+        ].join(';'),
+        tagStyle: [
+          'padding:4px 7px', 'border-radius:999px', 'border:1px solid ' + (selected ? t.accent : t.border),
+          'background:' + (selected ? t.accentSoft : t.surface), 'color:' + (selected ? t.accent : t.muted),
+          'font:600 8px/1.2 ' + t.fUI, 'cursor:pointer'
+        ].join(';')
+      };
+    });
     const activeFilterLabel = (fbase.find(f => f.id === activeFilter) || fbase[0]).label;
 
     const tab = this.state.tab;
@@ -2789,29 +3121,38 @@ class Component extends DCLogic {
     const pctOf = (sid) => {
       const d = (this.state.doneMap || {})[sid] || {};
       const n = Object.keys(d).filter(k => d[k]).length;
-      return n ? n + '✓' : '';
+      return n ? String(n) : '';
     };
     const rowFor = (id, depth, src, extra) => {
       const it = src[id] || {};
       const on = this.state.activeId === id;
       const sh = shares[id];
       const isF = it.type === 'folder';
+      const tag = (extra && extra.tag) || (sh && sh.public ? 'LINK' : 'SHARED');
+      const hasTag = !!(extra && extra.tag) || !!(sh && (sh.public || Object.keys(sh.members || {}).length));
+      const pct = pctOf(id);
+      const hasPct = !isF && S.showReadyCount && !!pct;
+      const actionReserve = 36 + (hasTag ? Math.max(32, String(tag || '').length * 5 + 12) : 0) + (hasPct ? 32 : 0) + ((hasTag ? 1 : 0) + (hasPct ? 1 : 0)) * 3;
       return {
         id, isRow: true, isHeader: false, hasMenu: true,
         isFolder: isF, isScript: !isF, name: it.name || 'Untitled',
-        indent: (7 + depth * 13) + 'px',
+        indent: (5 + depth * 14) + 'px',
         bg: on ? t.accentSoft : 'transparent',
         bar: on ? t.accent : 'transparent',
         ink: on ? t.ink : (isF ? t.ink : t.prose),
-        font: (on || isF ? '600 ' : '400 ') + '11.5px/1.45 ' + t.fUI,
-        iconInk: isF ? t.accent : t.faint,
+        font: (on || isF ? '620 ' : '500 ') + '11px/1.35 ' + t.fUI,
+        current: on ? 'true' : 'false',
+        ariaLabel: (isF ? 'Folder ' : 'Script ') + (it.name || 'Untitled') + (on ? ', current' : ''),
+        hoverBg: on ? t.accentSoft : t.panel,
+        actionBg: on ? t.accentSoft : t.panel,
+        iconBg: on ? t.surface : (isF ? t.accentSoft : t.panel),
+        iconInk: on ? t.accent : (isF ? t.accent : t.muted),
         chev: this.state.openFolders[id] ? 'rotate(0deg)' : 'rotate(-90deg)',
-        hasTag: !!(extra && extra.tag) || !!(sh && (sh.public || Object.keys(sh.members || {}).length)),
-        tag: (extra && extra.tag) || (sh && sh.public ? 'LINK' : 'SHARED'),
+        hasTag, tag,
         tagBg: (extra && extra.tagBg) || t.accentSoft,
         tagFg: (extra && extra.tagFg) || t.accent,
         tagTitle: (extra && extra.tagTitle) || (sh && sh.public ? 'Public link on' : 'Shared with people'),
-        hasPct: !isF && S.showReadyCount && !!pctOf(id), pct: pctOf(id)
+        hasPct, pct, actionReserve: actionReserve + 'px'
       };
     };
     const nameCmp = (x, y) => {
@@ -2819,31 +3160,43 @@ class Component extends DCLogic {
       if (S.foldersFirst && (a1.type === 'folder') !== (b1.type === 'folder')) return a1.type === 'folder' ? -1 : 1;
       return (a1.name || '').localeCompare(b1.name || '');
     };
-    const walkSrc = (src, parent, depth, out) => {
-      Object.keys(src).filter(k => !src[k].trashed && (src[k].parentId || 'root') === parent)
+    const branchHas = (src, id, term) => {
+      const node = src[id] || {};
+      if (String(node.name || '').toLowerCase().indexOf(term) >= 0) return true;
+      if (node.type !== 'folder') return false;
+      return Object.keys(src).some(k => !src[k].trashed && (src[k].parentId || 'root') === id && branchHas(src, k, term));
+    };
+    const walkSrc = (src, parent, depth, out, term) => {
+      Object.keys(src).filter(k => !src[k].trashed && (src[k].parentId || 'root') === parent && (!term || branchHas(src, k, term)))
         .sort((x, y) => {
           const a1 = src[x], b1 = src[y];
           if (S.foldersFirst && (a1.type === 'folder') !== (b1.type === 'folder')) return a1.type === 'folder' ? -1 : 1;
           return (a1.name || '').localeCompare(b1.name || '');
         })
         .forEach(k => {
-          out.push(rowFor(k, depth, src));
-          if (src[k].type === 'folder' && this.state.openFolders[k]) walkSrc(src, k, depth + 1, out);
+          const row = rowFor(k, depth, src);
+          if (term && src[k].type === 'folder') row.chev = 'rotate(0deg)';
+          out.push(row);
+          if (src[k].type === 'folder' && (term || this.state.openFolders[k])) walkSrc(src, k, depth + 1, out, term);
         });
       return out;
     };
-    const walk = (parent, depth, out) => walkSrc(items, parent, depth, out);
+    const treeQ = String(this.state.treeQuery || '').trim().toLowerCase();
+    const walk = (parent, depth, out) => walkSrc(items, parent, depth, out, treeQ);
     const grantRows = Object.keys(grants).map(k => {
       const g = grants[k] || {};
       const on = viewing && this.state.activeId === k;
       return {
         id: k, isRow: true, isHeader: false, hasMenu: false,
         isFolder: g.type === 'folder', isScript: g.type !== 'folder', name: g.name || 'Shared item',
-        indent: '7px', bg: on ? t.accentSoft : 'transparent', bar: on ? t.accent : 'transparent',
-        ink: on ? t.ink : t.prose, font: '400 11.5px/1.45 ' + t.fUI, iconInk: t.faint, chev: 'rotate(-90deg)',
+        indent: '5px', bg: on ? t.accentSoft : 'transparent', bar: on ? t.accent : 'transparent',
+        ink: on ? t.ink : t.prose, font: (on ? '620 ' : '500 ') + '11px/1.35 ' + t.fUI,
+        current: on ? 'true' : 'false', ariaLabel: (g.type === 'folder' ? 'Folder ' : 'Script ') + (g.name || 'Shared item'),
+        hoverBg: on ? t.accentSoft : t.panel, actionBg: on ? t.accentSoft : t.panel,
+        iconBg: on ? t.surface : t.panel, iconInk: on ? t.accent : t.muted, chev: 'rotate(-90deg)',
         hasTag: true, tag: String(ROLE_SHORT[g.role] || 'Viewer').toUpperCase().slice(0, 7),
         tagBg: t.accentSoft, tagFg: t.accent, tagTitle: (g.ownerEmail || '') + ' — ' + (ROLE_HINT[g.role] || ''),
-        hasPct: false, pct: ''
+        hasPct: false, pct: '', actionReserve: '48px'
       };
     });
     let tree = [], treeEmptyMsg = '';
@@ -2856,13 +3209,17 @@ class Component extends DCLogic {
         .concat(walkSrc(vi, 'root', 0, []).map(r => ({ ...r, hasMenu: false, hasTag: false, hasPct: false })));
       treeEmptyMsg = (this.state.viewer && this.state.viewer.missing) ? 'Ye share link kaam nahi kar raha.' : 'Share load ho raha hai…';
     } else if (this.state.showTrash) {
-      tree = trashIds.map(k => rowFor(k, 0, items, { tag: 'TRASH', tagBg: t.rule, tagFg: t.muted, tagTitle: 'In trash' }));
-      treeEmptyMsg = 'Trash khali hai.';
+      tree = trashIds.filter(k => !treeQ || String(items[k].name || '').toLowerCase().indexOf(treeQ) >= 0)
+        .map(k => rowFor(k, 0, items, { tag: 'TRASH', tagBg: t.rule, tagFg: t.muted, tagTitle: 'In trash' }));
+      treeEmptyMsg = treeQ ? 'Trash me koi matching item nahi mila.' : 'Trash khali hai.';
     } else {
       tree = walk('root', 0, []);
-      if (grantRows.length) tree = tree.concat([{ id: '@shared', isHeader: true, isRow: false, name: 'SHARED WITH ME' }], grantRows);
-      treeEmptyMsg = 'Koi script nahi. “+ Script” se shuru karein.';
+      const visibleGrants = treeQ ? grantRows.filter(r => r.name.toLowerCase().indexOf(treeQ) >= 0) : grantRows;
+      if (visibleGrants.length) tree = tree.concat([{ id: '@shared', isHeader: true, isRow: false, name: 'SHARED WITH ME' }], visibleGrants);
+      treeEmptyMsg = treeQ ? 'Koi matching script ya folder nahi mila.' : 'Koi script nahi. “New script” se shuru karein.';
     }
+    const treeVisibleCount = tree.filter(r => r.isRow).length;
+    const treeHeading = viewing || this.state.viewerToken ? 'SHARED LIBRARY' : (this.state.showTrash ? 'TRASH' : (treeQ ? 'SEARCH RESULTS' : 'YOUR LIBRARY'));
 
     /* ---------- context menu ---------- */
     const mid = this.state.menu ? this.state.menu.id : null;
@@ -2933,7 +3290,7 @@ class Component extends DCLogic {
     const auth = {
       signedIn: !!(u && !u.isAnonymous), signedOut: !!(this.state.authReady && (!u || u.isAnonymous)),
       email: (u && u.email) || '', name: disp.split(' ')[0], fullName: (u && (u.displayName || u.email)) || '',
-      photo: (u && u.photoURL) || '', initial: disp.charAt(0).toUpperCase()
+      photo: (u && u.photoURL) || '', hasPhoto: !!(u && u.photoURL), initial: disp.charAt(0).toUpperCase()
     };
     /* No read-only banner line while viewing — it wasted a full row. The
        compact READ-ONLY badge by the title carries the state (and doubles as
@@ -3101,7 +3458,11 @@ class Component extends DCLogic {
         bg: this.state.mode === m[0] ? t.surface : 'transparent',
         fg: this.state.mode === m[0] ? t.ink : t.muted
       })),
-      tree, treeEmpty: !tree.length, treeEmptyMsg,
+      tree, treeEmpty: !tree.some(r => r.isRow), treeEmptyMsg,
+      treeQuery: this.state.treeQuery, hasTreeQuery: !!String(this.state.treeQuery || '').trim(),
+      treeSearchOpen: !!this.state.treeSearchOpen,
+      treeSearchPlaceholder: this.state.showTrash ? 'Search trash…' : 'Find scripts or folders…',
+      treeHeading, treeVisibleCount: String(treeVisibleCount),
       treeMaxH: (this.state.settings.treeHeight || 300) + 'px',
       sideTabs: [
         { id: 'files', label: 'Scripts', n: String(Object.keys(items).filter(k => !items[k].trashed && items[k].type === 'script').length + grantRows.length) },
@@ -3110,8 +3471,14 @@ class Component extends DCLogic {
       isFilesTab: this.state.sideTab === 'files',
       isReviewTab: this.state.sideTab === 'review',
       trashCount: String(trashIds.length),
+      hasTrash: trashIds.length > 0,
       trashBg: this.state.showTrash ? t.accentSoft : 'transparent',
       trashFg: this.state.showTrash ? t.accent : t.muted,
+      trashBorder: this.state.showTrash ? t.accent + '55' : 'transparent',
+      trashLabel: this.state.showTrash ? 'Back to scripts' : 'Open trash',
+      searchBg: this.state.treeSearchOpen ? t.accentSoft : 'transparent',
+      searchFg: this.state.treeSearchOpen ? t.accent : t.muted,
+      searchBorder: this.state.treeSearchOpen ? t.accent + '55' : 'transparent',
       menu, renameBox, confirmBox, share, auth, banner,
       docName: a.name || 'Untitled',
       badge: viewing
@@ -3126,26 +3493,51 @@ class Component extends DCLogic {
       outline: doc.sections.map((s, si) => {
         const ids = s.lines.map((l, li) => 's' + si + 'r' + li);
         const dn = ids.filter(id => a.done[id]).length;
+        const pctNum = ids.length ? Math.round(dn / ids.length * 100) : 0;
+        const complete = ids.length > 0 && dn === ids.length;
+        const active = activeSi === si;
         return {
           id: String(si), num: String(si + 1).padStart(2, '0'), title: s.title || 'Untitled',
-          count: String(s.lines.length), pct: ids.length ? Math.round(dn / ids.length * 100) + '%' : '0%',
-          bg: activeSi === si ? t.accentSoft : 'transparent',
-          ink: activeSi === si ? t.accent : t.ink,
-          barColor: dn === ids.length && ids.length ? '#3FA98C' : t.accent
+          readyLabel: dn + '/' + ids.length, complete, active,
+          ink: active ? t.accent : t.ink,
+          statusColor: complete ? '#23846A' : (active ? t.accent : t.muted),
+          rowStyle: [
+            'padding:7px 8px', 'border-radius:0', 'cursor:pointer', 'border:0',
+            'border-bottom:' + (si === doc.sections.length - 1 ? '0' : '1px solid ' + t.rule)
+          ].join(';'),
+          numStyle: [
+            'width:20px', 'height:20px', 'display:flex', 'align-items:center', 'justify-content:center', 'border-radius:5px', 'flex:none',
+            'background:' + (complete ? 'rgba(63,169,140,.13)' : (active ? t.accentSoft : t.panel)),
+            'color:' + (complete ? '#23846A' : (active ? t.accent : t.faint)),
+            'font:650 7.5px/1 ' + t.fUI
+          ].join(';'),
+          barStyle: 'width:' + pctNum + '%;height:100%;border-radius:999px;background:' + (complete ? '#3FA98C' : t.accent) + ';transition:width .2s ease'
         };
       }),
-      pct: allIds.length ? Math.round(doneCount / allIds.length * 100) + '%' : '0%',
-      hasAnyTerms: allTerms.length > 0, termCount: String(allTerms.length),
-      filters, filtersOpen: this.state.filtersOpen, filterLabel: activeFilterLabel,
+      pct: progressPct + '%',
+      totalLines: String(allIds.length), doneLines: String(doneCount), pendingLines: String(Math.max(0, allIds.length - doneCount)),
+      progressFillStyle: 'width:' + progressPct + '%;height:100%;border-radius:999px;background:#3FA98C;transition:width .2s ease',
+      filters, primaryFilters: filters.slice(0, 3), tagFilters: filters.slice(3), hasTagFilters: filters.length > 3,
+      tagFilterCount: String(Math.max(0, filters.length - 3)), hasActiveTagFilter: filters.slice(3).some(f => f.selected),
+      filtersOpen: this.state.filtersOpen, filterLabel: activeFilterLabel,
       filtersChev: this.state.filtersOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
+      sectionCount: String(doc.sections.length), readySectionCount: String(readySectionCount),
+      sectionSummaryColor: readySectionCount === doc.sections.length && doc.sections.length ? '#23846A' : t.faint,
       noResults: vis.length === 0,
       showNums: S.showLineNumbers, showChecks: S.showChecks, showCopyBtn: S.showCopyBtn,
       showFav: S.showFavicons, showDomain: S.showDomain, linkTarget: S.openNewTab ? '_blank' : '_self',
       chipR, ruleCss: S.columnRule ? '1px solid ' + t.rule : 'none',
       sidebarDisplay: (S.showSidebar || mob) ? 'flex' : 'none',
       stickyPos: S.stickyHeaders ? 'sticky' : 'static',
-      focusBg: S.focusMode ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), focusX: S.focusMode ? '14px' : '2px',
-      collapseBg: allCollapsed ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), collapseX: allCollapsed ? '14px' : '2px',
+      focusChecked: !!S.focusMode,
+      focusBg: S.focusMode ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), focusX: S.focusMode ? '16px' : '2px',
+      focusToolStyle: [
+        'width:100%', 'display:flex', 'align-items:center', 'gap:8px', 'padding:7px 8px',
+        'border:0', 'border-radius:0', 'background:' + (S.focusMode ? t.accentSoft : 'transparent'), 'cursor:pointer'
+      ].join(';'),
+      collapseLabel: allCollapsed ? 'Expand all sections' : 'Collapse all sections',
+      collapseHint: allCollapsed ? 'Show full outline' : 'Compact section outline',
+      collapseIconPath: allCollapsed ? 'M5 6l3-3 3 3M5 10l3 3 3-3' : 'M5 3l3 3 3-3M5 13l3-3 3 3',
       autoBg: S.autoDetect ? t.accent : (dark ? '#3A3A41' : '#D6D2CA'), autoX: S.autoDetect ? '14px' : '2px',
       showJump: !!activeId && this.state.mode === 'normal' && this.state.offScreen,
       activeNum: (() => { const f = this.allLines().find(l => l.id === activeId); return f ? String(f.n) : ''; })(),
@@ -3185,9 +3577,15 @@ class Component extends DCLogic {
       rawStats: nl + ' lines · ' + doc.total + ' script lines · ' + doc.sections.length + ' sections',
       rawLayer: this.rawLayer(raw, t),
       toastX: 0,
-      onClick: this.onClick, onSet: this.onSet, onTagSet: this.onTagSet, onQuery: this.onQuery,
-      onNewTag: this.onNewTag, onRenameValue: this.onRenameValue, onRenameKey: this.onRenameKey,
-      onDraft: this.onDraft, onPickScript: this.onPickScript, onUpload: this.onUpload, imgErr: this.imgErr,
+      progressFxClass: this.state.achievement && this.state.achievement.level === 'script' ? 'script-achieved' : '',
+      achievement: {
+        has: !!this.state.achievement,
+        label: this.state.achievement ? this.state.achievement.label : '',
+        isScript: !!(this.state.achievement && this.state.achievement.level === 'script')
+      },
+      onClick: this.onClick, onSet: this.onSet, onTagSet: this.onTagSet, onQuery: this.onQuery, onTreeQuery: this.onTreeQuery,
+      onNewTag: this.onNewTag, onRenameValue: this.onRenameValue, onRenameKey: this.onRenameKey, onReviewKey: this.onReviewKey,
+      onDraft: this.onDraft, onPickScript: this.onPickScript, onUpload: this.onUpload, onTreeSearchKey: this.onTreeSearchKey, onTreeRowKey: this.onTreeRowKey, onImportKey: this.onImportKey, imgErr: this.imgErr,
       onShareEmail: this.onShareEmail, onShareRole: this.onShareRole, onSettingsTab: this.onSettingsTab, onMemberRole: this.onMemberRole, onSelectAll: this.onSelectAll,
       activeSettingsTab: tab,
       toast: this.state.toast
