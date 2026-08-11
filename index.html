@@ -2129,6 +2129,12 @@ class Component extends DCLogic {
     if (tries >= 14) { this.checkOffScreen(); return; }
     setTimeout(() => this.scrollWhenReady(id, tries + 1), 45);
   }
+  scrollSectionWhenReady(si, attempt) {
+    if (document.getElementById('sec-' + si)) return this.scrollTo('sec-' + si);
+    const tries = attempt || 0;
+    if (tries >= 14) { this.checkOffScreen(); return; }
+    setTimeout(() => this.scrollSectionWhenReady(si, tries + 1), 45);
+  }
   keepLineVisible(id, attempt) {
     const box = document.getElementById('scrollmain');
     const el = document.getElementById('line-' + id);
@@ -2173,12 +2179,25 @@ class Component extends DCLogic {
   gotoSection(sectionId) {
     const si = +sectionId;
     const section = this.doc().sections[si];
-    const firstLine = section && section.lines && section.lines.length ? 's' + si + 'r0' : null;
-    if (!firstLine) return this.scrollTo('sec-' + si);
-    this.setState({ activeLine: firstLine }, () => {
-      this.save();
-      setTimeout(() => this.scrollTo('sec-' + si), 20);
-    });
+    if (!section) return;
+    const key = String(si);
+    const collapsed = this.state.collapsed[key] !== undefined ? this.state.collapsed[key] : this.effS().collapseDefault;
+    const patch = { offScreen: !!this.state.activeLine };
+    if (collapsed) {
+      patch.collapsed = { ...this.state.collapsed, [key]: false };
+      /* An explicit section jump may target content beyond the progressively
+         mounted chunk. Mount through that section so its header cannot vanish
+         between expanding and scrolling. */
+      const visible = this.visibleLines();
+      let throughTarget = 0;
+      visible.forEach((line, i) => { if (line.si <= si) throughTarget = i + 1; });
+      patch.mounted = Math.max(this.state.mounted || 40, throughTarget + 40);
+    }
+    this._h = {};
+    /* Section navigation is a viewport detour, not a selection change. Keep
+       the reader's active line exactly as-is and expose Back to line while the
+       smooth scroll moves away from it. */
+    this.setState(patch, () => setTimeout(() => this.scrollSectionWhenReady(si, 0), collapsed ? 35 : 0));
   }
   haystack(l) {
     if (!this._hay) this._hay = {};
