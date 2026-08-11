@@ -41,18 +41,15 @@ button{appearance:none;-webkit-appearance:none}
   .tree-hover-actions:hover .tree-name{margin-right:var(--tree-action-reserve)}
   .tree-hover-actions:hover .tree-row-actions{opacity:1;visibility:visible;pointer-events:auto;transform:translate(0,-50%)}
 }
-.outline-list{display:flex;flex-direction:column;gap:3px;padding:4px;border:1px solid var(--border);border-radius:12px;background:color-mix(in srgb,var(--panel) 68%,var(--surface));box-shadow:0 2px 8px rgba(0,0,0,.035),inset 0 1px rgba(255,255,255,.2)}
-.outline-row{position:relative;isolation:isolate;border-radius:9px!important;background:transparent;transition:background-color .18s ease,box-shadow .18s ease,transform .2s cubic-bezier(.2,.8,.2,1)}
-.outline-row[aria-current="true"]{background:color-mix(in srgb,var(--accentSoft) 72%,var(--surface));box-shadow:0 1px 3px rgba(0,0,0,.04),inset 0 0 0 1px color-mix(in srgb,var(--accent) 20%,transparent)}
-.outline-number,.outline-title,.outline-status,.outline-chevron,.outline-progress,.outline-progress-fill{transition:transform .2s cubic-bezier(.2,.8,.2,1),color .16s ease,background-color .16s ease,opacity .16s ease,box-shadow .16s ease}
-.outline-chevron{opacity:.24}
-.outline-progress{transform-origin:center}
+.outline-list{display:flex;flex-direction:column;gap:1px;background:transparent}
+.outline-row{position:relative;border-radius:7px!important;background:transparent;transition:background-color .16s ease}
+.outline-row[aria-current="true"]{background:color-mix(in srgb,var(--accentSoft) 45%,transparent)}
+.outline-number,.outline-title,.outline-status,.outline-progress-fill{transition:transform .18s cubic-bezier(.2,.8,.2,1),color .16s ease,opacity .16s ease}
 @media (hover:hover) and (pointer:fine){
-  .outline-row:hover{background:var(--surface);box-shadow:0 3px 9px rgba(0,0,0,.055),inset 0 0 0 1px color-mix(in srgb,var(--border) 78%,transparent);transform:translateY(-1px)}
-  .outline-row[aria-current="true"]:hover{background:color-mix(in srgb,var(--accentSoft) 78%,var(--surface));box-shadow:0 3px 10px color-mix(in srgb,var(--accent) 7%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent)}
-  .outline-row:hover .outline-number{transform:scale(1.04);background:var(--accentSoft)!important;color:var(--accent)!important}
-  .outline-row:hover .outline-chevron{opacity:.72;transform:translateX(1px);color:var(--accent)}
-  .outline-row:hover .outline-progress-fill{filter:saturate(1.08);box-shadow:0 0 6px color-mix(in srgb,var(--accent) 20%,transparent)}
+  .outline-row:hover{background:var(--panel)}
+  .outline-row[aria-current="true"]:hover{background:color-mix(in srgb,var(--accentSoft) 58%,transparent)}
+  .outline-row:hover .outline-title{transform:translateX(1px)}
+  .outline-row:hover .outline-progress-fill{filter:saturate(1.08)}
 }
 .sc::-webkit-scrollbar{width:11px;height:11px}
 .sc::-webkit-scrollbar-thumb{background:var(--faint);border-radius:8px;border:3px solid transparent;background-clip:content-box}
@@ -67,6 +64,14 @@ button{appearance:none;-webkit-appearance:none}
 .rawhl .b{color:var(--ink);font-weight:700}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes loadingRail{0%{transform:translateX(-115%);opacity:0}18%{opacity:1}72%{opacity:1}100%{transform:translateX(285%);opacity:0}}
+@keyframes loadingBreathe{0%,100%{transform:scale(.96);opacity:.45}50%{transform:scale(1.08);opacity:.75}}
+.app-loading-screen{position:absolute;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:28px;background-color:var(--bg);background-image:radial-gradient(circle at 50% 44%,color-mix(in srgb,var(--accentSoft) 48%,transparent) 0,transparent 34%)}
+.app-loading-screen>div{animation:pop .18s ease-out}
+.app-loading-mark{position:relative;width:48px;height:48px;margin:0 auto 18px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.app-loading-mark::before{content:"";position:absolute;inset:-9px;border-radius:19px;border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);animation:loadingBreathe 1.8s cubic-bezier(.4,0,.2,1) infinite}
+.app-loading-rail{width:156px;height:3px;margin:20px auto 0;border-radius:999px;background:var(--rule);overflow:hidden}
+.app-loading-rail::after{content:"";display:block;width:42%;height:100%;border-radius:inherit;background:linear-gradient(90deg,transparent,var(--accent),color-mix(in srgb,var(--accent) 58%,#fff),transparent);animation:loadingRail 1.35s cubic-bezier(.45,0,.2,1) infinite}
 @keyframes lineCompleteOut{0%{opacity:1;max-height:2400px;transform:translateX(0) scale(1)}62%{opacity:0;max-height:2400px;transform:translateX(14px) scale(.992)}100%{opacity:0;max-height:0;transform:translateX(18px) scale(.985);margin-top:0;padding-top:0;padding-bottom:0;border-width:0}}
 @keyframes linePromoteIn{from{transform:translateY(7px);filter:saturate(.85)}to{transform:translateY(0);filter:saturate(1)}}
 @keyframes cardCompletionSweep{0%{opacity:0;transform:translate3d(-128%,0,0) skewX(-13deg)}12%{opacity:.2}42%{opacity:.72}72%{opacity:.38}100%{opacity:0;transform:translate3d(330%,0,0) skewX(-13deg)}}
@@ -119,6 +124,18 @@ button{appearance:none;-webkit-appearance:none}
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#F1EEE8"/><rect x="30" y="30" width="40" height="40" rx="11" fill="#CE3F16"/><path d="M44 41l17 9-17 9z" fill="#fff"/></svg></template>
 
 <div style="--rowR:{{ t.rowR }};--rowPad:{{ t.rowPad }};--rowMT:{{ t.rowMT }};--guideR:{{ t.guideR }};--guideBdT:{{ t.guideBdT }};--guideBdX:{{ t.guideBdX }};--secHeadR:{{ t.secHeadR }};--secHeadMB:{{ t.secHeadMB }};--secHeadPad:{{ t.secHeadPad }};--secHeadBg:{{ t.secHeadBg }};--padGuideX:{{ t.padGuideX }};--bg:{{ t.bg }};--panel:{{ t.panel }};--surface:{{ t.surface }};--border:{{ t.border }};--rule:{{ t.rule }};--ink:{{ t.ink }};--prose:{{ t.prose }};--muted:{{ t.muted }};--faint:{{ t.faint }};--accent:{{ t.accent }};--accentSoft:{{ t.accentSoft }};--chipBg:{{ t.chipBg }};--chipBd:{{ t.chipBd }};--chipInk:{{ t.chipInk }};--ovBg:{{ t.ovBg }};--ovInk:{{ t.ovInk }};--shadow:{{ t.shadow }};--radius:{{ t.radius }};--pad:{{ t.pad }};--gap:{{ t.gap }};--fScript:{{ t.fScript }};--fUI:{{ t.fUI }};--fGuide:{{ t.fGuide }};--szScript:{{ t.szScript }};--lhScript:{{ t.lhScript }};--wScript:{{ t.wScript }};--szBody:{{ t.szBody }};--szLabel:{{ t.szLabel }};--cols:{{ t.cols }};--colw:{{ t.colw }};--tagc:{{ t.tagc }};--link:{{ t.link }};--maxw:{{ t.maxw }};--lhBody:{{ t.lhBody }};--lhChip:{{ t.lhChip }};--itemGap:{{ t.itemGap }};--secGap:{{ t.secGap }};--sidebarW:{{ t.sidebarW }};--panelBg:{{ t.panelBg }};--panelBd:{{ t.panelBd }};--padGuide:{{ t.padGuide }};--colGap:{{ t.colGap }};--pillPadX:{{ t.pillPadX }};--pillPadY:{{ t.pillPadY }};--pillR:{{ t.pillR }};--padHead:{{ t.padHead }};--padHeadT:{{ t.padHeadT }};--padHeadB:{{ t.padHeadB }};--padHeadX:{{ t.padHeadX }};--gapHead:{{ t.gapHead }};--szNum:{{ t.szNum }};--wNum:{{ t.wNum }};--numInk:{{ t.numInk }};--numBg:{{ t.numBg }};--numBd:{{ t.numBd }};--numR:{{ t.numR }};--numPad:{{ t.numPad }};--numW:{{ t.numW }};--numLH:{{ t.numLH }};--numMT:{{ t.numMT }};display:flex;flex-direction:column;height:100vh;min-width:{{ minW }};position:relative;background:var(--bg,#F1EEE8);color:var(--ink,#17161A)" onClick="{{ onClick }}">
+
+<sc-if value="{{ loading.show }}" hint-placeholder-val="{{ false }}">
+<div class="app-loading-screen" role="status" aria-live="polite" aria-busy="true">
+<div style="width:min(100%,360px);text-align:center">
+<div class="app-loading-mark"><img src="./favicon.svg" alt="" aria-hidden="true" style="width:30px;height:30px;border-radius:9px;display:block"/></div>
+<div style="font:700 8px/1 var(--fUI);letter-spacing:.16em;color:var(--accent);text-transform:uppercase">{{ loading.kicker }}</div>
+<div style="margin-top:9px;font:620 19px/1.3 var(--fUI);letter-spacing:-.015em;color:var(--ink)">{{ loading.title }}</div>
+<div style="max-width:300px;margin:7px auto 0;font:400 12px/1.6 var(--fUI);color:var(--muted)">{{ loading.detail }}</div>
+<div class="app-loading-rail" aria-hidden="true"></div>
+</div>
+</div>
+</sc-if>
 
 <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;z-index:80;display:flex;background:var(--bg);animation:fin .2s ease-out;flex-direction:{{ loginDir }}">
@@ -397,20 +414,19 @@ Share</span>
 </div>
 </sc-if>
 </sc-if>
-<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 6px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:13px 2px 7px">
 <span style="font:700 8px/1 var(--fUI);letter-spacing:.13em;color:var(--faint)">SECTIONS</span>
-<span style="display:flex;align-items:center;gap:3px;padding:3px 6px;border-radius:999px;background:var(--panel);font:650 7.5px/1 var(--fUI);color:{{ sectionSummaryColor }}"><strong style="font:750 8px/1 'JetBrains Mono',monospace">{{ readySectionCount }}</strong><span style="opacity:.75">of {{ sectionCount }} ready</span></span>
+<span style="font:650 7.5px/1 'JetBrains Mono',monospace;color:{{ sectionSummaryColor }}">{{ readySectionCount }}/{{ sectionCount }} ready</span>
 </div>
 <div class="outline-list">
 <sc-for list="{{ outline }}" as="o" hint-placeholder-count="4">
 <div data-goto="{{ o.id }}" tabindex="0" role="button" aria-current="{{ o.active }}" aria-label="Go to section {{ o.num }}, {{ o.title }}, {{ o.readyLabel }} ready" title="Jump to {{ o.title }}" onKeyDown="{{ onReviewKey }}" class="ui-control outline-row" style="{{ o.rowStyle }}">
-<div style="display:grid;grid-template-columns:24px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:8px;row-gap:6px;align-items:center">
+<div style="display:grid;grid-template-columns:15px minmax(0,1fr) auto;column-gap:4px;align-items:center">
 <span class="outline-number" style="{{ o.numStyle }}">{{ o.num }}</span>
-<span class="outline-title" style="grid-column:2;min-width:0;font:620 11px/1.3 var(--fUI);color:{{ o.ink }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ o.title }}</span>
-<svg class="outline-chevron" width="8" height="8" viewBox="0 0 10 10" style="grid-column:3;grid-row:1;justify-self:end;color:var(--faint)"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-<div class="outline-progress" style="grid-column:2;grid-row:2;height:3px;border-radius:999px;background:var(--rule);overflow:hidden"><div class="outline-progress-fill" style="{{ o.barStyle }}"></div></div>
-<span class="outline-status" style="grid-column:3;grid-row:2;justify-self:end;display:flex;align-items:center;gap:3px;padding:2px 4px;border-radius:999px;background:{{ o.statusBg }};font:650 7.5px/1 'JetBrains Mono',monospace;color:{{ o.statusColor }}"><sc-if value="{{ o.complete }}" hint-placeholder-val="{{ false }}"><svg width="7" height="7" viewBox="0 0 10 10"><path d="M1.5 5.2 4 7.5 8.5 2.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>{{ o.readyLabel }}</span>
+<span class="outline-title" style="min-width:0;font:560 11px/1.3 var(--fUI);color:{{ o.ink }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ o.title }}</span>
+<span class="outline-status" style="justify-self:end;font:600 7.5px/1 'JetBrains Mono',monospace;color:{{ o.statusColor }}">{{ o.readyLabel }}</span>
 </div>
+<div class="outline-progress" style="height:3px;margin:7px 1px 0;border-radius:999px;background:var(--rule);overflow:hidden"><div class="outline-progress-fill" style="{{ o.barStyle }}"></div></div>
 </div>
 </sc-for>
 </div>
@@ -1617,7 +1633,7 @@ class Component extends DCLogic {
       sideTab: vt ? 'review' : (d.settings.defaultSideTab === 'review' ? 'review' : 'files'),
       showTrash: false, menu: null, shareFor: null, renameFor: null, renameValue: '', confirmBox: null,
       shares: {}, grants: {}, shareEmail: '', shareRole: d.settings.defaultShareRole || 'viewer',
-      user: null, authReady: false, cloud: false, viewer: null, viewerToken: vt,
+      user: null, authReady: false, dataReady: false, cloud: false, viewer: null, viewerToken: vt, shareLoadingToken: null,
       viewerPrefs: loadViewerPrefs()
     };
   }
@@ -1657,7 +1673,7 @@ class Component extends DCLogic {
     this._hash = () => {
       const vt = readHashToken();
       /* landing on a share link switches to the Review tab */
-      this.setState({ viewerToken: vt, sideTab: vt ? 'review' : this.state.sideTab }, () => this.bootViewer());
+      this.setState({ viewerToken: vt, shareLoadingToken: null, sideTab: vt ? 'review' : this.state.sideTab }, () => this.bootViewer());
     };
     window.addEventListener('hashchange', this._hash);
     this._onScroll = () => {
@@ -1682,7 +1698,7 @@ class Component extends DCLogic {
     window.removeEventListener('resize', this._resize);
     clearTimeout(this._t); clearTimeout(this._cloudT); clearTimeout(this._saveT); clearTimeout(this._pubT); clearTimeout(this._growT);
     clearTimeout(this._scrollT); clearTimeout(this._rzT); clearTimeout(this._settleT);
-    clearTimeout(this._doneExitT); clearTimeout(this._promoteT); clearTimeout(this._achievementT);
+    clearTimeout(this._doneExitT); clearTimeout(this._promoteT); clearTimeout(this._achievementT); clearTimeout(this._dataReadyT);
     if (this._measRaf) cancelAnimationFrame(this._measRaf);
     if (this._sRaf) cancelAnimationFrame(this._sRaf);
     if (this._scrollRaf) cancelAnimationFrame(this._scrollRaf);
@@ -1773,10 +1789,14 @@ class Component extends DCLogic {
 
   waitForFb(n) {
     const fb = fbGet();
-    if (!fb) { if (n < 60) setTimeout(() => this.waitForFb(n + 1), 250); else this.setState({ authReady: true }); return; }
+    if (!fb) {
+      if (n < 60) setTimeout(() => this.waitForFb(n + 1), 250);
+      else this.setState({ authReady: true, dataReady: true, viewer: this.state.viewerToken ? { missing: true, token: this.state.viewerToken } : this.state.viewer });
+      return;
+    }
     fb.auth.onAuthStateChanged(u => {
       const signedIn = !!u && !u.isAnonymous && this.state.settings.cloudSync !== false;
-      this.setState({ user: u, authReady: true, cloud: signedIn }, () => {
+      this.setState({ user: u, authReady: true, dataReady: !signedIn, cloud: signedIn }, () => {
         this.detach();
         if (signedIn) this.attach(u);
         if (this.state.viewerToken) this.bootViewer();
@@ -1790,25 +1810,40 @@ class Component extends DCLogic {
     this._refs = [];
     if (this._doneRef) { try { this._doneRef.off(); } catch (e) { } this._doneRef = null; }
     if (this._pubRef) { try { this._pubRef.off(); } catch (e) { } this._pubRef = null; }
+    clearTimeout(this._dataReadyT); this._cloudParts = null;
     this._pushed = false;
   }
   on(ref, cb) { ref.on('value', s => cb(s.val())); (this._refs = this._refs || []).push(ref); }
 
+  markCloudPart(part) {
+    this._cloudParts = { ...(this._cloudParts || {}), [part]: true };
+    if (this._cloudParts.items && this._cloudParts.raw) {
+      clearTimeout(this._dataReadyT);
+      if (!this.state.dataReady) this.setState({ dataReady: true });
+    }
+  }
+
   attach(u) {
-    const fb = fbGet(); if (!fb) return;
+    const fb = fbGet(); if (!fb) { this.setState({ dataReady: true }); return; }
+    this._cloudParts = { items: false, raw: false };
+    clearTimeout(this._dataReadyT);
+    /* Keep the loader from hanging forever on a flaky connection; local data
+       remains a safe fallback while Firebase can continue syncing later. */
+    this._dataReadyT = setTimeout(() => { if (!this.state.dataReady) this.setState({ dataReady: true }); }, 8000);
     const db = fb.db, base = 'users/' + u.uid;
     fb.db.ref(base + '/profile').update({ email: u.email || '', name: u.displayName || '', photo: u.photoURL || '', seen: now() }).catch(() => { });
     this.on(db.ref(base + '/items'), v => {
       const items = v || {};
       if (!Object.keys(items).length) {
+        this.markCloudPart('items');
         if (this._pushed) return;
         this._pushed = true;
         return this.pushLocalToCloud(u);
       }
       const act = this.state.activeId && items[this.state.activeId] ? this.state.activeId : Object.keys(items).find(k => items[k].type === 'script' && !items[k].trashed);
-      this.setState({ items, activeId: act }, () => this.watchDone());
+      this.setState({ items, activeId: act }, () => { this.markCloudPart('items'); this.watchDone(); });
     });
-    this.on(db.ref(base + '/raw'), v => this.setState({ raws: v || {} }));
+    this.on(db.ref(base + '/raw'), v => this.setState({ raws: v || {} }, () => this.markCloudPart('raw')));
     this.on(db.ref(base + '/shares'), v => this.setState({ shares: v || {} }));
     this.on(db.ref(base + '/settings'), v => {
       if (!v || this.state.settings.syncSettings === false) return;
@@ -1863,7 +1898,7 @@ class Component extends DCLogic {
     this._pubRef = fb.db.ref('pub/' + token);
     this._pubRef.on('value', s => {
       const v = s.val();
-      if (!v) { this.setState({ viewer: { missing: true, token } }); return; }
+      if (!v) { this.setState({ viewer: { missing: true, token }, shareLoadingToken: null }); return; }
       const items = v.items || {};
       const scripts = Object.keys(items).filter(k => items[k].type === 'script');
       const cur = this.state.activeId;
@@ -1871,10 +1906,10 @@ class Component extends DCLogic {
         : (items[cur] && items[cur].type === 'script' ? cur : scripts[0]);
       const same = this.state.activeId === keep;
       this.setState({
-        viewer: { ...v, token, items, raws: v.raw || {}, role: role || v.role, granted: !!role },
+        viewer: { ...v, token, items, raws: v.raw || {}, role: role || v.role, granted: !!role }, shareLoadingToken: null,
         activeId: keep, mode: this.state.mode === 'raw' ? 'raw' : 'normal'
       }, () => { if (!same) this.watchDone(); });
-    }, () => this.setState({ viewer: { missing: true, token } }));
+    }, () => this.setState({ viewer: { missing: true, token }, shareLoadingToken: null }));
   }
 
   save = () => {
@@ -2412,7 +2447,7 @@ class Component extends DCLogic {
       }
       if (location.hash) location.hash = '';
       this._h = {};
-      this.setState({ activeId: id, viewer: null, viewerToken: null, activeLine: null, filter: 'all', query: '', treeQuery: '', treeSearchOpen: false, draft: null, collapsed: {}, win: { s: 0, e: 28 }, mounted: 40, drawer: false, mode: this.state.mode === 'settings' ? 'settings' : 'normal' }, () => { this.save(); this.watchDone(); setTimeout(() => this.adjustWindow(), 60); });
+      this.setState({ activeId: id, viewer: null, viewerToken: null, shareLoadingToken: null, activeLine: null, filter: 'all', query: '', treeQuery: '', treeSearchOpen: false, draft: null, collapsed: {}, win: { s: 0, e: 28 }, mounted: 40, drawer: false, mode: this.state.mode === 'settings' ? 'settings' : 'normal' }, () => { this.save(); this.watchDone(); setTimeout(() => this.adjustWindow(), 60); });
       return;
     }
     if ((el = g('data-unshare'))) { this.removeMember(this.state.shareFor, el.getAttribute('data-unshare')); return; }
@@ -2678,7 +2713,7 @@ class Component extends DCLogic {
   unshare(id) { this.unshareMany([id]); }
   openGrant(g, id) {
     if (!g || !g.token) { this.flash('Is share ka link nahi mila'); return; }
-    this.watchPub(g.token, g.role || 'viewer', id);
+    this.setState({ shareLoadingToken: g.token }, () => this.watchPub(g.token, g.role || 'viewer', id));
   }
 
   download(name, text, type) {
@@ -2766,7 +2801,7 @@ class Component extends DCLogic {
         menu: null, grants: {}, shares: {}, cloud: false, user: null,
         items: {}, raws: {}, doneMap: {}, activeId: '', activeLine: null,
         openFolders: {}, draft: null, mode: 'normal', showTrash: false, filter: 'all', query: '', treeQuery: '', treeSearchOpen: false,
-        viewer: null, viewerToken: null,
+        viewer: null, viewerToken: null, shareLoadingToken: null,
         skippedLogin: false, loginOpen: false, drawer: false
       });
       return;
@@ -2776,7 +2811,7 @@ class Component extends DCLogic {
       location.hash = '';
       if (this._pubRef) { try { this._pubRef.off(); } catch (e) { } this._pubRef = null; }
       this._h = {};
-      this.setState({ viewer: null, viewerToken: null, draft: null, activeLine: null, win: { s: 0, e: 28 }, mounted: 40, sideTab: this.state.settings.defaultSideTab === 'review' ? 'review' : 'files' }, () => {
+      this.setState({ viewer: null, viewerToken: null, shareLoadingToken: null, draft: null, activeLine: null, win: { s: 0, e: 28 }, mounted: 40, sideTab: this.state.settings.defaultSideTab === 'review' ? 'review' : 'files' }, () => {
         const s = Object.keys(this.state.items).find(x => this.state.items[x].type === 'script' && !this.state.items[x].trashed);
         this.setState({ activeId: s }, () => this.watchDone());
       });
@@ -3321,6 +3356,15 @@ class Component extends DCLogic {
     /* ---------- responsive ---------- */
     const vw = this.state.vw, mob = vw < 760, midW = vw >= 860 && vw < 1180;
     const showLogin = this.state.loginOpen || (this.state.authReady && !this.state.cloud && !this.state.skippedLogin && !this.state.viewerToken && !viewing);
+    const pendingShareToken = this.state.viewerToken || this.state.shareLoadingToken;
+    const shareLoading = !!(pendingShareToken && (!this.state.viewer || this.state.viewer.token !== pendingShareToken));
+    const cloudLoading = !!(this.state.authReady && this.state.cloud && !this.state.dataReady && !shareLoading);
+    const showLoading = !this.state.authReady || shareLoading || cloudLoading;
+    const loading = shareLoading
+      ? { show: showLoading, kicker: 'Shared view', title: 'Opening shared script', detail: 'Latest script aur viewing settings load ho rahi hain.' }
+      : (cloudLoading
+        ? { show: showLoading, kicker: 'Cloud sync', title: 'Syncing your workspace', detail: 'Aap ki scripts, progress aur settings tayyar ho rahi hain.' }
+        : { show: showLoading, kicker: 'Alamza Scripts', title: 'Opening your workspace', detail: 'Aap ka workspace tayyar ho raha hai.' });
     const icon = (d, sw) => ({ __html: '<svg width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="' + (sw || 1.5) + '" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>' });
     const navDefs = [
       { id: 'files', label: 'Scripts', icon: icon('<path d="M2.5 4.5h4l1.2 1.5h7.8v8.5a1 1 0 0 1-1 1H3.5a1 1 0 0 1-1-1z"/>') },
@@ -3452,7 +3496,7 @@ class Component extends DCLogic {
       showHeadShare: !mob && !viewing && !!this.state.cloud && !!a.id,
       showHeadAccount: !mob && !!(u && !u.isAnonymous),
       showHeadSignIn: !mob && this.state.authReady && !(u && !u.isAnonymous),
-      showLogin, loginBusy: this.state.loginBusy, loginError: this.state.loginError,
+      loading, showLogin, loginBusy: this.state.loginBusy, loginError: this.state.loginError,
       loginDir: mob ? 'column' : 'row',
       loginArtDisp: mob ? 'none' : 'flex',
       loginArtFlex: midW ? '1' : '1.15',
@@ -3516,18 +3560,15 @@ class Component extends DCLogic {
           readyLabel: dn + ' / ' + ids.length, complete, active,
           ink: t.ink,
           statusColor: complete ? '#23846A' : (active ? t.accent : t.muted),
-          statusBg: complete ? 'rgba(63,169,140,.11)' : (active ? t.accentSoft : 'transparent'),
           rowStyle: [
-            'padding:8px 7px', 'cursor:pointer', 'border:0'
+            'padding:8px 4px 9px', 'cursor:pointer', 'border:0'
           ].join(';'),
           numStyle: [
-            'grid-column:1', 'grid-row:1 / 3', 'width:24px', 'height:24px', 'display:flex', 'align-items:center', 'justify-content:center', 'border-radius:7px',
-            'background:' + (complete ? 'rgba(63,169,140,.13)' : (active ? t.accentSoft : t.surface)),
+            'width:15px', 'display:block',
             'color:' + (complete ? '#23846A' : (active ? t.accent : t.faint)),
-            'font:700 8px/1 ' + t.fUI,
-            'box-shadow:' + (active ? 'inset 0 0 0 1px ' + t.accent + '20' : 'none')
+            'font:500 8px/1 ' + "'JetBrains Mono',monospace"
           ].join(';'),
-          barStyle: 'width:' + pctNum + '%;height:100%;border-radius:999px;background:linear-gradient(90deg,' + (complete ? '#3FA98C,#68C8A9' : t.accent + ',color-mix(in srgb,' + t.accent + ' 68%,#fff)') + ');transition:width .24s cubic-bezier(.2,.8,.2,1)'
+          barStyle: 'width:' + pctNum + '%;height:100%;border-radius:999px;background:' + (complete ? '#3FA98C' : t.accent) + ';transition:width .24s cubic-bezier(.2,.8,.2,1)'
         };
       }),
       pct: progressPct + '%',
