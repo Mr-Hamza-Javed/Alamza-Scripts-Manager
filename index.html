@@ -51,6 +51,12 @@ button{appearance:none;-webkit-appearance:none}
   .outline-row:hover .outline-title{transform:translateX(1px)}
   .outline-row:hover .outline-progress-fill{filter:saturate(1.08)}
 }
+.copy-script-btn{transition:background-color .16s ease,border-color .16s ease,transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease}
+.copy-script-btn .copy-script-icon{transition:background-color .16s ease,color .16s ease}
+@media (hover:hover) and (pointer:fine){
+  .copy-script-btn:hover{border-color:color-mix(in srgb,var(--accent) 42%,var(--border))!important;background:color-mix(in srgb,var(--accentSoft) 55%,var(--surface))!important;transform:translateY(-1px);box-shadow:0 3px 10px rgba(25,18,12,.05)}
+}
+.copy-script-btn:active{transform:translateY(0)}
 .sc::-webkit-scrollbar{width:11px;height:11px}
 .sc::-webkit-scrollbar-thumb{background:var(--faint);border-radius:8px;border:3px solid transparent;background-clip:content-box}
 .sc::-webkit-scrollbar-track{background:transparent}
@@ -387,6 +393,13 @@ Share</span>
 <div style="min-width:0;text-align:center"><div style="font:700 13px/1 var(--fUI);color:var(--ink)">{{ totalLines }}</div><div style="margin-top:4px;font:700 7px/1 var(--fUI);letter-spacing:.1em;color:var(--faint)">TOTAL</div></div>
 </div>
 </div>
+<sc-if value="{{ canCopyScript }}" hint-placeholder-val="{{ true }}">
+<button type="button" data-act="copyScriptMd" tabindex="0" aria-label="Copy full script as Markdown" title="{{ copyScriptTitle }}" class="ui-control copy-script-btn" style="width:100%;display:flex;align-items:center;gap:8px;margin:0 0 11px;padding:8px;border:1px solid var(--border);border-radius:10px;background:var(--surface);cursor:pointer">
+<span class="copy-script-icon" style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--accentSoft);color:var(--accent)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><rect x="5.2" y="5.2" width="8.4" height="8.4" rx="1.4"/><path d="M3.1 10.8h-.7a1 1 0 0 1-1-1V2.4a1 1 0 0 1 1-1h7.4a1 1 0 0 1 1 1v.7"/></svg></span>
+<span style="flex:1;min-width:0;text-align:left"><span style="display:block;font:600 10px/1.2 var(--fUI);color:var(--ink)">Copy full script</span><span style="display:block;margin-top:2px;font:400 8px/1.2 var(--fUI);color:var(--muted)">{{ copyScriptHint }}</span></span>
+<svg width="10" height="10" viewBox="0 0 10 10" style="flex:none;color:var(--faint)"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+</sc-if>
 <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 6px">
 <span style="font:700 8px/1 var(--fUI);letter-spacing:.13em;color:var(--faint)">FILTER LINES</span>
 <sc-if value="{{ hasTagFilters }}" hint-placeholder-val="{{ false }}">
@@ -2339,6 +2352,28 @@ class Component extends DCLogic {
     if (navigator.clipboard) navigator.clipboard.writeText(out).catch(() => { });
     this.flash((label ? label + ': ' : '') + (out.length > 70 ? out.slice(0, 70) + '…' : out));
   }
+  /* raw clipboard write — no copyFormat wrapping, no echo of the text in the
+     toast (used for bulk copies like the whole markdown script) */
+  copyRaw(txt, msg) {
+    const fail = () => this.flash('Copy nahi ho saka — browser ne clipboard block kiya');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(() => this.flash(msg), () => { if (!this.legacyCopy(txt)) fail(); else this.flash(msg); });
+      return;
+    }
+    if (this.legacyCopy(txt)) this.flash(msg); else fail();
+  }
+  legacyCopy(txt) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = txt; ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select(); ta.setSelectionRange(0, txt.length);
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
   joiner() { const j = this.effS().copyJoin; return j === 'newline' ? '\n' : j === 'pipe' ? ' | ' : ', '; }
 
   onClick = (e) => {
@@ -2852,10 +2887,17 @@ class Component extends DCLogic {
     }
     if (k === 'clearDone') { this.clearCompletionFeedback(); this.setDone(a.id, {}); this.flash('Cleared'); return; }
     if (k === 'emptyTrash') return this.emptyTrash(false);
-    if (k === 'copyAllTerms' || k === 'exportTerms') {
+    if (k === 'copyScriptMd') {
+      /* the whole script exactly as it lives on disk — script lines plus the
+         full visual guide — straight to the clipboard as markdown */
+      const md = (a.raw || '').replace(/\s+$/, '');
+      if (!md) { this.flash('Is script me copy karne ke liye kuch nahi'); return; }
+      this.copyRaw(md, 'Poori script markdown me copy ho gayi — ' + this.allLines().length + ' lines, guide ke saath');
+      return;
+    }
+    if (k === 'exportTerms') {
       const terms = []; this.allLines().forEach(l => l.items.forEach(it => { if (it.render === 'chips') terms.push(...it.chips); }));
-      if (k === 'exportTerms') this.download(a.name + ' — search terms.txt', terms.join('\n'));
-      else this.copy(terms.join(this.joiner()), terms.length + ' terms');
+      this.download(a.name + ' — search terms.txt', terms.join('\n'));
       return;
     }
     if (k === 'exportMd') return this.download(a.name + '.md', a.raw, 'text/markdown');
@@ -3573,6 +3615,9 @@ class Component extends DCLogic {
       }),
       pct: progressPct + '%',
       totalLines: String(allIds.length), doneLines: String(doneCount), pendingLines: String(Math.max(0, allIds.length - doneCount)),
+      canCopyScript: !!(a.raw || '').trim(),
+      copyScriptHint: 'Markdown + visual guide' + (allIds.length ? ' · ' + allIds.length + ' lines' : ''),
+      copyScriptTitle: 'Poori script — har line ke saath uska visual guide — markdown format me clipboard par copy karein',
       progressFillStyle: 'width:' + progressPct + '%;height:100%;border-radius:999px;background:#3FA98C;transition:width .2s ease',
       filters, primaryFilters: filters.slice(0, 3), tagFilters: filters.slice(3), hasTagFilters: filters.length > 3,
       tagFilterCount: String(Math.max(0, filters.length - 3)), hasActiveTagFilter: filters.slice(3).some(f => f.selected),
