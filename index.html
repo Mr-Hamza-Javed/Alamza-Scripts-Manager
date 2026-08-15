@@ -823,7 +823,7 @@ Share</span>
 <div data-act="closeCopyMenu" style="position:fixed;inset:0;z-index:50">
 <div role="menu" aria-label="Copy options" style="position:absolute;left:{{ copyMenu.x }};top:{{ copyMenu.y }};width:{{ copyMenu.w }};padding:5px;border-radius:9px;background:var(--surface);border:1px solid var(--border);box-shadow:0 10px 34px rgba(0,0,0,.20);animation:pop .11s ease-out">
 <div style="padding:6px 9px 7px;font:700 8px/1 var(--fUI);letter-spacing:.13em;color:var(--faint)">THIS SCRIPT AS MARKDOWN</div>
-<sc-for list="{{ copyMenu.items }}" as="ci" hint-placeholder-count="3">
+<sc-for list="{{ copyMenu.items }}" as="ci" hint-placeholder-count="5">
 <sc-if value="{{ ci.isDivider }}" hint-placeholder-val="{{ false }}">
 <div style="height:1px;background:var(--border);margin:4px 6px"></div>
 </sc-if>
@@ -2411,6 +2411,9 @@ class Component extends DCLogic {
       return ok;
     } catch (e) { return false; }
   }
+  /* file name for a markdown export of the active script — the script-only
+     page gets its own suffix so it never lands on top of the full export */
+  mdFileName(only) { return safeFileName(this.active().name, 'script') + (only ? ' - script only' : '') + '.md'; }
   /* The spoken script on its own, rebuilt as a readable markdown page rather
      than the source's script/guide table: the script name as the title, every
      section as a heading, and the lines beneath it as plain paragraphs. Video
@@ -2958,7 +2961,7 @@ class Component extends DCLogic {
       this.setState({
         copyMenu: {
           x: Math.max(8, Math.min(r.left, window.innerWidth - w - 8)),
-          y: Math.max(8, Math.min(r.bottom + 5, window.innerHeight - 130)),
+          y: Math.max(8, Math.min(r.bottom + 5, window.innerHeight - 230)),
           w
         }
       });
@@ -2982,14 +2985,20 @@ class Component extends DCLogic {
     }
     if (k === 'exportTerms') {
       const terms = []; this.allLines().forEach(l => l.items.forEach(it => { if (it.render === 'chips') terms.push(...it.chips); }));
-      this.download(safeFileName(a.name, 'script') + ' — search terms.txt', terms.join('\n'));
+      this.download(safeFileName(a.name, 'script') + ' - search terms.txt', terms.join('\n'));
       return;
     }
-    if (k === 'exportMd') {
+    if (k === 'exportMd' || k === 'exportScriptOnly') {
+      /* the same two shapes the copy actions offer, saved as a file instead:
+         the source markdown with its guide, or the script-only page. The two
+         get different names so one never overwrites the other. */
+      const only = k === 'exportScriptOnly';
+      const md = only ? this.scriptOnlyMd() : (a.raw || '').replace(/\s+$/, '');
       if (this.state.copyMenu) this.setState({ copyMenu: null });
-      if (!(a.raw || '').trim()) { this.flash('Is script me download karne ke liye kuch nahi'); return; }
-      this.download(safeFileName(a.name, 'script') + '.md', a.raw, 'text/markdown');
-      this.flash('Download shuru — ' + safeFileName(a.name, 'script') + '.md');
+      if (!md.trim()) { this.flash('Is script me download karne ke liye kuch nahi'); return; }
+      const file = this.mdFileName(only);
+      this.download(file, md, 'text/markdown');
+      this.flash('Download shuru — ' + file);
       return;
     }
     if (k === 'exportSettings') return this.download('alamza-settings.json', JSON.stringify({ settings: this.state.settings, tags: this.state.tags }, null, 2), 'application/json');
@@ -3722,7 +3731,8 @@ class Component extends DCLogic {
           { id: 'copyScriptMd', label: 'Copy full script + visual guide', hint: 'Source markdown, tables ke saath', bg: t.accentSoft, isItem: true },
           { id: 'copyScriptOnly', label: 'Copy script only', hint: 'Sirf script lines, sections ke saath — koi table nahi', bg: 'transparent', isItem: true },
           { isDivider: true },
-          { id: 'exportMd', label: 'Download as .md', hint: safeFileName(a.name, 'script') + '.md', bg: 'transparent', isItem: true }
+          { id: 'exportMd', label: 'Download full script + guide', hint: this.mdFileName(false), bg: 'transparent', isItem: true },
+          { id: 'exportScriptOnly', label: 'Download script only', hint: this.mdFileName(true), bg: 'transparent', isItem: true }
         ]
       },
       progressFillStyle: 'width:' + progressPct + '%;height:100%;border-radius:999px;background:#3FA98C;transition:width .2s ease',
