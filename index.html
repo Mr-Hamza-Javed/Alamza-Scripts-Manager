@@ -56,6 +56,7 @@ button{appearance:none;-webkit-appearance:none}
   .copy-script-btn:hover{background:color-mix(in srgb,var(--accentSoft) 42%,transparent)!important}
   .copy-script-btn:hover .copy-script-icon{background:var(--accentSoft)!important;color:var(--accent)!important}
 }
+.q-hit{background:color-mix(in srgb,var(--accent) 26%,transparent);color:inherit;border-radius:3px;padding:0 1px;box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent)}
 .sc::-webkit-scrollbar{width:11px;height:11px}
 .sc::-webkit-scrollbar-thumb{background:var(--faint);border-radius:8px;border:3px solid transparent;background-clip:content-box}
 .sc::-webkit-scrollbar-track{background:transparent}
@@ -548,7 +549,7 @@ Share</span>
 <span style="font:700 8.5px/1 'JetBrains Mono',monospace;letter-spacing:.1em;color:var(--accent)">INSERT VIDEO{{ ln.range }}</span>
 </div>
 </sc-if>
-<p style="margin:0;font-family:var(--fScript);font-size:var(--szScript);line-height:var(--lhScript);font-weight:var(--wScript);color:var(--ink);text-wrap:pretty">{{ ln.text }}</p>
+<p style="margin:0;font-family:var(--fScript);font-size:var(--szScript);line-height:var(--lhScript);font-weight:var(--wScript);color:var(--ink);text-wrap:pretty" dangerouslySetInnerHTML="{{ ln.textHtml }}"></p>
 <sc-if value="{{ ln.hasTranscript }}" hint-placeholder-val="{{ false }}">
 <p style="margin:6px 0 0;padding-left:10px;border-left:2px solid var(--border);font-family:var(--fGuide);font-size:var(--szBody);font-style:italic;line-height:var(--lhBody);color:var(--muted)">{{ ln.transcript }}</p>
 </sc-if>
@@ -569,16 +570,16 @@ Share</span>
 <sc-if value="{{ ln.hasGuide }}" hint-placeholder-val="{{ true }}">
 <div style="border-radius:var(--guideR);background:var(--panelBg);border-top:var(--guideBdT);border-left:var(--guideBdX);border-right:var(--guideBdX);border-bottom:var(--guideBdX);padding:var(--padGuide) var(--padGuideX) 2px;columns:var(--colw) var(--cols);column-gap:var(--colGap);column-rule:{{ ruleCss }}">
 <sc-for list="{{ ln.items }}" as="it" hint-placeholder-count="4"><sc-if value="{{ it.isProse }}" hint-placeholder-val="{{ true }}">
-<p style="display:inline-block;width:100%;break-inside:avoid;margin:0 0 var(--itemGap);font-family:var(--fGuide);font-size:var(--szBody);line-height:var(--lhBody);color:var(--prose);text-wrap:pretty"><span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 7px 2px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:1px;white-space:nowrap">{{ it.label }}</span>{{ it.body }}</p>
+<p style="display:inline-block;width:100%;break-inside:avoid;margin:0 0 var(--itemGap);font-family:var(--fGuide);font-size:var(--szBody);line-height:var(--lhBody);color:var(--prose);text-wrap:pretty"><span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 7px 2px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:1px;white-space:nowrap">{{ it.label }}</span><span dangerouslySetInnerHTML="{{ it.bodyHtml }}"></span></p>
 </sc-if>
 <sc-if value="{{ it.isChips }}" hint-placeholder-val="{{ false }}">
 <div style="display:inline-block;width:100%;break-inside:avoid;margin-bottom:var(--itemGap);line-height:var(--lhChip)">
-<span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 7px 4px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:2px;white-space:nowrap">{{ it.label }}</span><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="3"><span data-chip="{{ ch.v }}" data-tag="{{ ch.tag }}" title="{{ ch.hint }}" style="display:inline-block;padding:2.5px 8px;margin:0 4px 4px 0;border-radius:{{ chipR }};background:var(--chipBg);border:1px solid var(--chipBd);font-family:var(--fGuide);font-size:calc(var(--szBody) - 0.5px);line-height:1.4;color:var(--chipInk);cursor:pointer;vertical-align:middle" style-hover="border-color:{{ it.color }};background:{{ it.soft }}">{{ ch.v }}</span></sc-for>
+<span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 7px 4px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:2px;white-space:nowrap">{{ it.label }}</span><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="3"><span data-chip="{{ ch.v }}" data-tag="{{ ch.tag }}" title="{{ ch.hint }}" style="display:inline-block;padding:2.5px 8px;margin:0 4px 4px 0;border-radius:{{ chipR }};background:var(--chipBg);border:1px solid var(--chipBd);font-family:var(--fGuide);font-size:calc(var(--szBody) - 0.5px);line-height:1.4;color:var(--chipInk);cursor:pointer;vertical-align:middle" style-hover="border-color:{{ it.color }};background:{{ it.soft }}" dangerouslySetInnerHTML="{{ ch.html }}"></span></sc-for>
 </div>
 </sc-if>
 <sc-if value="{{ it.isOverlay }}" hint-placeholder-val="{{ false }}">
 <div style="display:inline-block;width:100%;break-inside:avoid;margin-bottom:var(--itemGap);line-height:var(--lhChip)">
-<span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 8px 4px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:3px;white-space:nowrap">{{ it.label }}</span><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="1"><span data-copy="{{ ch.v }}" style="display:inline-block;padding:4px 11px;margin:0 5px 4px 0;border-radius:3px;background:var(--ovBg);color:var(--ovInk);font-family:var(--fGuide);font-size:var(--szBody);font-weight:700;line-height:1.35;cursor:pointer;vertical-align:middle;box-shadow:0 0 0 2.5px var(--accentSoft)">{{ ch.v }}</span></sc-for>
+<span style="display:inline-block;padding:var(--pillPadY) var(--pillPadX);margin:0 8px 4px 0;border-radius:var(--pillR);background:{{ it.pillBg }};border:{{ it.pillBd }};font-family:'JetBrains Mono',monospace;font-size:var(--szLabel);font-weight:700;letter-spacing:.075em;line-height:1.45;color:{{ it.color }};vertical-align:3px;white-space:nowrap">{{ it.label }}</span><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="1"><span data-copy="{{ ch.v }}" style="display:inline-block;padding:4px 11px;margin:0 5px 4px 0;border-radius:3px;background:var(--ovBg);color:var(--ovInk);font-family:var(--fGuide);font-size:var(--szBody);font-weight:700;line-height:1.35;cursor:pointer;vertical-align:middle;box-shadow:0 0 0 2.5px var(--accentSoft)" dangerouslySetInnerHTML="{{ ch.html }}"></span></sc-for>
 </div>
 </sc-if>
 <sc-if value="{{ it.isLinks }}" hint-placeholder-val="{{ false }}">
@@ -587,12 +588,12 @@ Share</span>
 <sc-if value="{{ s.hasFav }}" hint-placeholder-val="{{ true }}">
 <img src="{{ s.fav }}" alt="" width="13" height="13" loading="lazy" decoding="async" style="border-radius:3px;flex:none;background:var(--rule)"/>
 </sc-if>
-<span style="font-family:var(--fGuide);font-size:calc(var(--szBody) - 1px);line-height:1.4;color:var(--prose);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px">{{ s.t }}</span>
+<span style="font-family:var(--fGuide);font-size:calc(var(--szBody) - 1px);line-height:1.4;color:var(--prose);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px" dangerouslySetInnerHTML="{{ s.tHtml }}"></span>
 <sc-if value="{{ showDomain }}" hint-placeholder-val="{{ false }}">
 <span style="font:400 9px/1.3 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ s.d }}</span>
 </sc-if>
 </a></sc-if><sc-if value="{{ s.noUrl }}" hint-placeholder-val="{{ false }}"><span data-copy="{{ s.t }}" title="No link in the script — click to copy the title" style="display:inline-flex;align-items:center;gap:6px;max-width:100%;margin:0 4px 4px 0;padding:2px 8px 2px 7px;border-radius:20px;background:transparent;border:1px dashed var(--chipBd);cursor:pointer;vertical-align:middle" style-hover="border-color:var(--muted)">
-<span style="font-family:var(--fGuide);font-size:calc(var(--szBody) - 1px);line-height:1.4;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px">{{ s.t }}</span>
+<span style="font-family:var(--fGuide);font-size:calc(var(--szBody) - 1px);line-height:1.4;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px" dangerouslySetInnerHTML="{{ s.tHtml }}"></span>
 </span></sc-if></sc-for>
 </div>
 </sc-if>
@@ -1028,6 +1029,8 @@ const DEFAULTS = {
   stickyHeaders: true, collapseDefault: false,
   focusMode: false, dimAmount: 45, activeStyle: 'ring', rememberLine: true,
   chipClick: 'copy', searchEngine: 'youtube', copyFormat: 'plain', copyJoin: 'comma',
+  searchScope: 'context', searchHighlight: true, searchExpand: true,
+  searchHideEmpty: true, searchLineNumber: true,
   openNewTab: true, showFavicons: true, showDomain: false,
   autoDetect: true, defaultSplit: 'auto', unknownAs: 'auto',
   scriptCol: 'script line', visualCol: 'visual guide', showExtraCols: true,
@@ -1039,6 +1042,7 @@ const TABS = [
   { id: 'type', label: 'Typography', title: 'Typography', hint: 'Script line aur guide text ka font, size aur wazan.' },
   { id: 'layout', label: 'Layout', title: 'Layout', hint: 'Guide panel ke columns, labels aur kya kya dikhe.' },
   { id: 'reading', label: 'Reading', title: 'Reading', hint: 'Focus mode, active line aur padhne ka tajurba.' },
+  { id: 'search', label: 'Search', title: 'Search', hint: 'Search kya dhoonde, kya khole aur match kaise dikhe.' },
   { id: 'behavior', label: 'Copy & links', title: 'Copy & links', hint: 'Chip pe click kya kare, links kaise khulen.' },
   { id: 'parsing', label: 'Parsing', title: 'Parsing', hint: 'Markdown kaise parhi jaye — columns, splits, refs.' },
   { id: 'tags', label: 'Tags & labels' },
@@ -1112,6 +1116,13 @@ const FIELDS = {
     { key: 'dimAmount', type: 'range', label: 'Dim strength', min: 10, max: 85, step: 5, unit: '%' },
     { key: 'activeStyle', type: 'select', label: 'Active line style', options: [['ring', 'Accent ring'], ['tint', 'Tinted background'], ['band', 'Solid band'], ['bar', 'Left bar only']] },
     { key: 'rememberLine', type: 'toggle', label: 'Remember active line', hint: 'Wapas aane par wahi line' }
+  ],
+  search: [
+    { key: 'searchScope', type: 'select', label: 'Search looks in', hint: 'Query kis text se match kare', options: [['context', 'Script line + context'], ['script', 'Script line only'], ['guide', 'Script line + poora guide']] },
+    { key: 'searchHighlight', type: 'toggle', label: 'Highlight matches', hint: 'Jo lafz mila hai wo result me numaya ho' },
+    { key: 'searchExpand', type: 'toggle', label: 'Open sections while searching', hint: 'Collapsed section match ko chupa na sake' },
+    { key: 'searchHideEmpty', type: 'toggle', label: 'Hide sections with no match', hint: 'Sirf wahi sections rahen jin me kuch mila' },
+    { key: 'searchLineNumber', type: 'toggle', label: 'A number opens that line', hint: 'Sirf wo line — space dabaein to aam lafz ban jata hai' }
   ],
   behavior: [
     { key: 'chipClick', type: 'select', label: 'Click on a chip', options: [['copy', 'Copy it'], ['search', 'Open a search'], ['both', 'Copy + open search']] },
@@ -1653,6 +1664,22 @@ function load() {
 }
 
 function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+/* Escaped text with every occurrence of `q` wrapped in a <mark>. Escaping runs
+   on each slice, never on the assembled string, so a script that contains
+   markup stays inert — shared scripts come from other people. */
+function markHits(text, q) {
+  const s = String(text == null ? '' : text);
+  if (!q) return { __html: esc(s) };
+  const hay = s.toLowerCase(), needle = String(q).toLowerCase();
+  let out = '', i = 0;
+  for (; ;) {
+    const at = hay.indexOf(needle, i);
+    if (at < 0) { out += esc(s.slice(i)); break; }
+    out += esc(s.slice(i, at)) + '<mark class="q-hit">' + esc(s.slice(at, at + needle.length)) + '</mark>';
+    i = at + needle.length;
+  }
+  return { __html: out };
+}
 function highlight(txt) {
   return esc(txt)
     .replace(/^(#{1,6} .*)$/gm, '<span class="h">$1</span>')
@@ -2288,11 +2315,17 @@ class Component extends DCLogic {
      nothing else. Searching every tag, chip and source URL meant a common word
      dragged in lines whose spoken text had nothing to do with the query. */
   haystack(l) {
+    const scope = this.effS().searchScope || 'context';
     if (!this._hay) this._hay = {};
-    if (this._haySig !== this._sig) { this._hay = {}; this._haySig = this._sig; }
+    const haySig = this._sig + '|' + scope;
+    if (this._haySig !== haySig) { this._hay = {}; this._haySig = haySig; }
     if (this._hay[l.id] === undefined) {
-      const context = l.items.filter(it => it.k === 'CONTEXT').map(it => it.body || '').join(' ');
-      this._hay[l.id] = (l.text + ' ' + context).toLowerCase();
+      let extra = '';
+      if (scope === 'context') extra = l.items.filter(it => it.k === 'CONTEXT').map(it => it.body || '').join(' ');
+      else if (scope === 'guide') extra = l.items.map(it =>
+        it.k + ' ' + (it.body || '') + ' ' + (it.chips || []).join(' ') + ' ' + (it.links || []).map(x => x.t).join(' ')
+      ).join(' ');
+      this._hay[l.id] = (l.text + ' ' + extra).toLowerCase();
     }
     return this._hay[l.id];
   }
@@ -2304,7 +2337,7 @@ class Component extends DCLogic {
     const raw = this.state.query || '';
     const q = raw.trim().toLowerCase();
     if (!q) return null;
-    const num = /^\d+$/.test(q) ? parseInt(q, 10) : null;
+    const num = this.effS().searchLineNumber && /^\d+$/.test(q) ? parseInt(q, 10) : null;
     return { q, num, wide: num !== null && /\s$/.test(raw) };
   }
   visibleLines() {
@@ -2314,7 +2347,7 @@ class Component extends DCLogic {
     if (f !== 'all' && f !== 'pending' && f !== 'done' && !this._known[f]) f = 'all';
     const doneKeys = Object.keys(a.done).sort().join(',');
     /* the raw query, not the trimmed one — a trailing space changes the result */
-    const sig = this._sig + '|' + (this.state.query || '') + '|' + f + '|' + doneKeys;
+    const sig = this._sig + '|' + (this.state.query || '') + '|' + f + '|' + doneKeys + '|' + (this.effS().searchScope || '') + '|' + (this.effS().searchLineNumber ? 1 : 0);
     if (this._vlSig === sig) return this._vl;
     /* only a number that is actually one of this script's line numbers counts
        as "go to that line" — 1969 in a 40-line script is just a word to find */
@@ -3131,7 +3164,15 @@ class Component extends DCLogic {
     const activeId = this.state.activeLine;
 
     const activeSi = activeId ? +String(activeId).replace(/^s(\d+)r.*$/, '$1') : -1;
-    const dispSig = [S.labelStyle, S.chipClick, S.copyJoin, S.sourcesPosition, S.theme, S.paper, S.accent, S.showFavicons, this._sig].join('|');
+    /* what to paint a <mark> around. A bare line-number query has no text to
+       find, so it highlights nothing. */
+    const spec = this.searchSpec();
+    const hlq = (S.searchHighlight && spec && !(spec.num !== null && !spec.wide)) ? spec.q : '';
+    /* a mark only ever appears where the query could have matched, so the
+       highlight explains the hit instead of decorating unsearched text */
+    const hlScope = S.searchScope || 'context';
+    const hlFor = (k) => hlScope === 'guide' ? hlq : (hlScope === 'context' && k === 'CONTEXT' ? hlq : '');
+    const dispSig = [S.labelStyle, S.chipClick, S.copyJoin, S.sourcesPosition, S.theme, S.paper, S.accent, S.showFavicons, hlq, hlScope, this._sig].join('|');
     if (this._dispSig !== dispSig) { this._itemCache = {}; this._dispSig = dispSig; }
     const itemsFor = (l) => {
       if (this._itemCache[l.id]) return this._itemCache[l.id];
@@ -3144,9 +3185,10 @@ class Component extends DCLogic {
           pillBd: S.labelStyle === 'outline' ? '1px solid ' + col(it.color) + '66' : 'none',
           isProse: it.render === 'prose', isChips: it.render === 'chips',
           isOverlay: it.render === 'overlay', isLinks: it.render === 'links',
-          body: it.body || '', chips: (it.chips || []).map(v => ({ v, tag: it.k, hint: S.chipClick === 'copy' ? 'Click to copy' : 'Click to search' })),
+          body: it.body || '', bodyHtml: markHits(it.body || '', hlFor(it.k)),
+          chips: (it.chips || []).map(v => ({ v, html: markHits(v, hlFor(it.k)), tag: it.k, hint: S.chipClick === 'copy' ? 'Click to copy' : 'Click to search' })),
           links: (it.links || []).map(x => ({
-            ...x, hasUrl: !!x.u, noUrl: !x.u, hasFav: !!(x.d && S.showFavicons),
+            ...x, tHtml: markHits(x.t, hlFor(it.k)), hasUrl: !!x.u, noUrl: !x.u, hasFav: !!(x.d && S.showFavicons),
             fav: x.d ? 'https://www.google.com/s2/favicons?domain=' + x.d + '&sz=64' : ''
           })),
           copyable: it.render === 'chips',
@@ -3184,7 +3226,7 @@ class Component extends DCLogic {
         else { bd = t.accent; }
       } else if (S.cardShadow && !docV) ring = t.shadow;
       const out = {
-        id: l.id, domId: 'line-' + l.id, n: l.n, text: l.text,
+        id: l.id, domId: 'line-' + l.id, n: l.n, text: l.text, textHtml: markHits(l.text, hlq),
         isActive: on ? 'true' : 'false',
         isVideo: !!l.video, range: l.range ? ' · ' + l.range : '',
         hasTranscript: !!(l.transcript && S.showTranscript), transcript: l.transcript,
@@ -3212,7 +3254,8 @@ class Component extends DCLogic {
        state.collapsed is left untouched, so clearing the search restores
        whatever was open before. */
     const searching = !!(this.state.query || '').trim();
-    const openOf = (si) => searching || !(this.state.collapsed[si] !== undefined ? this.state.collapsed[si] : S.collapseDefault);
+    const openOf = (si) => (searching && S.searchExpand) || !(this.state.collapsed[si] !== undefined ? this.state.collapsed[si] : S.collapseDefault);
+    const pruning = searching && S.searchHideEmpty;
     const gapPx = parseFloat(t.gap) || 8, secGapPx = parseFloat(t.secGap) || 16;
     const flowIds = [];
     doc.sections.forEach((s, si) => {
@@ -3277,7 +3320,7 @@ class Component extends DCLogic {
       /* searching: keep exactly the sections holding a hit, judged on visCount
          so the mount cap can never drop one. Otherwise: the old rule, which
          keeps collapsed sections and notes-only ones. */
-    }).filter(s => searching ? s.visCount > 0 : (!s.open || s.lines.length || s.hasNotes));
+    }).filter(s => pruning ? s.visCount > 0 : (!s.open || s.lines.length || s.hasNotes));
 
     const allCollapsed = doc.sections.length > 0 && doc.sections.every((s, i) => !(this.state.collapsed[i] !== undefined ? !this.state.collapsed[i] : !S.collapseDefault));
     const readySectionCount = doc.sections.filter((s, si) => s.lines.length > 0 && s.lines.every((l, li) => !!a.done['s' + si + 'r' + li])).length;
@@ -3748,7 +3791,7 @@ class Component extends DCLogic {
           ].join(';'),
           barStyle: 'width:' + pctNum + '%;height:100%;border-radius:999px;background:' + (complete ? '#3FA98C' : t.accent) + ';transition:width .24s cubic-bezier(.2,.8,.2,1)'
         };
-      }).filter(o => !searching || o.hits > 0),
+      }).filter(o => !pruning || o.hits > 0),
       pct: progressPct + '%',
       totalLines: String(allIds.length), doneLines: String(doneCount), pendingLines: String(Math.max(0, allIds.length - doneCount)),
       canCopyScript: !!(a.raw || '').trim(),
