@@ -56,6 +56,13 @@ button{appearance:none;-webkit-appearance:none}
   .copy-script-btn:hover{background:color-mix(in srgb,var(--accentSoft) 42%,transparent)!important}
   .copy-script-btn:hover .copy-script-icon{background:var(--accentSoft)!important;color:var(--accent)!important}
 }
+.doc-name{padding:4px 7px;margin:0 -7px;border-radius:7px;transition:background-color .15s ease,color .15s ease}
+.doc-name .doc-name-copy{opacity:0;transition:opacity .15s ease}
+@media (hover:hover) and (pointer:fine){
+  .doc-name:hover{background:var(--panel)}
+  .doc-name:hover .doc-name-copy{opacity:1;color:var(--accent)}
+}
+.doc-name:focus-visible .doc-name-copy{opacity:1}
 .q-hit{background:color-mix(in srgb,var(--accent) 26%,transparent);color:inherit;border-radius:3px;padding:0 1px;box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent)}
 .sc::-webkit-scrollbar{width:11px;height:11px}
 .sc::-webkit-scrollbar-thumb{background:var(--faint);border-radius:8px;border:3px solid transparent;background-clip:content-box}
@@ -212,39 +219,46 @@ Signing in…</div>
 </div>
 </sc-if>
 
-<div style="flex:none;display:flex;align-items:center;gap:10px;height:{{ headH }};padding:0 {{ headPad }};background:var(--surface);border-bottom:1px solid var(--border);z-index:20">
+<div style="{{ headStyle }}">
+<div style="display:flex;align-items:center;gap:9px;min-width:0">
 <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
 <span data-act="drawer" tabindex="0" role="button" aria-label="Open navigation" title="Menu" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-6px;border-radius:9px;color:var(--ink);cursor:pointer;flex:none" style-hover="background:var(--panel)">
 <svg width="17" height="17" viewBox="0 0 18 18"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
 </span>
 </sc-if>
-<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;align-items:center;gap:8px;flex:none">
-<img src="./favicon.svg" alt="" aria-hidden="true" style="width:22px;height:22px;border-radius:6px;display:block;flex:none"/>
-<span style="font:600 13px/1 var(--fUI);letter-spacing:-.01em">Alamza</span>
-<span style="font:400 13px/1 var(--fUI);color:var(--muted)">Scripts</span>
+<sc-if value="{{ showBrand }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:7px;flex:none">
+<img src="./favicon.svg" alt="" aria-hidden="true" style="width:21px;height:21px;border-radius:6px;display:block;flex:none"/>
+<span style="display:flex;align-items:baseline;gap:3.5px;white-space:nowrap">
+<span style="font:600 13px/1 var(--fUI);letter-spacing:-.015em;color:var(--ink)">Alamza</span>
+<sc-if value="{{ showBrandWord }}" hint-placeholder-val="{{ true }}"><span style="font:400 12.5px/1 var(--fUI);letter-spacing:-.005em;color:var(--faint)">Scripts</span></sc-if>
+</span>
 </div>
-<div style="width:1px;height:22px;background:var(--border);flex:none"></div>
+<div style="width:1px;height:18px;background:var(--border);flex:none;margin:0 1px"></div>
 </sc-if>
-<div style="display:flex;align-items:center;gap:7px;flex:none;min-width:0;max-width:300px">
+<button type="button" data-act="copyName" tabindex="0" aria-label="Copy script name" title="{{ copyNameTitle }}" class="ui-control doc-name" style="display:flex;align-items:center;gap:7px;min-width:0;border:0;background:transparent;cursor:pointer">
 <span style="font:600 12.5px/1.3 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ docName }}</span>
+<svg class="doc-name-copy" width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="flex:none;color:var(--faint)"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg>
+</button>
 <sc-if value="{{ badge.show }}" hint-placeholder-val="{{ false }}">
 <span data-act="{{ badge.action }}" title="{{ badge.title }}" style="flex:none;padding:2.5px 8px;border-radius:20px;background:{{ badge.bg }};color:{{ badge.fg }};font:700 8.5px/1.3 'JetBrains Mono',monospace;letter-spacing:.09em;cursor:{{ badge.cursor }}">{{ badge.label }}</span>
 </sc-if>
 </div>
-<span style="flex:1"></span>
+
+<div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);width:{{ headSearchW }};flex:none">
+<svg width="12" height="12" viewBox="0 0 14 14" style="flex:none;color:var(--faint)"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.2 9.2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="{{ searchPlaceholder }}" aria-label="Search script" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 12px/1.4 var(--fUI)"/>
+<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" tabindex="0" role="button" aria-label="Clear search" class="ui-control" style="cursor:pointer;color:var(--faint);font:400 13px/1 var(--fUI)">×</span></sc-if>
+</div>
+</sc-if>
 <sc-if value="{{ showMobileSearchButton }}" hint-placeholder-val="{{ false }}">
 <span data-act="mobileSearch" tabindex="0" role="button" aria-label="Search script" title="Search script" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;color:{{ mobileSearchFg }};background:{{ mobileSearchBg }};cursor:pointer;flex:none">
 <svg width="16" height="16" viewBox="0 0 18 18"><circle cx="7.5" cy="7.5" r="4.7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11.2 11.2L15 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
 </span>
 </sc-if>
-<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);width:270px;flex:none">
-<svg width="12" height="12" viewBox="0 0 14 14" style="flex:none;color:var(--faint)"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.2 9.2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search lines, tags, terms…  ( / )" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 12px/1.4 var(--fUI)"/>
-<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" style="cursor:pointer;color:var(--faint);font:400 13px/1 var(--fUI)">×</span></sc-if>
-</div>
-<span style="flex:1"></span>
+<sc-if value="{{ showModes }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;gap:2px;padding:2px;border-radius:8px;background:var(--panel);border:1px solid var(--border);flex:none">
 <sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
 <span data-mode="{{ m.id }}" tabindex="0" role="tab" class="ui-control" style="padding:5px 12px;border-radius:6px;font:500 11.5px/1.3 var(--fUI);cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</span>
@@ -252,11 +266,12 @@ Signing in…</div>
 </div>
 </sc-if>
 <sc-if value="{{ showHeadShare }}" hint-placeholder-val="{{ false }}">
-<span data-act="openShare" style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--prose);cursor:pointer;flex:none;font:500 11.5px/1.3 var(--fUI)" style-hover="border-color:var(--accent);color:var(--accent)">
+<span data-act="openShare" tabindex="0" role="button" class="ui-control" style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--prose);cursor:pointer;flex:none;font:500 11.5px/1.3 var(--fUI)" style-hover="border-color:var(--accent);color:var(--accent)">
 <svg width="12" height="12" viewBox="0 0 14 14"><path d="M5 7.6l4-2.2M5 6.4l4 2.2" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="4" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="3.4" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="10" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
 Share</span>
 </sc-if>
 <span data-act="theme" tabindex="0" role="button" aria-label="Toggle theme" title="Toggle theme" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:{{ iconBtn }};height:{{ iconBtn }};border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer;flex:none" style-hover="color:var(--ink)"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M11.6 8.6A5 5 0 0 1 5.4 2.4a5 5 0 1 0 6.2 6.2z" fill="currentColor"/></svg></span>
+</div>
 </div>
 
 <sc-if value="{{ showMobileSearch }}" hint-placeholder-val="{{ false }}">
@@ -3005,6 +3020,12 @@ class Component extends DCLogic {
     }
     if (k === 'clearDone') { this.clearCompletionFeedback(); this.setDone(a.id, {}); this.flash('Cleared'); return; }
     if (k === 'emptyTrash') return this.emptyTrash(false);
+    if (k === 'copyName') {
+      const name = String(a.name || '').trim();
+      if (!name) { this.flash('Is script ka koi naam nahi'); return; }
+      this.copyRaw(name, 'Naam copy ho gaya — ' + name);
+      return;
+    }
     if (k === 'copyMenu') {
       if (this.state.copyMenu) return this.setState({ copyMenu: null });
       /* anchor the sheet to the whole split row, not just the caret, so it
@@ -3626,6 +3647,21 @@ class Component extends DCLogic {
       isMobile: mob, isDesktop: !mob,
       minW: mob ? '0' : '760px',
       headH: mob ? '56px' : '52px', headPad: mob ? '12px' : '14px',
+      /* the bar reads left to right: identity, then the tools. The field sits
+         with the actions on the right in every view, so a public link and an
+         owner's window put it in the same place */
+      headStyle: 'flex:none;display:flex;align-items:center;gap:' + (mob ? '10px' : '14px')
+        + ';height:' + (mob ? '56px' : '52px') + ';padding:0 ' + (mob ? '12px' : '14px')
+        + ';background:var(--surface);border-bottom:1px solid var(--border);z-index:20',
+      /* a read-only viewer has fewer controls beside it, so the field is given
+         the room those controls would have taken */
+      headSearchW: viewing ? (midW ? '300px' : '380px') : (midW ? '230px' : '270px'),
+      searchPlaceholder: midW ? 'Search lines…  ( / )' : 'Search lines, tags, terms…  ( / )',
+      showBrand: !mob,
+      showBrandWord: !midW,
+      /* one tab is not a switch — the public view drops the group entirely */
+      showModes: !mob && modeDefs.length > 1,
+      copyNameTitle: 'Click to copy the script name',
       iconBtn: mob ? '38px' : '30px', avatarSz: mob ? '34px' : '30px',
       tabPad: mob ? '10px 5px' : '8px 5px',
       dialogW: mob ? '100%' : '520px',
