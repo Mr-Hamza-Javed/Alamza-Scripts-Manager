@@ -51,6 +51,11 @@ button{appearance:none;-webkit-appearance:none}
   .outline-row:hover .outline-title{transform:translateX(1px)}
   .outline-row:hover .outline-progress-fill{filter:saturate(1.08)}
 }
+.copy-script-btn,.copy-script-btn .copy-script-icon{transition:background-color .16s ease,color .16s ease}
+@media (hover:hover) and (pointer:fine){
+  .copy-script-btn:hover{background:color-mix(in srgb,var(--accentSoft) 42%,transparent)!important}
+  .copy-script-btn:hover .copy-script-icon{background:var(--accentSoft)!important;color:var(--accent)!important}
+}
 .sc::-webkit-scrollbar{width:11px;height:11px}
 .sc::-webkit-scrollbar-thumb{background:var(--faint);border-radius:8px;border:3px solid transparent;background-clip:content-box}
 .sc::-webkit-scrollbar-track{background:transparent}
@@ -442,6 +447,17 @@ Share</span>
 <span style="flex:1;min-width:0;text-align:left"><span style="display:block;font:600 10px/1.2 var(--fUI);color:var(--ink)">{{ collapseLabel }}</span><span style="display:block;margin-top:2px;font:400 8px/1.2 var(--fUI);color:var(--muted)">{{ collapseHint }}</span></span>
 <svg width="10" height="10" viewBox="0 0 10 10" style="flex:none;color:var(--faint)"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
+<sc-if value="{{ canCopyScript }}" hint-placeholder-val="{{ true }}">
+<div data-copy-split style="display:flex;align-items:stretch;border-top:1px solid var(--rule)">
+<button type="button" data-act="copyScriptMd" tabindex="0" aria-label="Copy full script with visual guide as Markdown" title="{{ copyScriptTitle }}" class="ui-control copy-script-btn" style="flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:7px 8px;border:0;background:transparent;cursor:pointer">
+<span class="copy-script-icon" style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--panel);color:var(--muted)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><rect x="5.2" y="5.2" width="8.4" height="8.4" rx="1.4"/><path d="M3.1 10.8h-.7a1 1 0 0 1-1-1V2.4a1 1 0 0 1 1-1h7.4a1 1 0 0 1 1 1v.7"/></svg></span>
+<span style="flex:1;min-width:0;text-align:left"><span style="display:block;font:600 10px/1.2 var(--fUI);color:var(--ink)">Copy full script</span><span style="display:block;margin-top:2px;font:400 8px/1.2 var(--fUI);color:var(--muted)">{{ copyScriptHint }}</span></span>
+</button>
+<button type="button" data-act="copyMenu" tabindex="0" aria-haspopup="menu" aria-expanded="{{ copyMenuOpen }}" aria-label="More copy options" title="Copy options" class="ui-control copy-script-btn" style="flex:none;display:flex;align-items:center;justify-content:center;width:28px;padding:0;border:0;border-left:1px solid var(--rule);background:{{ copyMenuBg }};color:{{ copyMenuFg }};cursor:pointer">
+<svg width="10" height="10" viewBox="0 0 10 10" style="flex:none;transform:{{ copyMenuChev }};transition:transform .15s"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+</div>
+</sc-if>
 </div>
 </div>
 </sc-if>
@@ -801,6 +817,24 @@ Share</span>
 <svg width="13" height="13" viewBox="0 0 14 14"><path d="M7 2.5v9M3.5 8L7 11.5 10.5 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
 <span style="font:600 11.5px/1 var(--fUI)">Back to line {{ activeNum }}</span>
 </button>
+</sc-if>
+
+<sc-if value="{{ copyMenu.show }}" hint-placeholder-val="{{ false }}">
+<div data-act="closeCopyMenu" style="position:fixed;inset:0;z-index:50">
+<div role="menu" aria-label="Copy options" style="position:absolute;left:{{ copyMenu.x }};top:{{ copyMenu.y }};width:{{ copyMenu.w }};padding:5px;border-radius:9px;background:var(--surface);border:1px solid var(--border);box-shadow:0 10px 34px rgba(0,0,0,.20);animation:pop .11s ease-out">
+<div style="padding:6px 9px 7px;font:700 8px/1 var(--fUI);letter-spacing:.13em;color:var(--faint)">THIS SCRIPT AS MARKDOWN</div>
+<sc-for list="{{ copyMenu.items }}" as="ci" hint-placeholder-count="5">
+<sc-if value="{{ ci.isDivider }}" hint-placeholder-val="{{ false }}">
+<div style="height:1px;background:var(--border);margin:4px 6px"></div>
+</sc-if>
+<sc-if value="{{ ci.isItem }}" hint-placeholder-val="{{ true }}">
+<div data-act="{{ ci.id }}" tabindex="0" role="menuitem" class="ui-control" style="display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:6px;cursor:pointer;background:{{ ci.bg }}" style-hover="background:var(--panel)">
+<span style="flex:1;min-width:0"><span style="display:block;font:600 11px/1.3 var(--fUI);color:var(--ink)">{{ ci.label }}</span><span style="display:block;margin-top:2px;font:400 9.5px/1.35 var(--fUI);color:var(--muted)">{{ ci.hint }}</span></span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</div>
 </sc-if>
 
 <sc-if value="{{ menu.show }}" hint-placeholder-val="{{ false }}">
@@ -1550,6 +1584,20 @@ function fbGet() {
   return FB;
 }
 function hashOf(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return String(h); }
+/* a script's name straight from the tree can hold slashes, colons and other
+   characters an OS will not take in a file name — keep the name readable but
+   safe to save */
+function safeFileName(name, fallback) {
+  const base = String(name || '')
+    .replace(/[\\/:*?"<>|]/g, ' ')
+    .replace(/[\x00-\x1f\x7f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^\.+/, '')
+    .replace(/\.+$/, '')
+    .trim();
+  return (base || fallback || 'script').slice(0, 120);
+}
 function shareUrlFor(token) {
   const base = location.origin + location.pathname + location.search;
   return base + '#/s/' + token;
@@ -1631,7 +1679,7 @@ class Component extends DCLogic {
       /* Opened through a share link → Review tab by default; otherwise Scripts
          (or the user's saved default). */
       sideTab: vt ? 'review' : (d.settings.defaultSideTab === 'review' ? 'review' : 'files'),
-      showTrash: false, menu: null, shareFor: null, renameFor: null, renameValue: '', confirmBox: null,
+      showTrash: false, menu: null, copyMenu: null, shareFor: null, renameFor: null, renameValue: '', confirmBox: null,
       shares: {}, grants: {}, shareEmail: '', shareRole: d.settings.defaultShareRole || 'viewer',
       user: null, authReady: false, dataReady: false, cloud: false, viewer: null, viewerToken: vt, shareLoadingToken: null,
       viewerPrefs: loadViewerPrefs()
@@ -1647,17 +1695,19 @@ class Component extends DCLogic {
         e.preventDefault(); actionable.click(); return;
       }
       if (formControl) {
-        if (e.key === 'Escape') e.target.blur();
+        /* the copy sheet is opened from a <button>, so Escape has to dismiss it
+           here too — otherwise focus just blurs and the sheet stays up */
+        if (e.key === 'Escape') { if (this.state.copyMenu) this.setState({ copyMenu: null }); e.target.blur(); }
         return;
       }
       if (e.key === 'Escape') {
-        if (this.state.menu || this.state.shareFor || this.state.drawer || this.state.loginOpen || this.state.renameFor || this.state.confirmBox) {
-          e.preventDefault(); this.setState({ menu: null, shareFor: null, drawer: false, loginOpen: false, renameFor: null, renameValue: '', confirmBox: null });
+        if (this.state.menu || this.state.copyMenu || this.state.shareFor || this.state.drawer || this.state.loginOpen || this.state.renameFor || this.state.confirmBox) {
+          e.preventDefault(); this.setState({ menu: null, copyMenu: null, shareFor: null, drawer: false, loginOpen: false, renameFor: null, renameValue: '', confirmBox: null });
         }
         return;
       }
       if (this.state.mode !== 'normal') return;
-      if (this.state.menu || this.state.shareFor || this.state.loginOpen || this.state.renameFor || this.state.confirmBox) return;
+      if (this.state.menu || this.state.copyMenu || this.state.shareFor || this.state.loginOpen || this.state.renameFor || this.state.confirmBox) return;
       if (e.key === '/') { e.preventDefault(); const el = document.querySelector('input[placeholder^="Search lines"]'); if (el) el.focus(); return; }
       /* j/k and ArrowDown/ArrowUp move the active line up/down */
       if (e.key === 'j' || e.key === 'k' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -2339,6 +2389,55 @@ class Component extends DCLogic {
     if (navigator.clipboard) navigator.clipboard.writeText(out).catch(() => { });
     this.flash((label ? label + ': ' : '') + (out.length > 70 ? out.slice(0, 70) + '…' : out));
   }
+  /* raw clipboard write — no copyFormat wrapping, no echo of the text in the
+     toast (used for bulk copies like the whole markdown script) */
+  copyRaw(txt, msg) {
+    const fail = () => this.flash('Copy nahi ho saka — browser ne clipboard block kiya');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(() => this.flash(msg), () => { if (!this.legacyCopy(txt)) fail(); else this.flash(msg); });
+      return;
+    }
+    if (this.legacyCopy(txt)) this.flash(msg); else fail();
+  }
+  legacyCopy(txt) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = txt; ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select(); ta.setSelectionRange(0, txt.length);
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+  /* file name for a markdown export of the active script — the script-only
+     page gets its own suffix so it never lands on top of the full export */
+  mdFileName(only) { return safeFileName(this.active().name, 'script') + (only ? ' - script only' : '') + '.md'; }
+  /* The spoken script on its own, rebuilt as a readable markdown page rather
+     than the source's script/guide table: the script name as the title, every
+     section as a heading, and the lines beneath it as plain paragraphs. Video
+     inserts keep their label (and transcript, which is spoken content); the
+     visual guide, extra columns and the sources register are all left out. */
+  scriptOnlyMd() {
+    const a = this.active(), doc = this.doc();
+    const out = [];
+    const name = (a.name || '').trim();
+    if (name) out.push('# ' + name, '');
+    doc.sections.forEach(s => {
+      if (!s.lines.length) return;
+      out.push('## ' + ((s.title || 'Untitled') + (s.badge ? ' [' + s.badge + ']' : '')).trim(), '');
+      s.lines.forEach(l => {
+        if (l.video) {
+          out.push('**[INSERT VIDEO]** ' + (l.text || '') + (l.range ? ' — ' + l.range : ''), '');
+          if (l.transcript) out.push('> ' + l.transcript, '');
+        } else if (l.text) {
+          out.push(l.text, '');
+        }
+      });
+    });
+    return out.join('\n').replace(/\n{3,}/g, '\n\n').replace(/\s+$/, '');
+  }
   joiner() { const j = this.effS().copyJoin; return j === 'newline' ? '\n' : j === 'pipe' ? ' | ' : ', '; }
 
   onClick = (e) => {
@@ -2464,7 +2563,7 @@ class Component extends DCLogic {
     if ((el = g('data-dup'))) { this.duplicate(el.getAttribute('data-dup')); return; }
     if ((el = g('data-del'))) { this.trash(el.getAttribute('data-del')); return; }
     if ((el = g('data-share'))) { this.setState({ shareFor: el.getAttribute('data-share'), menu: null }); return; }
-    if ((el = g('data-act'))) { this.act(el.getAttribute('data-act')); return; }
+    if ((el = g('data-act'))) { this.act(el.getAttribute('data-act'), el); return; }
     if ((el = g('data-line'))) { this.setState({ activeLine: el.getAttribute('data-line') }, this.save); return; }
   };
 
@@ -2508,7 +2607,7 @@ class Component extends DCLogic {
     if (a === 'purge') return this.purge(id);
     if (a === 'newIn') return this.create('script', id);
     if (a === 'newFolderIn') return this.create('folder', id);
-    if (a === 'export') { const it = this.state.items[id]; return this.download(it.name + '.md', this.state.raws[id] || '', 'text/markdown'); }
+    if (a === 'export') { const it = this.state.items[id]; return this.download(safeFileName(it.name, 'script') + '.md', this.state.raws[id] || '', 'text/markdown'); }
     if (a === 'moveRoot') return this.putItem(id, { parentId: 'root' });
     if (a && a.indexOf('move:') === 0) return this.putItem(id, { parentId: a.slice(5) });
   }
@@ -2721,7 +2820,7 @@ class Component extends DCLogic {
     const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name; a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   }
-  act(k) {
+  act(k, el) {
     const a = this.active();
     /* Read-only shared view: block every action that could create, rename,
        delete or otherwise mutate data. Only viewing + the "ready" tick are
@@ -2852,13 +2951,56 @@ class Component extends DCLogic {
     }
     if (k === 'clearDone') { this.clearCompletionFeedback(); this.setDone(a.id, {}); this.flash('Cleared'); return; }
     if (k === 'emptyTrash') return this.emptyTrash(false);
-    if (k === 'copyAllTerms' || k === 'exportTerms') {
-      const terms = []; this.allLines().forEach(l => l.items.forEach(it => { if (it.render === 'chips') terms.push(...it.chips); }));
-      if (k === 'exportTerms') this.download(a.name + ' — search terms.txt', terms.join('\n'));
-      else this.copy(terms.join(this.joiner()), terms.length + ' terms');
+    if (k === 'copyMenu') {
+      if (this.state.copyMenu) return this.setState({ copyMenu: null });
+      /* anchor the sheet to the whole split row, not just the caret, so it
+         lines up with the button it belongs to */
+      const row = el && el.closest ? el.closest('[data-copy-split]') : null;
+      const r = (row || el).getBoundingClientRect();
+      const w = Math.max(196, Math.round(r.width));
+      this.setState({
+        copyMenu: {
+          x: Math.max(8, Math.min(r.left, window.innerWidth - w - 8)),
+          y: Math.max(8, Math.min(r.bottom + 5, window.innerHeight - 230)),
+          w
+        }
+      });
       return;
     }
-    if (k === 'exportMd') return this.download(a.name + '.md', a.raw, 'text/markdown');
+    if (k === 'closeCopyMenu') return this.setState({ copyMenu: null });
+    if (k === 'copyScriptMd' || k === 'copyScriptOnly') {
+      /* copyScriptMd  — the script exactly as it lives on disk: every line
+                         together with its full visual guide, tables and all.
+         copyScriptOnly — the spoken script alone, rebuilt as a plain markdown
+                         page: section headings kept, guide and tables dropped. */
+      const only = k === 'copyScriptOnly';
+      const md = only ? this.scriptOnlyMd() : (a.raw || '').replace(/\s+$/, '');
+      if (this.state.copyMenu) this.setState({ copyMenu: null });
+      if (!md) { this.flash('Is script me copy karne ke liye kuch nahi'); return; }
+      const n = this.allLines().length;
+      this.copyRaw(md, only
+        ? 'Sirf script copy ho gayi — ' + n + ' lines, sections ke saath'
+        : 'Poori script markdown me copy ho gayi — ' + n + ' lines, guide ke saath');
+      return;
+    }
+    if (k === 'exportTerms') {
+      const terms = []; this.allLines().forEach(l => l.items.forEach(it => { if (it.render === 'chips') terms.push(...it.chips); }));
+      this.download(safeFileName(a.name, 'script') + ' - search terms.txt', terms.join('\n'));
+      return;
+    }
+    if (k === 'exportMd' || k === 'exportScriptOnly') {
+      /* the same two shapes the copy actions offer, saved as a file instead:
+         the source markdown with its guide, or the script-only page. The two
+         get different names so one never overwrites the other. */
+      const only = k === 'exportScriptOnly';
+      const md = only ? this.scriptOnlyMd() : (a.raw || '').replace(/\s+$/, '');
+      if (this.state.copyMenu) this.setState({ copyMenu: null });
+      if (!md.trim()) { this.flash('Is script me download karne ke liye kuch nahi'); return; }
+      const file = this.mdFileName(only);
+      this.download(file, md, 'text/markdown');
+      this.flash('Download shuru — ' + file);
+      return;
+    }
     if (k === 'exportSettings') return this.download('alamza-settings.json', JSON.stringify({ settings: this.state.settings, tags: this.state.tags }, null, 2), 'application/json');
     if (k === 'resetSettings') {
       this.setState({ confirmBox: { kind: 'resetSettings', title: 'Reset every setting?', text: 'Appearance, layout, reading preferences aur tag labels defaults par wapas chalay jayenge.', action: 'Reset settings' } });
@@ -3573,6 +3715,26 @@ class Component extends DCLogic {
       }),
       pct: progressPct + '%',
       totalLines: String(allIds.length), doneLines: String(doneCount), pendingLines: String(Math.max(0, allIds.length - doneCount)),
+      canCopyScript: !!(a.raw || '').trim(),
+      copyScriptHint: 'Markdown + visual guide' + (allIds.length ? ' · ' + allIds.length + ' lines' : ''),
+      copyScriptTitle: 'Poori script — har line ke saath uska visual guide — markdown format me clipboard par copy karein',
+      copyMenuOpen: !!this.state.copyMenu,
+      copyMenuChev: this.state.copyMenu ? 'rotate(180deg)' : 'rotate(0deg)',
+      copyMenuBg: this.state.copyMenu ? t.accentSoft : 'transparent',
+      copyMenuFg: this.state.copyMenu ? t.accent : t.faint,
+      copyMenu: {
+        show: !!this.state.copyMenu,
+        x: (this.state.copyMenu ? this.state.copyMenu.x : 0) + 'px',
+        y: (this.state.copyMenu ? this.state.copyMenu.y : 0) + 'px',
+        w: (this.state.copyMenu ? this.state.copyMenu.w : 200) + 'px',
+        items: [
+          { id: 'copyScriptMd', label: 'Copy full script + visual guide', hint: 'Source markdown, tables ke saath', bg: t.accentSoft, isItem: true },
+          { id: 'copyScriptOnly', label: 'Copy script only', hint: 'Sirf script lines, sections ke saath — koi table nahi', bg: 'transparent', isItem: true },
+          { isDivider: true },
+          { id: 'exportMd', label: 'Download full script + guide', hint: this.mdFileName(false), bg: 'transparent', isItem: true },
+          { id: 'exportScriptOnly', label: 'Download script only', hint: this.mdFileName(true), bg: 'transparent', isItem: true }
+        ]
+      },
       progressFillStyle: 'width:' + progressPct + '%;height:100%;border-radius:999px;background:#3FA98C;transition:width .2s ease',
       filters, primaryFilters: filters.slice(0, 3), tagFilters: filters.slice(3), hasTagFilters: filters.length > 3,
       tagFilterCount: String(Math.max(0, filters.length - 3)), hasActiveTagFilter: filters.slice(3).some(f => f.selected),

@@ -46,7 +46,8 @@ The rendered, beautiful, interactive view. Requirements:
 ### Editor features requested
 - Progress bar per section and for the whole script (how much footage is ready).
 - Click a tag = copy it.
-- Copy all search terms — for a line, a section, or the entire script.
+- Copy all search terms — for a line or a section.
+- Copy the whole script — the complete markdown, script lines plus visual guide, straight to the clipboard.
 - Filters — only B-ROLL, only INSERT VIDEO, only what is still pending.
 - Focus mode — one line lit, the rest dimmed.
 
