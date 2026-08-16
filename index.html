@@ -27,7 +27,7 @@ button{appearance:none;-webkit-appearance:none}
 .library-primary:hover{border-color:color-mix(in srgb,var(--accent) 42%,var(--border))!important;background:color-mix(in srgb,var(--accentSoft) 72%,var(--surface))!important;transform:translateY(-1px)}
 .library-icon-btn:hover{border-color:color-mix(in srgb,var(--accent) 32%,var(--border))!important;background:var(--panel)!important;color:var(--accent)!important;transform:translateY(-1px)}
 .library-search{transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
-.library-search:focus-within{border-color:color-mix(in srgb,var(--accent) 48%,var(--border))!important;box-shadow:0 0 0 3px var(--accentSoft);background:var(--surface)!important}
+.library-search:focus-within{border-color:color-mix(in srgb,var(--accent) 70%,var(--border))!important;box-shadow:0 0 0 3px var(--accentSoft);background:var(--surface)!important}
 .script-tree-row{isolation:isolate;border:1px solid transparent!important}
 .script-tree-row::before{content:"";position:absolute;z-index:2;left:-1px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--accent);opacity:0;transform:scaleY(.35);transition:opacity .16s ease,transform .2s cubic-bezier(.2,.8,.2,1)}
 .script-tree-row[aria-current="true"]{border-color:color-mix(in srgb,var(--accent) 18%,transparent)!important;box-shadow:0 2px 8px rgba(25,18,12,.035)}
@@ -55,6 +55,34 @@ button{appearance:none;-webkit-appearance:none}
 @media (hover:hover) and (pointer:fine){
   .copy-script-btn:hover{background:color-mix(in srgb,var(--accentSoft) 42%,transparent)!important}
   .copy-script-btn:hover .copy-script-icon{background:var(--accentSoft)!important;color:var(--accent)!important}
+}
+/* The search field, in its four states. Resting it is a quiet panel; hover
+   warms the border; focus takes the accent and a soft ring, matching the
+   library search so both fields feel like one control. Filled-but-unfocused
+   keeps a trace of the accent, because a query is still filtering the page
+   even when the cursor has gone elsewhere. */
+.topsearch{transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
+.topsearch .ts-icon{color:var(--faint)}
+.topsearch input::placeholder{color:var(--prose);opacity:1}
+.topsearch .ts-icon,.topsearch .ts-clear,.topsearch .ts-kbd{transition:color .16s ease,background-color .16s ease,opacity .16s ease,border-color .16s ease}
+.topsearch-filled{border-color:color-mix(in srgb,var(--accent) 30%,var(--border))!important;background:var(--surface)!important}
+.topsearch-filled .ts-icon{color:var(--accent)}
+@media (hover:hover) and (pointer:fine){
+  .topsearch:hover{border-color:color-mix(in srgb,var(--accent) 26%,var(--border))!important;background:var(--surface)!important}
+  .topsearch:hover .ts-icon{color:var(--muted)}
+  .topsearch:hover .ts-kbd{border-color:color-mix(in srgb,var(--accent) 22%,var(--border));color:var(--muted)}
+  .ts-clear:hover{background:var(--panel)!important;color:var(--ink)!important}
+}
+.topsearch:focus-within{border-color:color-mix(in srgb,var(--accent) 70%,var(--border))!important;background:var(--surface)!important;box-shadow:0 0 0 3px var(--accentSoft)}
+.topsearch:focus-within .ts-icon{color:var(--accent)}
+/* the box carries the focus ring, so the bare input inside must not draw its own */
+.topsearch input:focus-visible{box-shadow:none}
+/* the shortcut hint has done its job once the field is in use */
+.topsearch:focus-within .ts-kbd{opacity:0}
+.ts-kbd{display:flex;align-items:center;justify-content:center;flex:none;height:16px;min-width:16px;padding:0 4px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--faint);font:600 9px/1 'JetBrains Mono',monospace}
+.ts-clear{display:flex;align-items:center;justify-content:center;flex:none;width:24px;height:24px;margin-right:-5px;border-radius:6px;background:transparent;color:var(--faint);cursor:pointer}
+@media (prefers-reduced-motion: reduce){
+  .topsearch,.topsearch .ts-icon,.topsearch .ts-clear,.topsearch .ts-kbd,.doc-name,.doc-name .doc-name-copy,.copy-script-btn,.copy-script-btn .copy-script-icon{transition:none}
 }
 .doc-name{padding:4px 7px;margin:0 -7px;border-radius:7px;transition:background-color .15s ease,color .15s ease}
 .doc-name .doc-name-copy{opacity:0;transition:opacity .15s ease}
@@ -247,10 +275,11 @@ Signing in…</div>
 
 <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
 <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);width:{{ headSearchW }};flex:none">
-<svg width="12" height="12" viewBox="0 0 14 14" style="flex:none;color:var(--faint)"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.2 9.2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+<div class="{{ headSearchClass }}" style="display:flex;align-items:center;gap:7px;padding:5px 9px 5px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);width:{{ headSearchW }};flex:none">
+<svg class="ts-icon" aria-hidden="true" width="12" height="12" viewBox="0 0 14 14" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.2 9.2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
 <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="{{ searchPlaceholder }}" aria-label="Search script" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 12px/1.4 var(--fUI)"/>
-<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" tabindex="0" role="button" aria-label="Clear search" class="ui-control" style="cursor:pointer;color:var(--faint);font:400 13px/1 var(--fUI)">×</span></sc-if>
+<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" tabindex="0" role="button" aria-label="Clear search" title="Clear search" class="ui-control ts-clear"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M1.4 1.4l7.2 7.2M8.6 1.4L1.4 8.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span></sc-if>
+<sc-if value="{{ noQuery }}" hint-placeholder-val="{{ true }}"><span class="ts-kbd" aria-hidden="true" title="Press / to search">/</span></sc-if>
 </div>
 </sc-if>
 <sc-if value="{{ showMobileSearchButton }}" hint-placeholder-val="{{ false }}">
@@ -276,10 +305,10 @@ Share</span>
 
 <sc-if value="{{ showMobileSearch }}" hint-placeholder-val="{{ false }}">
 <div style="flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);z-index:19;box-shadow:0 4px 16px rgba(0,0,0,.06)">
-<div style="flex:1;display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:9px;background:var(--panel);border:1px solid var(--border)">
-<svg width="14" height="14" viewBox="0 0 18 18" style="flex:none;color:var(--faint)"><circle cx="7.5" cy="7.5" r="4.7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11.2 11.2L15 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search lines, tags, terms…" aria-label="Search script" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 13px/1.4 var(--fUI)"/>
-<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" tabindex="0" role="button" aria-label="Clear search" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-5px;color:var(--muted);cursor:pointer;font:400 17px/1 var(--fUI)">×</span></sc-if>
+<div class="{{ headSearchClass }}" style="flex:1;display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:9px;background:var(--panel);border:1px solid var(--border)">
+<svg class="ts-icon" aria-hidden="true" width="14" height="14" viewBox="0 0 18 18" style="flex:none"><circle cx="7.5" cy="7.5" r="4.7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11.2 11.2L15 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="{{ searchPlaceholderShort }}" aria-label="Search script" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 13px/1.4 var(--fUI)"/>
+<sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" tabindex="0" role="button" aria-label="Clear search" class="ui-control ts-clear" style="width:24px;height:24px;margin-right:-3px"><svg width="11" height="11" viewBox="0 0 10 10"><path d="M1.4 1.4l7.2 7.2M8.6 1.4L1.4 8.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span></sc-if>
 </div>
 <span data-act="mobileSearch" tabindex="0" role="button" class="ui-control" style="padding:9px 4px;color:var(--accent);cursor:pointer;font:600 12px/1.3 var(--fUI)">Done</span>
 </div>
@@ -3685,7 +3714,20 @@ class Component extends DCLogic {
       /* a read-only viewer has fewer controls beside it, so the field is given
          the room those controls would have taken */
       headSearchW: viewing ? (midW ? '300px' : '380px') : (midW ? '230px' : '270px'),
-      searchPlaceholder: midW ? 'Search lines…  ( / )' : 'Search lines, tags, terms…  ( / )',
+      /* the placeholder names what a search will actually look at — it still
+         read "lines, tags, terms" after the scope narrowed to script + context,
+         which promised matches the field would never return. The "/" hint moved
+         out of the text and into its own key chip. */
+      searchPlaceholder: (midW ? '' : 'Search ') + ({
+        script: midW ? 'Script lines…' : 'script lines…',
+        guide: midW ? 'Lines + guide…' : 'lines, tags, terms…'
+      }[S.searchScope] || (midW ? 'Script + context…' : 'script + context…')),
+      searchPlaceholderShort: ({
+        script: 'Search script lines…',
+        guide: 'Search lines, tags, terms…'
+      }[S.searchScope] || 'Search script + context…'),
+      headSearchClass: 'topsearch' + (this.state.query ? ' topsearch-filled' : ''),
+      noQuery: !this.state.query,
       showBrand: !mob,
       showBrandWord: !midW,
       /* one tab is not a switch — the public view drops the group entirely */
