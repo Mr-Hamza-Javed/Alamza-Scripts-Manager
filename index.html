@@ -2284,29 +2284,50 @@ class Component extends DCLogic {
        smooth scroll moves away from it. */
     this.setState(patch, () => setTimeout(() => this.scrollSectionWhenReady(si, 0), collapsed ? 35 : 0));
   }
+  /* What a search looks through: the script line itself and its CONTEXT note —
+     nothing else. Searching every tag, chip and source URL meant a common word
+     dragged in lines whose spoken text had nothing to do with the query. */
   haystack(l) {
     if (!this._hay) this._hay = {};
     if (this._haySig !== this._sig) { this._hay = {}; this._haySig = this._sig; }
     if (this._hay[l.id] === undefined) {
-      this._hay[l.id] = (l.text + ' ' + l.items.map(it =>
-        it.k + ' ' + (it.body || '') + ' ' + (it.chips || []).join(' ') + ' ' + (it.links || []).map(x => x.t).join(' ')
-      ).join(' ')).toLowerCase();
+      const context = l.items.filter(it => it.k === 'CONTEXT').map(it => it.body || '').join(' ');
+      this._hay[l.id] = (l.text + ' ' + context).toLowerCase();
     }
     return this._hay[l.id];
   }
+
+  /* A bare number jumps to that line number and shows only it. Type a space
+     after it and the number becomes an ordinary term again, so line 12 comes
+     back alongside every line whose text or context mentions "12". */
+  searchSpec() {
+    const raw = this.state.query || '';
+    const q = raw.trim().toLowerCase();
+    if (!q) return null;
+    const num = /^\d+$/.test(q) ? parseInt(q, 10) : null;
+    return { q, num, wide: num !== null && /\s$/.test(raw) };
+  }
   visibleLines() {
     const all = this.allLines(), a = this.active();
-    const q = this.state.query.trim().toLowerCase();
+    const spec = this.searchSpec();
     let f = this.state.filter;
     if (f !== 'all' && f !== 'pending' && f !== 'done' && !this._known[f]) f = 'all';
     const doneKeys = Object.keys(a.done).sort().join(',');
-    const sig = this._sig + '|' + q + '|' + f + '|' + doneKeys;
+    /* the raw query, not the trimmed one — a trailing space changes the result */
+    const sig = this._sig + '|' + (this.state.query || '') + '|' + f + '|' + doneKeys;
     if (this._vlSig === sig) return this._vl;
+    /* only a number that is actually one of this script's line numbers counts
+       as "go to that line" — 1969 in a 40-line script is just a word to find */
+    const isLineNo = !!spec && spec.num !== null && all.some(l => l.n === spec.num);
     const out = all.filter(l => {
       if (f === 'pending' && a.done[l.id]) return false;
       if (f === 'done' && !a.done[l.id]) return false;
       if (f !== 'all' && f !== 'pending' && f !== 'done' && !l.items.some(it => it.k === f)) return false;
-      if (q && this.haystack(l).indexOf(q) < 0) return false;
+      if (spec) {
+        if (isLineNo && !spec.wide) return l.n === spec.num;
+        const hit = this.haystack(l).indexOf(spec.q) >= 0;
+        return isLineNo && spec.wide ? (l.n === spec.num || hit) : hit;
+      }
       return true;
     });
     this._vl = out; this._vlSig = sig;
@@ -3186,7 +3207,12 @@ class Component extends DCLogic {
        excluded). The window indices, the spacer heights and windowFromScroll()
        must all count the same list — mixing in collapsed lines spent the window
        on invisible rows and left the sections below it blank. */
-    const openOf = (si) => !(this.state.collapsed[si] !== undefined ? this.state.collapsed[si] : S.collapseDefault);
+    /* While a search is running every section is forced open and the ones with
+       no hit drop out entirely — a collapsed section must never hide a match.
+       state.collapsed is left untouched, so clearing the search restores
+       whatever was open before. */
+    const searching = !!(this.state.query || '').trim();
+    const openOf = (si) => searching || !(this.state.collapsed[si] !== undefined ? this.state.collapsed[si] : S.collapseDefault);
     const gapPx = parseFloat(t.gap) || 8, secGapPx = parseFloat(t.secGap) || 16;
     const flowIds = [];
     doc.sections.forEach((s, si) => {
@@ -3211,7 +3237,10 @@ class Component extends DCLogic {
       const ids = s.lines.map((l, li) => 's' + si + 'r' + li);
       const dn = ids.filter(id => a.done[id]).length;
       const allReady = ids.length > 0 && dn === ids.length;
-      const open = !(this.state.collapsed[si] !== undefined ? this.state.collapsed[si] : S.collapseDefault);
+      /* counted before the mount cap trims `lines`, so a section whose only
+         matches sit past the cap is still kept and still counts right */
+      const visCount = ids.filter(id => visIds[id]).length;
+      const open = openOf(si);
       const sectionTerms = [];
       s.lines.forEach(l => l.items.forEach(it => { if (it.render === 'chips') sectionTerms.push(...(it.chips || [])); }));
       /* every line stays mounted — the browser skips off-screen work through
@@ -3220,7 +3249,8 @@ class Component extends DCLogic {
       return {
         id: String(si), domId: 'sec-' + si, kicker: 'SEC ' + (si + 1), title: s.title || 'Untitled',
         hasBadge: !!s.badge, badge: s.badge,
-        count: lines.length === s.lines.length ? String(s.lines.length) : lines.length + '/' + s.lines.length,
+        visCount,
+        count: visCount === s.lines.length ? String(s.lines.length) : visCount + '/' + s.lines.length,
         pct: ids.length ? Math.round(dn / ids.length * 100) + '%' : '0%',
         allReady,
         markTitle: allReady ? 'Section ready — click to unmark' : 'Mark section as ready',
@@ -3233,7 +3263,7 @@ class Component extends DCLogic {
         hasTerms: sectionTerms.length > 0,
         allTerms: sectionTerms.join(this.joiner()),
         notesOnly: s.lines.length === 0,
-        hasNotes: s.notes.length > 0 && !this.state.query,
+        hasNotes: s.notes.length > 0 && !searching,
         notes: s.notes.map(x => stripMd(x)),
 
         lines: slice.map(l => {
@@ -3244,7 +3274,10 @@ class Component extends DCLogic {
           return { ...decorated, motionClass: 'line-card' + motion, checkFxClass: 'ready-check' + (lineAchieved ? ' ready-achieved' : '') };
         })
       };
-    }).filter(s => !s.open || s.lines.length || s.hasNotes);
+      /* searching: keep exactly the sections holding a hit, judged on visCount
+         so the mount cap can never drop one. Otherwise: the old rule, which
+         keeps collapsed sections and notes-only ones. */
+    }).filter(s => searching ? s.visCount > 0 : (!s.open || s.lines.length || s.hasNotes));
 
     const allCollapsed = doc.sections.length > 0 && doc.sections.every((s, i) => !(this.state.collapsed[i] !== undefined ? !this.state.collapsed[i] : !S.collapseDefault));
     const readySectionCount = doc.sections.filter((s, si) => s.lines.length > 0 && s.lines.every((l, li) => !!a.done['s' + si + 'r' + li])).length;
@@ -3691,15 +3724,18 @@ class Component extends DCLogic {
       activeId: this.state.activeId,
       query: this.state.query, hasQuery: !!this.state.query, newTag: this.state.newTag,
       sections, renderScript: !loginUp,
+      /* the outline mirrors what the script view is showing, so during a search
+         it lists only the sections that still hold a hit */
       outline: doc.sections.map((s, si) => {
         const ids = s.lines.map((l, li) => 's' + si + 'r' + li);
         const dn = ids.filter(id => a.done[id]).length;
+        const hits = ids.filter(id => visIds[id]).length;
         const pctNum = ids.length ? Math.round(dn / ids.length * 100) : 0;
         const complete = ids.length > 0 && dn === ids.length;
         const active = activeSi === si;
         return {
           id: String(si), num: String(si + 1).padStart(2, '0'), title: s.title || 'Untitled',
-          readyLabel: dn + ' / ' + ids.length, complete, active,
+          readyLabel: searching ? hits + ' found' : dn + ' / ' + ids.length, complete, active, hits,
           ink: t.ink,
           statusColor: complete ? '#23846A' : (active ? t.accent : t.muted),
           rowStyle: [
@@ -3712,7 +3748,7 @@ class Component extends DCLogic {
           ].join(';'),
           barStyle: 'width:' + pctNum + '%;height:100%;border-radius:999px;background:' + (complete ? '#3FA98C' : t.accent) + ';transition:width .24s cubic-bezier(.2,.8,.2,1)'
         };
-      }),
+      }).filter(o => !searching || o.hits > 0),
       pct: progressPct + '%',
       totalLines: String(allIds.length), doneLines: String(doneCount), pendingLines: String(Math.max(0, allIds.length - doneCount)),
       canCopyScript: !!(a.raw || '').trim(),
