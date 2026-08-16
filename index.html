@@ -248,24 +248,24 @@ Signing in…</div>
 </sc-if>
 
 <div style="{{ headStyle }}">
-<div style="display:flex;align-items:center;gap:9px;min-width:0">
+<div style="display:flex;align-items:center;gap:12px;min-width:0">
 <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
 <span data-act="drawer" tabindex="0" role="button" aria-label="Open navigation" title="Menu" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-6px;border-radius:9px;color:var(--ink);cursor:pointer;flex:none" style-hover="background:var(--panel)">
 <svg width="17" height="17" viewBox="0 0 18 18"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
 </span>
 </sc-if>
 <sc-if value="{{ showBrand }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;align-items:center;gap:7px;flex:none">
-<img src="./favicon.svg" alt="" aria-hidden="true" style="width:21px;height:21px;border-radius:6px;display:block;flex:none"/>
-<span style="display:flex;align-items:baseline;gap:3.5px;white-space:nowrap">
-<span style="font:600 13px/1 var(--fUI);letter-spacing:-.015em;color:var(--ink)">Alamza</span>
-<sc-if value="{{ showBrandWord }}" hint-placeholder-val="{{ true }}"><span style="font:400 12.5px/1 var(--fUI);letter-spacing:-.005em;color:var(--faint)">Scripts</span></sc-if>
+<div style="display:flex;align-items:center;gap:8px;flex:none">
+<img src="./favicon.svg" alt="" aria-hidden="true" style="width:22px;height:22px;border-radius:6px;display:block;flex:none"/>
+<span style="display:flex;align-items:baseline;gap:4px;white-space:nowrap">
+<span style="font:600 12.5px/1 var(--fUI);letter-spacing:-.012em;color:var(--prose)">Alamza</span>
+<span style="font:400 12.5px/1 var(--fUI);letter-spacing:-.005em;color:var(--faint)">Scripts</span>
 </span>
 </div>
-<div style="width:1px;height:18px;background:var(--border);flex:none;margin:0 1px"></div>
+<div style="width:1px;height:20px;background:var(--border);flex:none" role="presentation"></div>
 </sc-if>
-<button type="button" data-act="copyName" tabindex="0" aria-label="Copy script name" title="{{ copyNameTitle }}" class="ui-control doc-name" style="display:flex;align-items:center;gap:7px;min-width:0;border:0;background:transparent;cursor:pointer">
-<span style="font:600 12.5px/1.3 var(--fUI);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ docName }}</span>
+<button type="button" data-act="copyName" tabindex="0" aria-label="Copy script name" title="{{ copyNameTitle }}" class="ui-control doc-name" style="display:flex;align-items:center;gap:8px;min-width:0;max-width:{{ docNameMax }};height:30px;border:0;background:transparent;cursor:pointer">
+<span style="font:650 13px/1.3 var(--fUI);letter-spacing:-.008em;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ docName }}</span>
 <svg class="doc-name-copy" width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="flex:none;color:var(--faint)"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg>
 </button>
 <sc-if value="{{ badge.show }}" hint-placeholder-val="{{ false }}">
@@ -273,9 +273,9 @@ Signing in…</div>
 </sc-if>
 </div>
 
-<div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+<div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex:none">
 <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
-<div class="{{ headSearchClass }}" style="display:flex;align-items:center;gap:7px;padding:5px 9px 5px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);width:{{ headSearchW }};flex:none">
+<div class="{{ headSearchClass }}" style="display:flex;align-items:center;gap:8px;height:30px;padding:0 8px 0 10px;border-radius:8px;background:var(--panel);border:1px solid var(--border);width:{{ headSearchW }};flex:none">
 <svg class="ts-icon" aria-hidden="true" width="12" height="12" viewBox="0 0 14 14" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.2 9.2L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
 <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="{{ searchPlaceholder }}" aria-label="Search script" style="flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:400 12px/1.4 var(--fUI)"/>
 <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}"><span data-act="clearq" tabindex="0" role="button" aria-label="Clear search" title="Clear search" class="ui-control ts-clear"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M1.4 1.4l7.2 7.2M8.6 1.4L1.4 8.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span></sc-if>
@@ -288,14 +288,14 @@ Signing in…</div>
 </span>
 </sc-if>
 <sc-if value="{{ showModes }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;gap:2px;padding:2px;border-radius:8px;background:var(--panel);border:1px solid var(--border);flex:none">
+<div role="tablist" aria-label="View mode" style="display:flex;align-items:center;gap:2px;height:30px;padding:0 2px;border-radius:8px;background:var(--panel);border:1px solid var(--border);flex:none">
 <sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
-<span data-mode="{{ m.id }}" tabindex="0" role="tab" class="ui-control" style="padding:5px 12px;border-radius:6px;font:500 11.5px/1.3 var(--fUI);cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</span>
+<span data-mode="{{ m.id }}" tabindex="0" role="tab" aria-selected="{{ m.selected }}" class="ui-control" style="display:flex;align-items:center;height:24px;padding:0 12px;border-radius:6px;font:{{ m.weight }} 11.5px/1 var(--fUI);cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</span>
 </sc-for>
 </div>
 </sc-if>
 <sc-if value="{{ showHeadShare }}" hint-placeholder-val="{{ false }}">
-<span data-act="openShare" tabindex="0" role="button" class="ui-control" style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:7px;border:1px solid var(--border);background:var(--panel);color:var(--prose);cursor:pointer;flex:none;font:500 11.5px/1.3 var(--fUI)" style-hover="border-color:var(--accent);color:var(--accent)">
+<span data-act="openShare" tabindex="0" role="button" class="ui-control" style="display:flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--prose);cursor:pointer;flex:none;font:500 11.5px/1 var(--fUI)" style-hover="border-color:var(--accent);color:var(--accent)">
 <svg width="12" height="12" viewBox="0 0 14 14"><path d="M5 7.6l4-2.2M5 6.4l4 2.2" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="4" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="3.4" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="10.6" cy="10" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
 Share</span>
 </sc-if>
@@ -3708,8 +3708,8 @@ class Component extends DCLogic {
       /* the bar reads left to right: identity, then the tools. The field sits
          with the actions on the right in every view, so a public link and an
          owner's window put it in the same place */
-      headStyle: 'flex:none;display:flex;align-items:center;gap:' + (mob ? '10px' : '14px')
-        + ';height:' + (mob ? '56px' : '52px') + ';padding:0 ' + (mob ? '12px' : '14px')
+      headStyle: 'flex:none;display:flex;align-items:center;gap:' + (mob ? '12px' : '16px')
+        + ';height:' + (mob ? '56px' : '52px') + ';padding:0 ' + (mob ? '12px' : '16px')
         + ';background:var(--surface);border-bottom:1px solid var(--border);z-index:20',
       /* a read-only viewer has fewer controls beside it, so the field is given
          the room those controls would have taken */
@@ -3729,10 +3729,10 @@ class Component extends DCLogic {
       headSearchClass: 'topsearch' + (this.state.query ? ' topsearch-filled' : ''),
       noQuery: !this.state.query,
       showBrand: !mob,
-      showBrandWord: !midW,
       /* one tab is not a switch — the public view drops the group entirely */
       showModes: !mob && modeDefs.length > 1,
-      copyNameTitle: 'Click to copy the script name',
+      copyNameTitle: (a.name || 'Untitled') + ' — click to copy this name',
+      docNameMax: mob ? '100%' : (midW ? '260px' : '420px'),
       iconBtn: mob ? '38px' : '30px', avatarSz: mob ? '34px' : '30px',
       tabPad: mob ? '10px 5px' : '8px 5px',
       dialogW: mob ? '100%' : '520px',
@@ -3838,7 +3838,8 @@ class Component extends DCLogic {
       syncLabel: this.state.cloud ? 'Synced' : 'Local only',
       t, isNormal: this.state.mode === 'normal', isRaw: this.state.mode === 'raw', isSettings: this.state.mode === 'settings',
       modes: modeDefs.map(m => ({
-        id: m[0], label: m[1],
+        id: m[0], label: m[1], selected: this.state.mode === m[0],
+        weight: this.state.mode === m[0] ? '600' : '500',
         bg: this.state.mode === m[0] ? t.surface : 'transparent',
         fg: this.state.mode === m[0] ? t.ink : t.muted
       })),
