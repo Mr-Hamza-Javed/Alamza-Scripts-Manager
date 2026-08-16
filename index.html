@@ -2117,12 +2117,23 @@ class Component extends DCLogic {
   isViewing() { return !!(this.state.viewer && !this.state.viewer.missing); }
   /* a shared script must look exactly as its owner sees it — settings and the
      tag registry travel with the payload and win while viewing. The viewer may
-     override theme + focus mode locally (viewerPrefs) without touching the
-     owner's saved settings. */
+     override focus mode locally (viewerPrefs) without touching the owner's
+     saved settings.
+
+     Dark or light is the exception: it belongs to whoever is reading, not to
+     whoever shared. Everyone on the same link picks their own, and the owner
+     flipping theirs never reaches anyone else's screen. So theme is taken from
+     this device — the viewer's own override first, then the theme they use in
+     their own workspace — and the payload's theme is ignored entirely. */
   effS() {
     if (this.isViewing()) {
       const v = this.state.viewer;
-      return { ...DEFAULTS, ...(v.settings || {}), ...(this.state.viewerPrefs || {}) };
+      const own = this.state.settings || {};
+      const vp = this.state.viewerPrefs || {};
+      const s = { ...DEFAULTS, ...(v.settings || {}), ...vp };
+      s.theme = vp.theme !== undefined ? vp.theme
+        : (own.theme !== undefined ? own.theme : DEFAULTS.theme);
+      return s;
     }
     return this.state.settings;
   }
