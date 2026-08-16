@@ -525,9 +525,7 @@ Share</span>
 <span style="padding:2.5px 8px;border-radius:20px;background:var(--accentSoft);color:var(--accent);font:700 8.5px/1.3 'JetBrains Mono',monospace;letter-spacing:.1em;flex:none">{{ sec.badge }}</span>
 </sc-if>
 <sc-if value="{{ sec.hasLines }}" hint-placeholder-val="{{ true }}">
-<sc-if value="{{ sec.hasTerms }}" hint-placeholder-val="{{ false }}">
-<span data-copy="{{ sec.allTerms }}" data-tag="SEARCH TERMS" title="Copy this section's search terms" style="display:flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:6px;border:1px solid var(--border);color:var(--muted);cursor:pointer;flex:none" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg></span>
-</sc-if>
+<span data-copysec="{{ sec.id }}" tabindex="0" role="button" aria-label="Copy this section's script" title="Copy this section's script as Markdown — visual guide ke baghair" class="ui-control" style="display:flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:6px;border:1px solid var(--border);color:var(--muted);cursor:pointer;flex:none" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg></span>
 <span data-marksec="{{ sec.id }}" title="{{ sec.markTitle }}" style="display:flex;align-items:center;justify-content:center;width:23px;height:23px;border-radius:6px;border:1px solid {{ sec.markBd }};background:{{ sec.markBg }};color:{{ sec.markColor }};cursor:pointer;flex:none;transition:color .12s,border-color .12s,background .12s" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg></span>
 <span style="font:400 9.5px/1 'JetBrains Mono',monospace;color:var(--faint);flex:none">{{ sec.count }} LINES</span>
 <div style="width:64px;height:4px;border-radius:2px;background:var(--rule);overflow:hidden;flex:none"><div style="width:{{ sec.pct }};height:100%;background:var(--accent)"></div></div>
@@ -571,8 +569,8 @@ Share</span>
 </div>
 <div style="flex:none;display:flex;align-items:center;gap:6px;align-self:center">
 <sc-if value="{{ showCopyBtn }}" hint-placeholder-val="{{ true }}">
-<sc-if value="{{ ln.hasTerms }}" hint-placeholder-val="{{ false }}">
-<span data-copy="{{ ln.allTerms }}" data-tag="SEARCH TERMS" title="Copy this line's search terms" style="width:20px;height:20px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg></span>
+<sc-if value="{{ ln.hasText }}" hint-placeholder-val="{{ true }}">
+<span data-copyline="{{ ln.id }}" tabindex="0" role="button" aria-label="Copy this line" title="Copy this script line" class="ui-control" style="width:20px;height:20px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer" style-hover="border-color:var(--accent);color:var(--accent)"><svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4.2" y="4.2" width="7.2" height="7.2" rx="1.2"/><path d="M2.6 9.4H2A1 1 0 0 1 1 8.4V2a1 1 0 0 1 1-1h6.4a1 1 0 0 1 1 1v.6"/></svg></span>
 </sc-if>
 </sc-if>
 <sc-if value="{{ showChecks }}" hint-placeholder-val="{{ true }}">
@@ -2499,24 +2497,31 @@ class Component extends DCLogic {
      section as a heading, and the lines beneath it as plain paragraphs. Video
      inserts keep their label (and transcript, which is spoken content); the
      visual guide, extra columns and the sources register are all left out. */
+  /* one line as markdown blocks — the same shape whether it is copied on its
+     own, with its section, or as part of the whole script */
+  lineMd(l) {
+    if (!l) return [];
+    if (l.video) {
+      const out = ['**[INSERT VIDEO]** ' + (l.text || '') + (l.range ? ' — ' + l.range : ''), ''];
+      if (l.transcript) out.push('> ' + l.transcript, '');
+      return out;
+    }
+    return l.text ? [l.text, ''] : [];
+  }
+  sectionMd(s) {
+    if (!s || !s.lines.length) return [];
+    const out = ['## ' + ((s.title || 'Untitled') + (s.badge ? ' [' + s.badge + ']' : '')).trim(), ''];
+    s.lines.forEach(l => out.push(...this.lineMd(l)));
+    return out;
+  }
+  tidyMd(parts) { return parts.join('\n').replace(/\n{3,}/g, '\n\n').replace(/\s+$/, ''); }
   scriptOnlyMd() {
     const a = this.active(), doc = this.doc();
     const out = [];
     const name = (a.name || '').trim();
     if (name) out.push('# ' + name, '');
-    doc.sections.forEach(s => {
-      if (!s.lines.length) return;
-      out.push('## ' + ((s.title || 'Untitled') + (s.badge ? ' [' + s.badge + ']' : '')).trim(), '');
-      s.lines.forEach(l => {
-        if (l.video) {
-          out.push('**[INSERT VIDEO]** ' + (l.text || '') + (l.range ? ' — ' + l.range : ''), '');
-          if (l.transcript) out.push('> ' + l.transcript, '');
-        } else if (l.text) {
-          out.push(l.text, '');
-        }
-      });
-    });
-    return out.join('\n').replace(/\n{3,}/g, '\n\n').replace(/\s+$/, '');
+    doc.sections.forEach(s => out.push(...this.sectionMd(s)));
+    return this.tidyMd(out);
   }
   joiner() { const j = this.effS().copyJoin; return j === 'newline' ? '\n' : j === 'pipe' ? ' | ' : ', '; }
 
@@ -2533,6 +2538,24 @@ class Component extends DCLogic {
       return;
     }
     if ((el = g('data-copy'))) { lineOf(el); this.copy(el.getAttribute('data-copy'), '', el.getAttribute('data-tag')); return; }
+    /* the script itself, no visual guide — a section as a markdown page, a
+       line as the line. Same shape the sidebar's "script only" produces. */
+    if ((el = g('data-copysec'))) {
+      const s = this.doc().sections[+el.getAttribute('data-copysec')];
+      const md = this.tidyMd(this.sectionMd(s));
+      if (!md) { this.flash('Is section me copy karne ke liye kuch nahi'); return; }
+      this.copyRaw(md, 'Section copy ho gaya — ' + s.lines.length + ' lines');
+      return;
+    }
+    if ((el = g('data-copyline'))) {
+      const id = el.getAttribute('data-copyline');
+      lineOf(el);
+      const l = this.allLines().find(x => x.id === id);
+      const md = this.tidyMd(this.lineMd(l));
+      if (!md) { this.flash('Is line me copy karne ke liye kuch nahi'); return; }
+      this.copyRaw(md, 'Line ' + (l ? l.n : '') + ' copy ho gayi');
+      return;
+    }
     if ((el = g('data-done'))) { this.toggleDone(el.getAttribute('data-done')); return; }
     if ((el = g('data-marksec'))) { this.markSection(+el.getAttribute('data-marksec')); return; }
     if ((el = g('data-section'))) {
@@ -3245,7 +3268,7 @@ class Component extends DCLogic {
       const anyActive = !!activeId;
       const ck = l.id + '|' + (on ? 1 : 0) + '|' + (done ? 1 : 0) + '|' + (anyActive ? 1 : 0);
       if (this._dec[ck]) return this._dec[ck];
-      const { ordered, terms } = itemsFor(l);
+      const { ordered } = itemsFor(l);
       const docV = S.viewStyle === 'doc';
       let ring = 'none', headBg = 'transparent';
       /* a table always shows its grid — the borders toggle is a cards-only choice */
@@ -3263,8 +3286,7 @@ class Component extends DCLogic {
         isVideo: !!l.video, range: l.range ? ' · ' + l.range : '',
         hasTranscript: !!(l.transcript && S.showTranscript), transcript: l.transcript,
         hasGuide: ordered.length > 0, items: ordered,
-        hasTerms: terms.length > 0,
-        allTerms: terms.join(this.joiner()),
+        hasText: !!(l.text || l.transcript),
         checkBorder: done ? '#3FA98C' : (dark ? '#3A3A41' : '#D6D2CA'),
         checkBg: done ? '#3FA98C' : 'transparent', checkTick: done ? (dark ? '#111114' : '#FFFFFF') : 'transparent',
         ring, headBg, bd, rowBg,
@@ -3316,8 +3338,6 @@ class Component extends DCLogic {
          matches sit past the cap is still kept and still counts right */
       const visCount = ids.filter(id => visIds[id]).length;
       const open = openOf(si);
-      const sectionTerms = [];
-      s.lines.forEach(l => l.items.forEach(it => { if (it.render === 'chips') sectionTerms.push(...(it.chips || [])); }));
       /* every line stays mounted — the browser skips off-screen work through
          content-visibility, so no spacer geometry is ever rewritten mid-scroll */
       const slice = open ? lines : [];
@@ -3335,8 +3355,6 @@ class Component extends DCLogic {
         achievementClass: this.state.achievement && (this.state.achievement.level === 'section' || this.state.achievement.level === 'script') && this.state.achievement.sectionId === si ? 'section-achieved' : '',
         open, chev: open ? 'rotate(0deg)' : 'rotate(-90deg)',
         hasLines: s.lines.length > 0,
-        hasTerms: sectionTerms.length > 0,
-        allTerms: sectionTerms.join(this.joiner()),
         notesOnly: s.lines.length === 0,
         hasNotes: s.notes.length > 0 && !searching,
         notes: s.notes.map(x => stripMd(x)),
