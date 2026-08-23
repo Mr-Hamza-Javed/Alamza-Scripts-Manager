@@ -1661,6 +1661,10 @@ function readHashToken() {
 }
 
 const KEY = 'alamza.scripts.v1';
+/* Browser tab ka naam hamesha khuli hui script ka naam hota hai — app ka naam
+   sirf tab dikhta hai jab koi script khuli hi na ho (login gate, loading, ya
+   toota hua share link). */
+const APP_TITLE = 'Alamza Scripts';
 /* A viewer's own reading prefs (theme, focus mode) for shared links — saved on
    THEIR device only, never written back to the owner who shared the file. */
 const VKEY = 'alamza.viewer.prefs';
@@ -1807,6 +1811,7 @@ class Component extends DCLogic {
     };
     window.addEventListener('resize', this._resize);
     setTimeout(() => this.windowFromScroll(), 120);
+    this.syncTitle();
     /* No demo/sample document is loaded — the app opens clean. */
     this.waitForFb(0);
   }
@@ -2254,7 +2259,37 @@ class Component extends DCLogic {
   }
 
   flow() { return (this._flow && this._flow.length) ? this._flow : this.visibleLines().map(l => l.id); }
-  componentDidUpdate() { this.growMount(); }
+  /* ---- tab title ----
+     Jo script khuli hai, uska naam hi tab ka naam. Apni script ho ya shared /
+     public link se khuli ho — dono jagah sirf script ka naam. Script change
+     karte hi (ya rename par) title bhi foran badal jata hai. */
+  openScriptName() {
+    const st = this.state;
+    /* share link abhi resolve ho raha hai, ya us par kuch raha hi nahi */
+    const pendingToken = st.viewerToken || st.shareLoadingToken;
+    if (pendingToken && (!st.viewer || st.viewer.token !== pendingToken)) return '';
+    if (st.viewer && st.viewer.missing) return '';
+    if (this.isViewing()) {
+      const a = this.active();
+      return String((a && a.name) || (st.viewer && st.viewer.name) || '').trim();
+    }
+    /* apna workspace: login gate ya pehli load ke spinner ke peeche kuch khula
+       nahi hota, is liye wahan app ka naam hi rehta hai */
+    if (!st.authReady) return '';
+    if (!st.cloud && !st.skippedLogin && !st.viewerToken) return '';
+    if (st.cloud && !st.dataReady) return '';
+    const a = this.active();
+    if (!a || !a.id) return '';
+    const it = st.items[a.id];
+    if (!it || it.type !== 'script') return '';
+    return String(a.name || '').trim();
+  }
+  syncTitle() {
+    if (typeof document === 'undefined') return;
+    const next = this.openScriptName() || APP_TITLE;
+    if (document.title !== next) document.title = next;
+  }
+  componentDidUpdate() { this.syncTitle(); this.growMount(); }
   growMount() {
     const total = this._flowTotal || 0, m = this.state.mounted || 40;
     if (m >= total || this._growT || this.state.mode !== 'normal') return;

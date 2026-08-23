@@ -114,6 +114,9 @@ seen is auto-guessed and added, flagged `AUTO` for confirmation.
 - Create, rename, move, duplicate, delete for both folders and scripts.
 - Deleted items go to **Trash** and stay there until the user chooses *Delete forever*.
 - Scripts arrive by paste, by `.md` / `.txt` upload, or by creating a new one.
+- **The browser tab carries the open script's name — never the app's.** Switching
+  scripts or renaming one changes the tab name straight away; the app name shows
+  only when no script is open (sign-in screen, loading, a dead share link).
 
 ---
 
@@ -126,6 +129,7 @@ seen is auto-guessed and added, flagged `AUTO` for confirmation.
 - The shared view must look **exactly as the owner sees it** — their settings, their
   typography, their tag registry, their colours.
 - Owner's edits reach open shared views live.
+- A public link's tab name is the shared script's own name, same as for the owner.
 - Sharing to a specific Google account, with roles:
   **Viewer · Commenter · Editor · Manager · Owner**.
 - Google sign-in. Settings follow the account across devices.
