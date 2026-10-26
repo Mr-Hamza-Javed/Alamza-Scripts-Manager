@@ -1,17 +1,7 @@
 {
   "hosting": {
-    "public": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**",
-      "REQUIREMENTS.md",
-      "firebase-rules.json",
-      "hosting-guide.html",
-      "archive/**",
-      "screenshots/**",
-      "uploads/**"
-    ]
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   },
   "database": {
     "rules": "firebase-rules.json"
