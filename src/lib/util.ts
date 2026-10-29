@@ -79,6 +79,9 @@ export function highlight(txt: string) {
     .replace(/(`?)\[([A-Z][A-Z0-9 &amp;/.\-']{1,30})\]:(`?)/g, '<span class="t">$1[$2]:$3</span>')
     .replace(/(\[[^\]\n]*\])(\((?:https?:)?[^)\n]*\))/g, '<span class="l">$1</span><span class="u">$2</span>')
     .replace(/(https?:\/\/[^\s)\]&]+)/g, '<span class="u">$1</span>')
+    /* {{chips}} and **bold** inside a cell (never across a cell edge) */
+    .replace(/\{\{([^{}\n<>|]+)\}\}/g, '<span class="c">{{$1}}</span>')
+    .replace(/\*\*([^*\n<>|]+)\*\*/g, '<span class="b">**$1**</span>')
     .replace(/\|/g, '<span class="p">|</span>');
 }
 

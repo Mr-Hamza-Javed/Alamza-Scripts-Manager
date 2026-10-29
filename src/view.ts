@@ -5,12 +5,17 @@ import { ROLE_HINT, ROLE_SHORT } from './lib/constants';
 import { stripMd } from './lib/parse';
 import { colorOf, isDark, readerVars, softOf } from './lib/tokens';
 import { markHits } from './lib/util';
+import type { MdTok } from './lib/inline';
 
 export type ItemView = {
   label: string; color: string; soft: string; render: string;
   bodyHtml?: { __html: string };
   chips?: { v: string; html: { __html: string } }[];
   links?: { t: string; u: string; d: string; tHtml: { __html: string }; fav: string }[];
+  /** markdown tags: inline tokens and the search word to mark inside them */
+  md?: MdTok[]; hl?: string;
+  /** what a click on the tag label copies: every chip, every link, or the text */
+  copyAll: string; count: number;
 };
 export type LineView = { l: FlatLine; items: ItemView[]; active: boolean; done: boolean; motion: string; achieved: boolean };
 export type SectionView = {
@@ -82,7 +87,7 @@ export function derive(app: App) {
 
   /* guide items per line, cached until something they show changes */
   const m = app.memo;
-  const dispSig = [S.sourcesPosition, dark, S.showFavicons, hlq, hlScope, app._sig].join('|');
+  const dispSig = [S.sourcesPosition, dark, S.showFavicons, S.copyJoin, hlq, hlScope, app._sig].join('|');
   if (m.itemSig !== dispSig) { m.items = {}; m.itemSig = dispSig; }
   const itemsFor = (l: FlatLine): ItemView[] => {
     if (m.items[l.id]) return m.items[l.id];
@@ -249,7 +254,7 @@ export function derive(app: App) {
   /* reader variables, rebuilt only when the look changes */
   const varSig = JSON.stringify([S, dark, mob, narrow, compact]);
   if (m.varSig !== varSig) { m.vars = readerVars(S, dark, mob, narrow, compact); m.varSig = varSig; }
-  const dispSig2 = [S.showLineNumbers, S.showChecks, S.showCopyBtn, S.showTranscript, S.showDomain, S.openNewTab, S.chipClick].join('|');
+  const dispSig2 = [S.showLineNumbers, S.showChecks, S.showCopyBtn, S.showTranscript, S.showDomain, S.showFavicons, S.openNewTab, S.chipClick].join('|');
   if (m.dispSig !== dispSig2) { m.disp = dispOf(S); m.dispSig = dispSig2; }
 
   return {
@@ -272,15 +277,29 @@ export function derive(app: App) {
   };
 }
 
-export type Disp = { nums: boolean; checks: boolean; copyBtn: boolean; transcript: boolean; domain: boolean; target: string; chipHint: string };
+export type Disp = { nums: boolean; checks: boolean; copyBtn: boolean; transcript: boolean; domain: boolean; fav: boolean; target: string; chipHint: string };
 
 /* guide items of one line, ready to draw (also used by the card editor preview) */
 export function itemViews(l: { items: any[] }, S: any, dark: boolean, hlFor: (k: string) => string = () => ''): ItemView[] {
   const out: ItemView[] = [], src: ItemView[] = [];
   l.items.forEach((it) => {
     const hl = hlFor(it.k);
-    const o: ItemView = { label: it.k, color: colorOf(it.color, dark), soft: softOf(it.color, dark), render: it.render };
+    const j = S.copyJoin === 'newline' ? '\n' : S.copyJoin === 'pipe' ? ' | ' : ', ';
+    const o: ItemView = { label: it.k, color: colorOf(it.color, dark), soft: softOf(it.color, dark), render: it.render, copyAll: '', count: 0 };
     if (it.render === 'links') {
+      o.copyAll = (it.links || []).map((x) => (x.u ? x.t + ' — ' + x.u : x.t)).join('\n');
+      o.count = (it.links || []).length;
+    } else if (it.render === 'chips' || it.render === 'overlay') {
+      o.copyAll = (it.chips || []).join(j);
+      o.count = (it.chips || []).length;
+    } else {
+      o.copyAll = it.body || '';
+      o.count = 1;
+    }
+    if (it.render === 'markdown') {
+      o.md = it.md || [];
+      o.hl = hl;
+    } else if (it.render === 'links') {
       o.links = (it.links || []).map((x) => ({
         t: x.t, u: x.u, d: x.d || '', tHtml: markHits(x.t, hl),
         fav: x.d && S.showFavicons ? 'https://www.google.com/s2/favicons?domain=' + x.d + '&sz=64' : '',
@@ -299,7 +318,7 @@ export function itemViews(l: { items: any[] }, S: any, dark: boolean, hlFor: (k:
 export function dispOf(S: any): Disp {
   return {
     nums: S.showLineNumbers, checks: S.showChecks, copyBtn: S.showCopyBtn, transcript: S.showTranscript,
-    domain: S.showDomain, target: S.openNewTab ? '_blank' : '_self',
+    domain: S.showDomain, fav: S.showFavicons, target: S.openNewTab ? '_blank' : '_self',
     chipHint: S.chipClick === 'copy' ? 'Click to copy' : S.chipClick === 'search' ? 'Click to search' : 'Click to copy and search',
   };
 }

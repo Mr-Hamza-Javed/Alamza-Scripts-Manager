@@ -234,5 +234,5 @@ export const SAMPLE_MD = `# Cold open
 |---|---|
 | In 2025, a research firm asked kids which franchises mattered most to them. | \`[CONTEXT]:\` A market research study of about 6,100 moviegoers. — \`[B-ROLL]:\` Kids on a couch absorbed in tablets and games. — \`[SEARCH TERMS]:\` kids playing tablet games b-roll, children survey footage, kids using iPad — \`[SOURCES]:\` [Gen Alpha at the Movies](https://www.nrgmr.com/) |
 | Their biggest star is a YouTuber with more subscribers than the population of the United States. | \`[CONTEXT]:\` The most subscribed creator on YouTube. — \`[TEXT OVERLAY]:\` 490M+ Subscribers — \`[ARTICLE SHOT]:\` Most-subscribed YouTube channels list — \`[SOURCES]:\` [List of most-subscribed channels](https://en.wikipedia.org/wiki/List_of_most-subscribed_YouTube_channels) |
-| And the company behind him is now valued at five billion dollars. | \`[IMAGE]:\` Headline about the valuation — \`[SEARCH TERMS]:\` company valuation headline, funding round news |
+| And the company behind him is now valued at five billion dollars. | \`[IMAGE]:\` Headline about the valuation — \`[EDITOR NOTE]:\` Use the **official** chart, search {{valuation chart 2024}} and check [the report](https://www.forbes.com/) first — \`[SEARCH TERMS]:\` company valuation headline, funding round news |
 `;

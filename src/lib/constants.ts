@@ -141,7 +141,7 @@ export const FIELDS: Record<string, FieldDef[]> = {
   ],
   parsing: [
     { key: 'autoDetect', type: 'toggle', label: 'Auto-detect unknown tags', hint: 'Guess the type of a new tag by itself' },
-    { key: 'unknownAs', type: 'select', label: 'Unknown tag renders as', options: [['auto', 'Auto guess'], ['prose', 'Always prose'], ['chips', 'Always chips']] },
+    { key: 'unknownAs', type: 'select', label: 'Unknown tag renders as', options: [['auto', 'Auto guess'], ['prose', 'Always prose'], ['chips', 'Always chips'], ['markdown', 'Always markdown']] },
     { key: 'defaultSplit', type: 'select', label: 'Default chip split', options: [['auto', 'Auto (; then ,)'], [';', 'Semicolon'], [',', 'Comma']] },
     { key: 'scriptCol', type: 'text', label: 'Script column header', hint: 'Used to find the script column' },
     { key: 'visualCol', type: 'text', label: 'Visual guide column header' },

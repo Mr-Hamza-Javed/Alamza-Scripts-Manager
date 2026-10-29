@@ -905,3 +905,27 @@ html[data-head='compact'] .topbar .kbd { opacity: 0; }
 @media (prefers-reduced-motion: reduce) {
   .topbar, .topbar * { transition: none !important; }
 }
+
+/* =====================================================================
+ * v7: markdown tags, copy-all labels
+ * ===================================================================== */
+/* one line of markdown inside the guide: chips and links sit in the running text */
+.gi-md strong { font-weight: 700; color: var(--text); }
+.gi-md em { font-style: italic; }
+.gi-md del { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--text-2) 70%, transparent); opacity: 0.8; }
+.gi-md .gchip { margin: 0 2px; padding: 0.5px 7px; vertical-align: baseline; line-height: 1.45; }
+.gi-md .src-chip { margin: 0 2px; padding: 0.5px 8px 0.5px 3px; vertical-align: -0.28em; }
+.gi-md .src-chip .src-t { max-width: 240px; }
+.gi-md .gchip:first-of-type, .gi-md .src-chip:first-of-type { margin-left: 0; }
+/* tag labels copy everything in their tag */
+.gi-label { cursor: pointer; transition: filter var(--dur-fast), box-shadow var(--dur-fast), background-color var(--dur-fast), color var(--dur-fast); }
+.gi-label:hover { filter: brightness(0.94) saturate(1.15); box-shadow: 0 0 0 1px color-mix(in srgb, var(--tag) 40%, transparent); }
+.label-plain .gi-label:hover { box-shadow: none; text-decoration: underline; text-underline-offset: 2px; }
+.gi-label.copied { background: var(--success-soft) !important; color: var(--success) !important; box-shadow: 0 0 0 1px var(--success); animation: copy-pop 420ms var(--ease-spring); }
+/* raw editor: `chips` */
+.rawhl .c { color: var(--teal); font-weight: 600; }
+/* tags settings: what each render type does */
+.render-legend { margin-top: 14px; padding: 12px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); }
+.legend-row { display: flex; align-items: baseline; gap: 10px; padding: 4px 0; font-size: 12.5px; color: var(--text-2); }
+.legend-row .badge { flex: none; min-width: 78px; justify-content: center; }
+.input.select.readonly select { cursor: not-allowed; color: var(--muted); }

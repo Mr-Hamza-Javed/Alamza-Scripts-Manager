@@ -1,8 +1,9 @@
-import { memo, type CSSProperties } from 'react';
+import { memo, type CSSProperties, type ReactNode } from 'react';
 import type App from '../App';
 import { ICONS } from '../ui/icons';
 import { Button, Icon } from '../ui/kit';
 import type { Disp, ItemView, LineView, SectionView } from '../view';
+import type { MdTok } from '../lib/inline';
 import type { P } from './Layout';
 
 /* the reader's look classes, from the card design (shared with the card editor preview) */
@@ -166,7 +167,22 @@ function hit(text: string, q: string) {
 
 function GuideItemView({ it, lineId, disp, app }: { it: ItemView; lineId: string; disp: Disp; app: App }) {
   const style = { '--tag': it.color, '--tag-soft': it.soft } as CSSProperties;
-  const label = <span className="gi-label" data-part="label">{it.label}</span>;
+  /* the label copies everything in its tag at once: all search terms, all links, or the text */
+  const what = it.render === 'chips' || it.render === 'overlay' ? (it.count === 1 ? 'the chip' : 'all ' + it.count + ' chips') : it.render === 'links' ? (it.count === 1 ? 'the link' : 'all ' + it.count + ' links') : 'the text';
+  const label = (
+    <span className="gi-label" data-part="label" role="button" tabIndex={-1} title={'Click to copy ' + what}
+      onClick={(e) => { e.stopPropagation(); flashCopied(e.currentTarget); app.setActiveLine(lineId); app.copyAll(it.copyAll, it.label, it.count, it.render); }}>
+      {it.label}
+    </span>
+  );
+  if (it.render === 'markdown') {
+    return (
+      <p className="gi gi-prose gi-md" style={style}>
+        {label}
+        <MdInline toks={it.md} hl={it.hl} tag={it.label} lineId={lineId} disp={disp} app={app} />
+      </p>
+    );
+  }
   if (it.render === 'chips') {
     return (
       <div className="gi gi-row" style={style}>
@@ -213,5 +229,49 @@ function GuideItemView({ it, lineId, disp, app }: { it: ItemView; lineId: string
       {label}
       <span dangerouslySetInnerHTML={it.bodyHtml} />
     </p>
+  );
+}
+
+/* the search word, marked inside plain text (React nodes, no HTML) */
+function Marked({ text, q }: { text: string; q?: string }) {
+  if (!q) return <>{text}</>;
+  const hay = text.toLowerCase(), parts: ReactNode[] = [];
+  let i = 0, n = 0;
+  for (;;) {
+    const at = hay.indexOf(q, i);
+    if (at < 0) { parts.push(text.slice(i)); break; }
+    parts.push(text.slice(i, at), <mark key={n++} className="q-hit">{text.slice(at, at + q.length)}</mark>);
+    i = at + q.length;
+  }
+  return <>{parts}</>;
+}
+
+/* one line of markdown: bold, italic, strike, `chips` and links with their site icon */
+function MdInline({ toks, hl, tag, lineId, disp, app }: { toks: MdTok[]; hl?: string; tag: string; lineId: string; disp: Disp; app: App }) {
+  return (
+    <>
+      {toks.map((k, i) => {
+        if (k.t === 'text') return <Marked key={i} text={k.v} q={hl} />;
+        if (k.t === 'b') return <strong key={i}><MdInline toks={k.c} hl={hl} tag={tag} lineId={lineId} disp={disp} app={app} /></strong>;
+        if (k.t === 'i') return <em key={i}><MdInline toks={k.c} hl={hl} tag={tag} lineId={lineId} disp={disp} app={app} /></em>;
+        if (k.t === 's') return <del key={i}><MdInline toks={k.c} hl={hl} tag={tag} lineId={lineId} disp={disp} app={app} /></del>;
+        if (k.t === 'chip') {
+          return (
+            <span key={i} className="gchip md-chip" data-part="chip" title={disp.chipHint} role="button" tabIndex={-1}
+              onClick={(e) => { e.stopPropagation(); flashCopied(e.currentTarget); app.chipClick(k.v, tag, lineId); }}>
+              <Marked text={k.v} q={hl} />
+            </span>
+          );
+        }
+        if (k.t !== 'link') return null;
+        return (
+          <a key={i} className="src-chip md-link" data-part="chip" href={k.u} target={disp.target} rel="noopener noreferrer" title={k.title + ' — ' + k.u} onClick={(e) => e.stopPropagation()}>
+            {disp.fav && k.d && <img src={'https://www.google.com/s2/favicons?domain=' + k.d + '&sz=64'} alt="" width={14} height={14} loading="lazy" decoding="async" />}
+            <span className="src-t"><Marked text={k.title} q={hl} /></span>
+            {disp.domain && k.d && k.title !== k.d && <span className="src-d">{k.d}</span>}
+          </a>
+        );
+      })}
+    </>
   );
 }

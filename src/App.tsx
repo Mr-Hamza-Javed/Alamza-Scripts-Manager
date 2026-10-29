@@ -796,6 +796,12 @@ export default class App extends Component<object, any> {
     }
     if (legacyCopy(txt)) this.flash(msg); else fail();
   }
+  /* a click on a tag label: everything in that tag goes to the clipboard at once */
+  copyAll = (text: string, tag: string, count: number, render: string) => {
+    if (!text) { this.flash('This tag has nothing to copy'); return; }
+    const what = render === 'chips' || render === 'overlay' ? count + (count === 1 ? ' chip' : ' chips') : render === 'links' ? count + (count === 1 ? ' link' : ' links') : 'the text';
+    this.copyRaw(text, tag + ' copied — ' + what);
+  };
   chipClick = (v: string, tag: string, lineId: string) => {
     const S = this.effS();
     this.setActiveLine(lineId);
@@ -1264,7 +1270,8 @@ export default class App extends Component<object, any> {
     }
     if (k === 'exportTerms') {
       const terms: string[] = [];
-      this.allLines().forEach((l) => l.items.forEach((it) => { if (it.render === 'chips') terms.push(...it.chips); }));
+      /* search-term chips, plus every {{chip}} written inside markdown tags */
+      this.allLines().forEach((l) => l.items.forEach((it) => { if ((it.render === 'chips' || it.render === 'markdown') && it.chips) terms.push(...it.chips); }));
       download(safeFileName(a.name, 'script') + ' - search terms.txt', terms.join('\n'));
       return;
     }

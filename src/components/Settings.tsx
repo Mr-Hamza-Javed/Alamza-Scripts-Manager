@@ -183,14 +183,14 @@ function TagsTab({ app, v, look, hint }: TabP) {
               <span className="tag-name"><span className="tag-dot" style={{ background: colorOf(d.color, v.dark) }} /><b>{n}</b>{d.auto && <Badge tone="blue">Auto</Badge>}</span>
               <div className="input select sm">
                 <select value={d.render} aria-label={`Render ${n} as`} onChange={(e) => app.setTag(n, { render: e.currentTarget.value })}>
-                  <option value="prose">Prose</option><option value="chips">Chips</option><option value="overlay">Overlay</option><option value="links">Links</option><option value="hidden">Hidden</option>
+                  {RENDERS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
                 </select>
               </div>
               <div className="swatches sm">
                 {PKEYS.map((k) => <button key={k} type="button" className={`swatch${d.color === k ? ' on' : ''}`} style={{ background: (PALETTE[k])[v.dark ? 0 : 1] }} aria-label={`Set ${n} colour to ${k}`} title={k} onClick={() => app.setTag(n, { color: k })} />)}
               </div>
-              <div className="input select sm">
-                <select value={d.split || 'auto'} aria-label={`Split ${n} on`} onChange={(e) => app.setTag(n, { split: e.currentTarget.value })}>
+              <div className={`input select sm${d.render === 'chips' || d.render === 'overlay' ? '' : ' readonly'}`} title={d.render === 'chips' || d.render === 'overlay' ? '' : 'Only chips and overlays are split'}>
+                <select value={d.split || 'auto'} aria-label={`Split ${n} on`} disabled={!(d.render === 'chips' || d.render === 'overlay')} onChange={(e) => app.setTag(n, { split: e.currentTarget.value })}>
                   <option value="none">—</option><option value=";">;</option><option value=",">,</option><option value="auto">auto</option><option value="—">— and —</option>
                 </select>
               </div>
@@ -199,9 +199,28 @@ function TagsTab({ app, v, look, hint }: TabP) {
           );
         })}
       </div>
+      <div className="render-legend">
+        <div className="ctl-section-title">What each type does</div>
+        {RENDER_HELP.map(([k, l, t]) => (
+          <div key={k} className="legend-row">
+            <span className={`badge${k === 'markdown' ? ' blue' : ''}`}>{l}</span>
+            <span>{t}</span>
+          </div>
+        ))}
+      </div>
     </Card>
   );
 }
+
+const RENDERS: [string, string][] = [['prose', 'Prose'], ['chips', 'Chips'], ['overlay', 'Overlay'], ['links', 'Links'], ['markdown', 'Markdown'], ['hidden', 'Hidden']];
+const RENDER_HELP: [string, string, string][] = [
+  ['prose', 'Prose', 'Plain text; formatting marks are removed.'],
+  ['chips', 'Chips', 'Split into chips (search terms) that copy or search on click.'],
+  ['overlay', 'Overlay', 'Big dark chips for on-screen text.'],
+  ['links', 'Links', 'Sources as link chips with the site icon.'],
+  ['markdown', 'Markdown', 'One line with **bold**, *italic*, ~~strike~~, {{chip}} and links with the site icon.'],
+  ['hidden', 'Hidden', 'Not shown at all.'],
+];
 
 function LibraryTab({ app, v, look, hint }: TabP) {
   const st = app.state;

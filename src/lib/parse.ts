@@ -1,10 +1,13 @@
 /* Markdown → sections and lines. The research writer never produces the same shape
    twice, so every rule here exists because a real script needed it. */
 import { PKEYS, type TagDef } from './constants';
+import { mdChips, mdText, parseInlineMd, type MdTok } from './inline';
 
 export type GuideItem = {
   k: string; render: string; color?: string; body?: string;
   chips?: string[]; links?: { t: string; u: string; d?: string }[];
+  /** markdown tags: the line as inline tokens (bold, italic, chips, links) */
+  md?: MdTok[];
 };
 export type Line = { n: number; text: string; video: boolean; range?: string; transcript?: string; items: GuideItem[] };
 export type Section = { title: string; badge: string; lines: Line[]; notes: string[] };
@@ -107,7 +110,7 @@ function parseLinks(body: string, reg: any, st: any) {
 
 export function stripMd(s: string) {
   return s.replace(/\*\*(.+?)\*\*/g, '$1').replace(/(^|\s)\*(\S[^*]*?)\*/g, '$1$2')
-    .replace(/`+/g, '').replace(/\\([|*_[\]])/g, '$1')
+    .replace(/`+/g, '').replace(/\{\{\s*([^{}]*?)\s*\}\}/g, '$1').replace(/\\([|*_[\]])/g, '$1')
     .replace(/\[([^\]]*)\]\(([^)]+)\)/g, '$1').replace(/\s{2,}/g, ' ').trim();
 }
 function cleanBody(s: string) {
@@ -118,9 +121,20 @@ function guessRender(name: string, body: string) {
   if (/SOURCE|LINK|REF/.test(n)) return 'links';
   if (/OVERLAY|TITLE CARD|LOWER THIRD/.test(n)) return 'overlay';
   if (/TERM|KEYWORD|SHOT LIST|QUERY|SEARCH/.test(n)) return 'chips';
+  /* {{chips}} or **bold** in running text: keep the formatting */
+  if (/\{\{[^{}\n]+\}\}/.test(body) || /\*\*[^*\n]+\*\*/.test(body)) return 'markdown';
   if ((body.match(/;/g) || []).length >= 2) return 'chips';
   if (/https?:\/\//.test(body) && body.length < 400) return 'links';
   return 'prose';
+}
+/* a markdown tag keeps its raw text: one line, its marks turned into tokens */
+function mdItem(item: GuideItem, raw: string, reg: any, st: any) {
+  const line = cleanBody(raw.replace(/<br\s*\/?>/gi, ' '));
+  if (!line) return false;
+  item.md = parseInlineMd(line, reg, st.resolveNumRefs);
+  item.body = mdText(item.md);
+  item.chips = mdChips(item.md);
+  return !!(item.body || item.chips.length);
 }
 function splitChips(body: string, mode: string, def: string) {
   const m = mode === 'auto' || !mode ? (def === 'auto' ? (body.includes(';') ? ';' : ',') : def) : mode;
@@ -158,6 +172,7 @@ function parseGuide(cell: string, tags: Record<string, TagDef>, reg: any, st: an
     if (def.render === 'hidden') return;
     const item: GuideItem = { k: mk.name, render: def.render, color: def.color };
     if (def.render === 'links') item.links = parseLinks(raw, reg, st);
+    else if (def.render === 'markdown') { if (!mdItem(item, raw, reg, st)) return; }
     else {
       const body = cleanBody(stripMd(raw));
       if (!body) return;
@@ -191,6 +206,8 @@ function extraColItem(colName: string, content: string, tags: Record<string, Tag
   if (render === 'links') {
     item.links = parseLinks(content, reg, st);
     if (!item.links.length) return null;
+  } else if (render === 'markdown') {
+    if (!mdItem(item, content, reg, st)) return null;
   } else {
     const body = cleanBody(stripMd(content));
     if (!body) return null;
