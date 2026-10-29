@@ -1,6 +1,6 @@
-import { type DragEvent, type KeyboardEvent } from 'react';
+import { type DragEvent, type KeyboardEvent, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { ICONS } from '../ui/icons';
-import { Badge, Button, Icon, IconButton, Tabs, TabPanel, Toggle } from '../ui/kit';
+import { Badge, Icon, IconButton, Tabs, TabPanel, Toggle } from '../ui/kit';
 import type { TreeRow } from '../view';
 import type { P } from './Layout';
 
@@ -27,11 +27,11 @@ export function Sidebar({ app, v }: P) {
         </div>
       </div>
       <div className="side-tabs">
-        <Tabs label="Sidebar" idBase="side" value={st.sideTab}
+        <Tabs variant="pill" label="Sidebar" idBase="side" value={st.sideTab}
           onChange={(t) => app.setState({ sideTab: t, showTrash: t === 'files' ? st.showTrash : false })}
           items={[
             { key: 'files', label: 'Scripts', icon: ICONS.folderLine, iconActive: ICONS.folderOn, count: v.scriptCount || undefined },
-            { key: 'review', label: 'Review', icon: ICONS.review, iconActive: ICONS.reviewOn },
+            { key: 'review', label: <>Review{v.total > 0 && <span className={`tab-pct num${v.pct === 100 ? ' ok' : ''}`}>{v.pct}%</span>}</>, icon: ICONS.review, iconActive: ICONS.reviewOn },
           ]} />
       </div>
       <TabPanel idBase="side" value={st.sideTab} dir={st.sideTab === 'review' ? 1 : -1} style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
@@ -80,59 +80,93 @@ export function Rail({ app, v }: P) {
 
 /* ---------------------------------------------------------------- library */
 
+/* the list fades in under the heading once it scrolls */
+const onSideScroll = (e: { currentTarget: HTMLElement }) => { e.currentTarget.classList.toggle('scrolled', e.currentTarget.scrollTop > 2); };
+
+/* One soft highlight behind the open script. It slides from row to row instead of
+   each row lighting up on its own. */
+function useActiveHighlight() {
+  const listRef = useRef<HTMLDivElement>(null);
+  const hlRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const list = listRef.current, hl = hlRef.current;
+    if (!list || !hl) return;
+    const row = list.querySelector<HTMLElement>('.tree-row.active');
+    if (!row) { hl.classList.remove('on'); return; }
+    const y = row.offsetTop, h = row.offsetHeight;
+    if (hl.dataset.y === String(y) && hl.dataset.h === String(h) && hl.classList.contains('on')) return;
+    const jump = !hl.classList.contains('on');
+    if (jump) hl.classList.add('instant');
+    hl.style.transform = `translateY(${y}px)`;
+    hl.style.height = h + 'px';
+    hl.dataset.y = String(y);
+    hl.dataset.h = String(h);
+    hl.classList.add('on');
+    if (jump) requestAnimationFrame(() => requestAnimationFrame(() => hl.classList.remove('instant')));
+  });
+  return { listRef, hlRef };
+}
+
 function Library({ app, v }: P) {
   const st = app.state;
+  const { listRef, hlRef } = useActiveHighlight();
   const parent = st.items[st.activeId] ? st.items[st.activeId].parentId : 'root';
-  const toggleSearch = () => {
-    const open = !st.treeSearchOpen;
-    app.setState({ treeSearchOpen: open, treeQuery: open ? st.treeQuery : '' }, () => {
-      if (open) setTimeout(() => document.getElementById('tree-search-input')?.focus(), 30);
-    });
-  };
   const rows = v.tree.filter((r) => !r.header).length;
   return (
     <>
-      {!v.sharedMode && (
-        <div className="lib-tools">
-          <Button size="sm" variant="primary" icon={ICONS.newScript} title="New script" onClick={() => app.create('script', parent)}>New<span className="w-long"> script</span></Button>
-          <span style={{ flex: 1 }} />
-          <IconButton icon={ICONS.newFolder} label="New folder" onClick={() => app.create('folder', 'root')} />
-          <IconButton icon={ICONS.search} label="Find scripts or folders" active={st.treeSearchOpen} onClick={toggleSearch} />
-          <IconButton icon={ICONS.upload} label="Import .md or .txt files (or drop them on the page)" onClick={() => document.getElementById('lib-file-input')?.click()} />
-          <IconButton icon={st.showTrash ? ICONS.back : ICONS.trash} label={st.showTrash ? 'Back to scripts' : 'Open the trash'} active={st.showTrash}
-            onClick={() => app.setState({ showTrash: !st.showTrash, treeQuery: '', treeSearchOpen: false })}
-            badge={!st.showTrash && v.trashCount > 0 ? <span className="count-dot">{v.trashCount}</span> : null} />
+      <div className="lib-head">
+        <div className={`input lib-find${st.treeQuery ? ' has-q' : ''}`}>
+          <span className="input-ico"><Icon icon={ICONS.search} size={16} /></span>
+          <input id="tree-search-input" value={st.treeQuery} placeholder={st.showTrash ? 'Search the trash' : 'Find a script'} aria-label="Search scripts and folders"
+            autoComplete="off" spellCheck={false}
+            onChange={(e) => app.setState({ treeQuery: e.currentTarget.value })}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); app.setState({ treeQuery: '' }); e.currentTarget.blur(); }
+              if (e.key === 'ArrowDown' || e.key === 'Enter') { const first = document.querySelector<HTMLElement>('.lib-side [data-row]'); if (first) { e.preventDefault(); first.focus(); } }
+            }} />
+          {st.treeQuery && <button type="button" className="ts-clear" aria-label="Clear library search" onClick={() => { app.setState({ treeQuery: '' }); document.getElementById('tree-search-input')?.focus(); }}><Icon icon={ICONS.closeSm} size={14} /></button>}
         </div>
-      )}
-      {st.treeSearchOpen && (
-        <div className="lib-search">
-          <div className="input">
-            <span className="input-ico"><Icon icon={ICONS.search} size={16} /></span>
-            <input id="tree-search-input" value={st.treeQuery} placeholder={st.showTrash ? 'Search the trash…' : 'Find scripts or folders…'} aria-label="Search scripts and folders"
-              onChange={(e) => app.setState({ treeQuery: e.currentTarget.value })}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); app.setState({ treeQuery: '', treeSearchOpen: false }); }
-                if (e.key === 'ArrowDown') { const first = document.querySelector<HTMLElement>('[data-row]'); if (first) { e.preventDefault(); first.focus(); } }
-              }} />
-            {st.treeQuery && <button type="button" className="ts-clear" aria-label="Clear library search" onClick={() => app.setState({ treeQuery: '' })}><Icon icon={ICONS.closeSm} size={14} /></button>}
-          </div>
+        {!v.sharedMode && !st.showTrash && (
+          <button type="button" className="btn primary lib-new" title="New script" aria-label="New script" onClick={() => app.create('script', parent)}>
+            <Icon icon={ICONS.add} size={18} color="inherit" />
+          </button>
+        )}
+      </div>
+      <div className="side-scroll" onScroll={onSideScroll}>
+        <div className="side-label lib-label">
+          <span className="side-label-main">
+            {st.showTrash && <button type="button" className="mini-btn back" title="Back to scripts" aria-label="Back to scripts" onClick={() => app.setState({ showTrash: false, treeQuery: '' })}><Icon icon={ICONS.back} size={14} /></button>}
+            <span>{v.treeHeading}</span><span className="side-count">{rows}</span>
+          </span>
+          {!v.sharedMode && !st.showTrash && (
+            <span className="side-label-acts">
+              <button type="button" className="mini-btn" title="New folder" aria-label="New folder" onClick={() => app.create('folder', 'root')}><Icon icon={ICONS.newFolder} size={16} /></button>
+              <button type="button" className="mini-btn" title="Import .md or .txt files (or drop them on the page)" aria-label="Import files" onClick={() => document.getElementById('lib-file-input')?.click()}><Icon icon={ICONS.upload} size={16} /></button>
+              <button type="button" className="mini-btn" title={v.trashCount ? 'Trash · ' + v.trashCount + (v.trashCount === 1 ? ' item' : ' items') : 'Trash'}
+                aria-label={'Open the trash' + (v.trashCount ? ', ' + v.trashCount + ' items' : '')}
+                onClick={() => app.setState({ showTrash: true, treeQuery: '' })}>
+                <Icon icon={ICONS.trash} size={16} />
+              </button>
+            </span>
+          )}
         </div>
-      )}
-      <div className="side-scroll">
-        <div className="side-label"><span>{v.treeHeading}</span><span className="side-count">{rows}</span></div>
         {rows === 0 && (
-          <div className="empty small">
-            <Icon icon={st.showTrash ? ICONS.trash : ICONS.folderLine} size={22} color="muted" />
+          <div className="side-empty">
+            <span className="side-empty-tile"><Icon icon={st.treeQuery ? ICONS.search : st.showTrash ? ICONS.trash : ICONS.folderLine} size={22} /></span>
             <span>{v.treeEmptyMsg}</span>
             {st.treeQuery && <button type="button" className="btn sm" onClick={() => app.setState({ treeQuery: '' })}>Clear search</button>}
+            {!st.treeQuery && !st.showTrash && !v.sharedMode && <button type="button" className="btn sm" onClick={() => app.create('script', parent)}><Icon icon={ICONS.add} size={16} color="blue" /><span className="btn-label">New script</span></button>}
           </div>
         )}
-        {v.tree.map((r) => (r.header ? (
-          <div key={r.id} className="side-label sub"><span>{r.name}</span></div>
-        ) : (
-          <TreeRowView key={r.id} r={r} app={app} canDrag={v.canDrag}
-            drop={st.dropAt && st.dropAt.id === r.id ? st.dropAt.where : null} dragging={st.dragRow === r.id} moved={st.movedRow === r.id} />
-        )))}
+        <div className="tree-list" ref={listRef}>
+          <div className="tree-hl" ref={hlRef} aria-hidden="true" />
+          {v.tree.map((r) => (r.header ? (
+            <div key={r.id} className="side-label sub"><span>{r.name}</span></div>
+          ) : (
+            <TreeRowView key={r.id} r={r} app={app} canDrag={v.canDrag}
+              drop={st.dropAt && st.dropAt.id === r.id ? st.dropAt.where : null} dragging={st.dragRow === r.id} moved={st.movedRow === r.id} />
+          )))}
+        </div>
         {st.dragRow && (
           /* while dragging: a place to drop at the end of the top level */
           <div className={`tree-end-drop${st.dropAt && st.dropAt.id === '@root' ? ' on' : ''}`}
@@ -216,12 +250,16 @@ function TreeRowView({ r, app, canDrag, drop, dragging, moved }: { r: TreeRow; a
       style={{ paddingLeft: 6 + r.depth * 16, '--i': Math.min(r.sib || 0, 10) } as any} onClick={() => app.openRow(r.id)} onKeyDown={onKey}
       onContextMenu={r.menu ? (e) => { e.preventDefault(); app.openMenu(r.id, e.currentTarget); } : undefined}
       {...dnd} {...target}>
+      {r.depth > 0 && Array.from({ length: r.depth }, (_, i) => <span key={i} className="tree-guide" style={{ left: 13 + i * 16 }} aria-hidden="true" />)}
       <span className={`tree-chev${r.open ? ' open' : ''}`}>{r.folder && <Icon icon={ICONS.chevronRight} size={12} />}</span>
-      <span className="tree-ico"><Icon icon={r.folder ? (r.open ? ICONS.folderOpen : ICONS.folder) : ICONS.script} size={18} /></span>
+      <span className="tree-ico"><Icon icon={r.folder ? (r.open ? ICONS.folderOpenLine : ICONS.folderLine) : r.current ? ICONS.scriptOn : ICONS.script} size={18} /></span>
       <span className="tree-name" title={r.name}>{r.name}</span>
       <span className="tree-meta">
-        {r.ready && <span className="mini-badge green" title="Ready lines"><Icon icon={ICONS.check} size={10} />{r.ready}</span>}
-        {r.tag && <span className={`mini-badge ${r.tagTone || ''}`} title={r.tagTitle}>{r.tag}</span>}
+        {r.tag && r.tagTone === 'blue'
+          ? <span className="tree-flag" title={r.tagTitle} aria-label={r.tagTitle}><Icon icon={r.tag === 'Link' ? ICONS.link : ICONS.people} size={14} /></span>
+          : r.tag && <span className={`mini-badge ${r.tagTone || ''}`} title={r.tagTitle}>{r.tag}</span>}
+        {r.ready && <span className="tree-ready num" title={r.ready + ' ready ' + (r.ready === '1' ? 'line' : 'lines')}><Icon icon={ICONS.check} size={10} />{r.ready}</span>}
+        {r.folder && <span className="tree-kids num" title={r.kids + (r.kids === 1 ? ' item' : ' items')}>{r.kids}</span>}
       </span>
       {draggable && <span className="tree-grip" aria-hidden="true"><Icon icon={ICONS.grip} size={16} /></span>}
       {r.menu && (
@@ -236,22 +274,82 @@ function TreeRowView({ r, app, canDrag, drop, dragging, moved }: { r: TreeRow; a
 
 /* ---------------------------------------------------------------- review */
 
+const reduceMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* A number that eases to its new value (ease-out cubic). It starts from 0 when the
+   panel opens, so the totals count up once; later changes glide from the old value. */
+function useCountUp(value: number, ms = 750) {
+  const [shown, setShown] = useState(() => (reduceMotion() ? value : 0));
+  const from = useRef(shown);
+  useEffect(() => {
+    const start = from.current;
+    if (start === value) return;
+    if (reduceMotion()) { from.current = value; setShown(value); return; }
+    let raf = 0;
+    const t0 = performance.now();
+    const step = (t: number) => {
+      const k = Math.min(1, (t - t0) / ms);
+      const n = Math.round(start + (value - start) * (1 - Math.pow(1 - k, 3)));
+      from.current = n;
+      setShown(n);
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    /* a hidden tab pauses animation frames: land on the real value anyway */
+    const land = setTimeout(() => { from.current = value; setShown(value); }, ms + 150);
+    return () => { cancelAnimationFrame(raf); clearTimeout(land); };
+  }, [value, ms]);
+  return shown;
+}
+
+/* Puts a sliding chip under the chosen button of a segmented control. */
+function useGlide<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  useLayoutEffect(() => {
+    const box = ref.current;
+    if (!box) return;
+    const place = () => {
+      const on = box.querySelector<HTMLElement>('[aria-checked="true"]');
+      if (!on) { box.style.setProperty('--gw', '0px'); return; }
+      box.style.setProperty('--gx', on.offsetLeft + 'px');
+      box.style.setProperty('--gw', on.offsetWidth + 'px');
+      if (!box.classList.contains('ready')) requestAnimationFrame(() => box.classList.add('ready'));
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(box);
+    return () => ro.disconnect();
+  });
+  return ref;
+}
+
 function Review({ app, v }: P) {
   const st = app.state;
   const scriptDone = st.achievement && st.achievement.level === 'script';
   const tagOn = v.tagFilters.some((f) => f.id === v.activeFilter);
+  const left = Math.max(0, v.total - v.doneCount);
+  const allDone = v.total > 0 && v.doneCount >= v.total;
+  const nReady = useCountUp(v.doneCount), nLeft = useCountUp(left), nTotal = useCountUp(v.total);
+  const segRef = useGlide<HTMLDivElement>();
+  const allSections = v.sectionCount > 0 && v.readySectionCount === v.sectionCount;
   return (
-    <div className="side-scroll review">
-      <div className={`review-card${scriptDone ? ' achieved' : ''}`}>
-        <div className="review-top">
-          <span className="review-title">Review progress</span>
-          <span className="review-pct num" key={v.pct}>{v.pct}%</span>
+    <div className="side-scroll review" onScroll={onSideScroll}>
+      <div className={`review-card${allDone ? ' done' : ''}${scriptDone ? ' achieved' : ''}`}>
+        <div className="review-hero">
+          <Ring pct={v.total ? v.pct : 0} done={allDone} />
+          <div className="review-copy">
+            <span className="review-title" key={allDone ? 'd' : v.total ? 'p' : 'e'}>{v.total === 0 ? 'Nothing to review yet' : allDone ? 'Every line is ready' : 'Review progress'}</span>
+            <span className="review-sub">
+              {v.total === 0 ? 'Lines show up here once the script has some'
+                : allDone ? 'All ' + v.total + (v.total === 1 ? ' line has' : ' lines have') + ' footage'
+                : left + (left === 1 ? ' line' : ' lines') + ' still to check'}
+            </span>
+          </div>
         </div>
-        <div className="meter"><span style={{ width: v.pct + '%' }} /></div>
         <div className="review-stats">
-          <div><b className="num ok">{v.doneCount}</b><small>Ready</small></div>
-          <div><b className="num accent">{Math.max(0, v.total - v.doneCount)}</b><small>Left</small></div>
-          <div><b className="num">{v.total}</b><small>Total</small></div>
+          <div className="st-ready"><b className="num">{nReady}</b><small>Ready</small></div>
+          <div className="st-left"><b className="num">{nLeft}</b><small>Left</small></div>
+          <div><b className="num">{nTotal}</b><small>Total</small></div>
         </div>
       </div>
 
@@ -264,17 +362,19 @@ function Review({ app, v }: P) {
           </button>
         )}
       </div>
-      <div className="segm full" role="radiogroup" aria-label="Filter script lines">
+      <div className="segm full glide" role="radiogroup" aria-label="Filter script lines" ref={segRef}>
+        <span className="segm-chip" aria-hidden="true" />
         {v.primaryFilters.map((f) => (
           <button key={f.id} type="button" role="radio" aria-checked={v.activeFilter === f.id} className={v.activeFilter === f.id ? 'on' : ''} onClick={() => app.setFilter(f.id)}>
-            {f.label} <span className="segm-n">{f.n}</span>
+            {f.label} <span className="segm-n num">{f.n}</span>
           </button>
         ))}
       </div>
       {st.filtersOpen && v.tagFilters.length > 0 && (
         <div className="tag-filters">
-          {v.tagFilters.map((f) => (
-            <button key={f.id} type="button" aria-pressed={v.activeFilter === f.id} className={`tag-filter${v.activeFilter === f.id ? ' on' : ''}`} onClick={() => app.setFilter(v.activeFilter === f.id ? 'all' : f.id)}>
+          {v.tagFilters.map((f, i) => (
+            <button key={f.id} type="button" aria-pressed={v.activeFilter === f.id} className={`tag-filter${v.activeFilter === f.id ? ' on' : ''}`} style={{ '--i': Math.min(i, 12) } as any}
+              onClick={() => app.setFilter(v.activeFilter === f.id ? 'all' : f.id)}>
               {f.label} <span>{f.n}</span>
             </button>
           ))}
@@ -283,14 +383,14 @@ function Review({ app, v }: P) {
 
       <div className="side-label">
         <span>Sections</span>
-        <span className={`side-count${v.readySectionCount === v.sectionCount && v.sectionCount ? ' ok' : ''}`}>{v.readySectionCount}/{v.sectionCount} ready</span>
+        <span className={`side-count${allSections ? ' ok' : ''}`}>{v.readySectionCount}/{v.sectionCount} ready</span>
       </div>
       <div className="outline">
         {v.outline.length === 0 && <div className="muted small-note">No sections yet.</div>}
-        {v.outline.map((o) => (
-          <button key={o.si} type="button" className={`outline-row${o.active ? ' active' : ''}${o.complete ? ' complete' : ''}`}
+        {v.outline.map((o, i) => (
+          <button key={o.si} type="button" className={`outline-row${o.active ? ' active' : ''}${o.complete ? ' complete' : ''}`} style={{ '--i': Math.min(i, 12) } as any}
             onClick={() => app.gotoSection(o.si)} title={'Jump to ' + o.title} aria-label={`Go to section ${o.num}, ${o.title}, ${o.label} ready`}>
-            <span className="o-num num">{o.num}</span>
+            <span className="o-num num">{o.complete ? <Icon icon={ICONS.check} size={10} /> : o.num}</span>
             <span className="o-title">{o.title}</span>
             <span className="o-label num">{o.label}</span>
             <span className="o-bar"><span style={{ width: o.pct + '%' }} /></span>
@@ -302,7 +402,7 @@ function Review({ app, v }: P) {
       <div className="tool-list">
         <div className={`tool-row click${v.S.focusMode ? ' on' : ''}`} onClick={app.toggleFocus}>
           <span className="tool-ico"><Icon icon={ICONS.focus} size={16} /></span>
-          <span className="tool-text"><b>Focus mode</b><small>Light up only the active line · F</small></span>
+          <span className="tool-text"><b>Focus mode</b><small title="Dims every line except the active one · F">Dim the other lines · F</small></span>
           <span onClick={(e) => e.stopPropagation()}><Toggle label="Focus mode" checked={!!v.S.focusMode} onChange={() => app.toggleFocus()} /></span>
         </div>
         <button type="button" className="tool-row" onClick={app.toggleAllSections}>
@@ -313,7 +413,7 @@ function Review({ app, v }: P) {
           <div className="tool-row split" data-copy-split>
             <button type="button" className="split-main" onClick={() => app.act('copyScriptMd')} title="Copy the whole script with its visual guide as Markdown">
               <span className="tool-ico"><Icon icon={ICONS.copy} size={16} /></span>
-              <span className="tool-text"><b>Copy full script</b><small>Markdown + visual guide{v.total ? ' · ' + v.total + ' lines' : ''}</small></span>
+              <span className="tool-text"><b>Copy full script</b><small>Markdown + visual guide{v.total ? ' · ' + v.total + (v.total === 1 ? ' line' : ' lines') : ''}</small></span>
             </button>
             <button type="button" className={`split-caret${st.copyMenu ? ' on' : ''}`} aria-haspopup="menu" aria-expanded={!!st.copyMenu} aria-label="More copy options" title="More copy options"
               onClick={(e) => app.openCopyMenu(e.currentTarget)}>
@@ -323,6 +423,34 @@ function Review({ app, v }: P) {
         )}
       </div>
     </div>
+  );
+}
+
+/* Review progress as a ring. The arc and the number move together; when every line
+   is ready the arc turns green and a check fades in at the centre. */
+function Ring({ pct, done }: { pct: number; done: boolean }) {
+  const gid = 'ring-' + useId().replace(/:/g, '');
+  const val = Math.max(0, Math.min(100, pct));
+  const shown = useCountUp(val);
+  return (
+    <span className={`ring${done ? ' done' : ''}`} role="img" aria-label={done ? 'Every line is ready' : val + '% ready'}>
+      <svg className="ring-svg" viewBox="0 0 48 48" aria-hidden="true">
+        <defs>
+          <linearGradient id={gid + '-p'} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#60a5fa" /><stop offset="1" stopColor="#1d4ed8" />
+          </linearGradient>
+          <linearGradient id={gid + '-d'} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#34d399" /><stop offset="1" stopColor="#16a34a" />
+          </linearGradient>
+        </defs>
+        <circle className="ring-track" cx="24" cy="24" r="20" />
+        <circle className={`ring-fill${val > 0 ? '' : ' empty'}`} cx="24" cy="24" r="20" pathLength={100}
+          strokeDasharray={`${val} 100`} stroke={`url(#${gid}-${done ? 'd' : 'p'})`} />
+      </svg>
+      {done
+        ? <span className="ring-check" key="done"><Icon icon={ICONS.doneBold} size={20} /></span>
+        : <b className="ring-num num" key="num">{shown}<small>%</small></b>}
+    </span>
   );
 }
 
@@ -347,7 +475,7 @@ function Account({ app, v }: P) {
   return (
     <div className="side-foot">
       <div className="side-foot-row">
-        <button type="button" className={`avatar-btn${st.accountMenu ? ' on' : ''}`} aria-haspopup="menu" aria-expanded={!!st.accountMenu}
+        <button type="button" className={`avatar-btn profile-card${st.accountMenu ? ' on' : ''}`} aria-haspopup="menu" aria-expanded={!!st.accountMenu}
           title="Profile menu" onClick={(e) => app.openAccountMenu(e.currentTarget)}>
           <Avatar v={v} />
           <span className="avatar-text">

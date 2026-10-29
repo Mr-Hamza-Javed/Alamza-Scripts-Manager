@@ -25,6 +25,8 @@ export type SectionView = {
 export type TreeRow = {
   id: string; header?: boolean; name: string; depth: number; folder: boolean; open: boolean; current: boolean;
   tag?: string; tagTone?: 'blue' | 'green' | 'orange' | 'purple' | 'red' | ''; tagTitle?: string; ready?: string; menu: boolean;
+  /** folders: how many items sit directly inside */
+  kids?: number;
   /** place among its siblings (rows rise in one after another) */
   sib?: number;
 };
@@ -183,6 +185,7 @@ export function derive(app: App) {
       id, name: it.name || 'Untitled', depth, folder, open: !!st.openFolders[id] || (!!treeQ && folder), current: st.activeId === id && !folder, menu,
       tag: menu && shared ? (sh.public ? 'Link' : 'Shared') : '', tagTone: 'blue', tagTitle: sh && sh.public ? 'Public link is on' : 'Shared with people',
       ready: menu && !folder && S.showReadyCount ? readyOf(id) : '',
+      kids: folder ? Object.keys(src).filter((k) => !src[k].trashed && (src[k].parentId || 'root') === id).length : 0,
     };
   };
   const branchHas = (src: any, id: string, term: string): boolean => {
