@@ -1166,3 +1166,66 @@ html[data-head='compact'] .topbar .kbd { opacity: 0; }
   .review-card.achieved::after, .review-card.achieved .ring::after { animation: none; }
 }
 .side-tabs .tab .tab-pct.ok, .side-tabs .tab[aria-selected='true'] .tab-pct.ok { color: var(--success); }
+
+/* =====================================================================
+ * v10: soft colour washes
+ * A card with an icon tile picks up that tile's colour as a light wash from
+ * its top-left corner, fading to white well before the middle. The script
+ * cards stay plain white: they are the reading surface.
+ * ===================================================================== */
+.wash-blue { --wash: var(--primary-soft); }
+.wash-green { --wash: var(--success-soft); }
+.wash-purple { --wash: var(--purple-soft); }
+.wash-orange { --wash: var(--warning-soft); }
+.wash-teal { --wash: var(--teal-soft); }
+.wash-red { --wash: var(--danger-soft); }
+
+.card.wash, .page-head.wash, .stat.wash, .raw-bar.wash {
+  background:
+    radial-gradient(ellipse var(--wash-w, 75%) var(--wash-h, 130%) at var(--wash-at, 0% 0%),
+      var(--wash) 0%, color-mix(in srgb, var(--wash) 45%, transparent) 40%, transparent 72%),
+    var(--surface);
+}
+/* page headers are short and wide: a longer, lower wash */
+.page-head.wash { --wash-w: 55%; --wash-h: 260%; }
+/* small stat boxes: the wash fills more of the box */
+.stat.wash { --wash-w: 110%; --wash-h: 180%; }
+/* the raw editor's bar sits inside its card */
+.raw-bar.wash { --wash-w: 60%; --wash-h: 320%; }
+/* the welcome card is centred: the wash comes from the top middle */
+.card.empty-card.wash { --wash-at: 50% 0%; --wash-w: 90%; --wash-h: 75%; }
+/* danger zone keeps its red border, with the same soft wash */
+.card.danger-card.wash { --wash-w: 80%; --wash-h: 110%; }
+
+/* the sidebar: a faint blue light behind the logo, gone before the list */
+.lib-side, .sidebar.rail {
+  background:
+    radial-gradient(ellipse 110% 150px at 0% 0%, color-mix(in srgb, var(--primary-soft) 85%, transparent), transparent 100%),
+    var(--surface);
+}
+
+/* ---------- v10b: the same wash on a few headers that carry one meaning ---------- */
+/* sign-in and loading: a blue light from the top, behind the logo */
+.auth-card, .splash {
+  background:
+    radial-gradient(ellipse 85% 220px at 0% 0%, color-mix(in srgb, var(--primary-soft) 90%, transparent), transparent 100%),
+    var(--surface);
+}
+/* share dialog: its header (it stays on top while the dialog scrolls) */
+.share-head {
+  background:
+    radial-gradient(ellipse 70% 260% at 0% 0%, var(--primary-soft) 0%, color-mix(in srgb, var(--primary-soft) 40%, transparent) 45%, transparent 75%),
+    var(--surface);
+}
+/* delete confirmation: a faint red behind the warning */
+.dialog.confirm-danger {
+  background:
+    radial-gradient(ellipse 75% 110% at 0% 0%, color-mix(in srgb, var(--danger-soft) 90%, transparent) 0%, transparent 70%),
+    var(--surface);
+}
+/* profile menu: a faint blue behind "Signed in as" */
+.account-menu {
+  background:
+    radial-gradient(ellipse 100% 70px at 0% 0%, color-mix(in srgb, var(--primary-soft) 85%, transparent), transparent 100%),
+    var(--surface);
+}

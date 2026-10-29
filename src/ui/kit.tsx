@@ -31,7 +31,7 @@ export function Card({ title, subtitle, icon, tone = 'blue', extra, tint, childr
   tint?: Tone; children?: ReactNode; className?: string; style?: CSSProperties;
 }) {
   return (
-    <section className={`card${tint ? ` tint-${tint}` : ''}${className ? ' ' + className : ''}`} style={style}>
+    <section className={`card${tint ? ` tint-${tint}` : icon ? ` wash wash-${tone}` : ''}${className ? ' ' + className : ''}`} style={style}>
       {(title || extra) && (
         <div className="card-head">
           {icon && <IconTile icon={icon} tone={tone} size={40} />}

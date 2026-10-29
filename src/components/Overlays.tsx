@@ -151,7 +151,7 @@ function ConfirmDialog({ app }: P) {
   const c = app.state.confirmBox;
   const close = () => app.setState({ confirmBox: null });
   return (
-    <Dialog onClose={close}>
+    <Dialog onClose={close} className="confirm-danger">
       <div className="dialog-head">{c.title}</div>
       <div className="dialog-body">
         <span className="msg-icon danger"><Icon icon={ICONS.warning} size={22} /></span>

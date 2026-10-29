@@ -32,7 +32,7 @@ export function SettingsScreen({ app, v }: P) {
   };
   return (
     <div className={`page settings-page${v.wideSettings ? ' wide' : ' stacked'}`}>
-      <div className="page-head settings-head">
+      <div className="page-head settings-head wash wash-purple">
         <IconTile icon={ICONS.settingsTile} tone="purple" size={v.mob ? 40 : 52} radius={v.mob ? 12 : 15} />
         <div style={{ minWidth: 0, flex: '1 1 200px' }}>
           <div className="page-title">Settings</div>
@@ -90,7 +90,7 @@ function DesignCard({ app }: P) {
   const preset = PRESETS.find((p) => sameCard(S, presetValues(p)));
   const name = preset ? preset.name : mine ? mine.name : 'Custom';
   return (
-    <Card title="Card design" icon={ICONS.designTile} tone="orange" tint="orange"
+    <Card title="Card design" icon={ICONS.designTile} tone="orange"
       subtitle="Fonts, sizes, colours and spacing of the script cards — with a live preview for every screen size."
       extra={<Button variant="primary" icon={ICONS.design} onClick={() => app.setMode('design')}>Open card editor</Button>}>
       <div className="design-now">
@@ -241,9 +241,9 @@ function LibraryTab({ app, v, look, hint }: TabP) {
     <>
       <Card title="Library" subtitle={hint} icon={look.tile} tone={look.tone}>
         <div className="stats">
-          <div className="stat"><IconTile icon={ICONS.scriptTile} tone="blue" size={34} /><div><div className="s-label">Scripts</div><div className="s-value">{rows.length}</div></div></div>
-          <div className="stat"><IconTile icon={ICONS.success} tone="green" size={34} /><div><div className="s-label">Ready marks</div><div className="s-value">{rows.reduce((s, r) => s + r.ready, 0)}</div></div></div>
-          <div className="stat"><IconTile icon={ICONS.globeTile} tone="purple" size={34} /><div><div className="s-label">Public links</div><div className="s-value">{rows.filter((r) => r.isPublic).length}</div></div></div>
+          <div className="stat wash wash-blue"><IconTile icon={ICONS.scriptTile} tone="blue" size={34} /><div><div className="s-label">Scripts</div><div className="s-value">{rows.length}</div></div></div>
+          <div className="stat wash wash-green"><IconTile icon={ICONS.success} tone="green" size={34} /><div><div className="s-label">Ready marks</div><div className="s-value">{rows.reduce((s, r) => s + r.ready, 0)}</div></div></div>
+          <div className="stat wash wash-purple"><IconTile icon={ICONS.globeTile} tone="purple" size={34} /><div><div className="s-label">Public links</div><div className="s-value">{rows.filter((r) => r.isPublic).length}</div></div></div>
         </div>
       </Card>
       {rows.length === 0 && <div className="empty"><Icon icon={ICONS.script} size={24} color="muted" />No scripts yet. Create your first one from the library.</div>}

@@ -14,7 +14,7 @@ export function RawEditor({ app, v }: P) {
   const gutter = useMemo(() => Array.from({ length: nl }, (_x, i) => i + 1).join('\n'), [nl]);
   return (
     <section className="card raw-card">
-      <div className="raw-bar">
+      <div className="raw-bar wash wash-purple">
         <IconTile icon={ICONS.parsingTile} tone="purple" size={34} />
         <div className="raw-title">
           <b>Raw markdown</b>

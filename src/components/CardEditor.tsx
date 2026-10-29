@@ -50,7 +50,7 @@ export function CardEditor({ app, v }: P) {
 
   return (
     <div className="page editor-page">
-      <div className="page-head">
+      <div className="page-head wash wash-orange">
         <IconTile icon={ICONS.designTile} tone="orange" size={v.mob ? 40 : 52} radius={v.mob ? 12 : 15} />
         <div style={{ minWidth: 0, flex: '1 1 240px' }}>
           <div className="page-title">Card editor</div>

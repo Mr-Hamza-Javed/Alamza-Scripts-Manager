@@ -53,7 +53,7 @@ export function Reader({ app, v }: P) {
 function EmptyLibrary({ app }: { app: App }) {
   const pick = () => document.getElementById('lib-file-input')?.click();
   return (
-    <div className="card empty-card">
+    <div className="card empty-card wash wash-blue">
       <img src="./favicon.svg" alt="" className="brand-logo lg" />
       <div className="card-title">Open your first script</div>
       <div className="card-sub">Start a new one, paste the markdown you copied, or drop .md / .txt files anywhere on this page.</div>
