@@ -28,7 +28,8 @@ Database rules are unchanged in `firebase-rules.json`.
 |---|---|
 | `src/App.tsx` | All state and behaviour: sync, sharing, trash, ready marks, search, keyboard |
 | `src/view.ts` | Turns state into what each screen shows |
-| `src/components/` | Screens: sidebar, top bar, reader, raw editor, settings, dialogs, sign-in |
+| `src/components/` | Screens: sidebar / rail, top bar, reader, raw editor, card editor, settings, dialogs, sign-in |
+| `src/lib/design.ts` | Card editor: which settings shape a card, the control groups, presets and the preview sample |
 | `src/lib/parse.ts` | Markdown → sections, lines and guide items |
 | `src/lib/constants.ts` | Default tags, every setting and its default, the settings screen layout |
 | `src/lib/firebase.ts` | Firebase setup (same project and database paths as before) |

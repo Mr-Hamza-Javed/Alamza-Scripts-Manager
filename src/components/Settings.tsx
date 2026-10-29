@@ -1,15 +1,13 @@
 import type { FluentIcon } from '@fluentui/react-icons';
-import { useEffect, useRef } from 'react';
 import { FIELDS, PALETTE, PKEYS, TABS, type FieldDef } from '../lib/constants';
+import { PRESETS, presetValues, sameCard } from '../lib/design';
 import { colorOf } from '../lib/tokens';
 import { ICONS } from '../ui/icons';
-import { Badge, Button, Card, Icon, IconButton, IconTile, Toggle, type Tone } from '../ui/kit';
+import { Badge, Button, Card, Icon, IconButton, IconTile, Tabs, Toggle, type Tone } from '../ui/kit';
 import type { P } from './Layout';
 
 const TAB_LOOK: Record<string, { icon: FluentIcon; tile: FluentIcon; tone: Tone }> = {
-  appearance: { icon: ICONS.appearance, tile: ICONS.appearanceTile, tone: 'orange' },
-  type: { icon: ICONS.type, tile: ICONS.typeTile, tone: 'blue' },
-  layout: { icon: ICONS.layout, tile: ICONS.layoutTile, tone: 'teal' },
+  general: { icon: ICONS.appearance, tile: ICONS.appearanceTile, tone: 'orange' },
   reading: { icon: ICONS.reading, tile: ICONS.readingTile, tone: 'green' },
   search: { icon: ICONS.search, tile: ICONS.searchTile, tone: 'blue' },
   behavior: { icon: ICONS.link, tile: ICONS.linkTile, tone: 'teal' },
@@ -23,41 +21,32 @@ const TAB_LOOK: Record<string, { icon: FluentIcon; tile: FluentIcon; tone: Tone 
 };
 
 export function SettingsScreen({ app, v }: P) {
-  const tab = app.state.tab;
+  const tab = TABS.some((t) => t.id === app.state.tab) ? app.state.tab : 'general';
   const def = TABS.find((t) => t.id === tab) || TABS[0];
   const look = TAB_LOOK[def.id];
-  const stripRef = useRef<HTMLDivElement>(null);
-  /* keep the chosen tab in view inside the sliding strip */
-  useEffect(() => {
-    const el = stripRef.current?.querySelector<HTMLElement>('.set-tab.on');
-    if (el && stripRef.current) {
-      const box = stripRef.current;
-      box.scrollTo({ left: el.offsetLeft - box.clientWidth / 2 + el.clientWidth / 2, behavior: 'smooth' });
-    }
-  }, [tab, v.wideSettings]);
+  const order = TABS.map((t) => t.id);
   const pick = (id: string) => {
-    app.setState({ tab: id });
+    app.setState({ tab: id, tabDir: order.indexOf(id) < order.indexOf(tab) ? -1 : 1 });
     document.querySelector('.settings-page')?.scrollTo({ top: 0 });
     document.querySelector('.settings-body')?.scrollTo({ top: 0 });
   };
   return (
     <div className={`page settings-page${v.wideSettings ? ' wide' : ' stacked'}`}>
       <div className="page-head settings-head">
-        <IconTile icon={ICONS.settingsTile} tone="purple" size={v.mob ? 38 : v.wideSettings ? 52 : 44} radius={v.mob ? 11 : 14} />
+        <IconTile icon={ICONS.settingsTile} tone="purple" size={v.mob ? 40 : 52} radius={v.mob ? 12 : 15} />
         <div style={{ minWidth: 0, flex: '1 1 200px' }}>
           <div className="page-title">Settings</div>
           <div className="page-sub"><span className="sync-dot on" /> Every change saves by itself{v.signedIn && v.S.syncSettings ? ' and follows your account' : ''}.</div>
         </div>
+        <div className="page-actions">
+          <Button icon={ICONS.design} onClick={() => app.setMode('design')} title="Fonts, sizes, colours and spacing of the script cards">Card editor</Button>
+        </div>
       </div>
       {!v.wideSettings && (
-        <nav className="settings-tabs" ref={stripRef} aria-label="Settings sections">
-          {TABS.map((t) => (
-            <button key={t.id} type="button" className={`set-tab${tab === t.id ? ' on' : ''}${t.id === 'danger' ? ' danger' : ''}`} onClick={() => pick(t.id)} aria-current={tab === t.id || undefined}>
-              <Icon icon={TAB_LOOK[t.id].icon} size={16} />
-              <span>{t.label}</span>
-            </button>
-          ))}
-        </nav>
+        <div className="settings-tabs">
+          <Tabs label="Settings sections" idBase="set" value={tab} onChange={pick}
+            items={TABS.map((t) => ({ key: t.id, label: t.label, icon: TAB_LOOK[t.id].icon, tone: t.id === 'danger' ? 'red' : 'blue' }))} />
+        </div>
       )}
       <div className="settings-grid">
         {v.wideSettings && (
@@ -73,7 +62,8 @@ export function SettingsScreen({ app, v }: P) {
             ))}
           </nav>
         )}
-        <div className="settings-body" key={tab}>
+        <div className={`settings-body tab-panel${(app.state.tabDir || 1) < 0 ? ' from-prev' : ''}`} key={tab} role="tabpanel">
+          {tab === 'general' && <DesignCard app={app} v={v} />}
           {tab === 'tags' ? <TagsTab app={app} v={v} look={look} hint={def.hint} />
             : tab === 'library' ? <LibraryTab app={app} v={v} look={look} hint={def.hint} />
               : tab === 'danger' ? <DangerTab app={app} look={look} hint={def.hint} />
@@ -90,6 +80,24 @@ export function SettingsScreen({ app, v }: P) {
         </div>
       </div>
     </div>
+  );
+}
+
+/* the script cards are designed in their own editor; this card points there */
+function DesignCard({ app }: P) {
+  const S = app.state.settings;
+  const mine = (S.myDesigns || []).find((d: any) => sameCard(S, presetValues(d)));
+  const preset = PRESETS.find((p) => sameCard(S, presetValues(p)));
+  const name = preset ? preset.name : mine ? mine.name : 'Custom';
+  return (
+    <Card title="Card design" icon={ICONS.designTile} tone="orange" tint="orange"
+      subtitle="Fonts, sizes, colours and spacing of the script cards — with a live preview for every screen size."
+      extra={<Button variant="primary" icon={ICONS.design} onClick={() => app.setMode('design')}>Open card editor</Button>}>
+      <div className="design-now">
+        <span className="muted">In use:</span> <Badge tone="orange">{name}</Badge>
+        <span className="muted">· {(S.myDesigns || []).length} saved design{(S.myDesigns || []).length === 1 ? '' : 's'}</span>
+      </div>
+    </Card>
   );
 }
 

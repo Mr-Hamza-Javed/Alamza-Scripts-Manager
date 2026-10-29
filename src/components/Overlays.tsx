@@ -13,10 +13,13 @@ export function Overlays({ app, v }: P) {
   return (
     <>
       {st.menu && <ItemMenu app={app} v={v} />}
+      {st.accountMenu && <AccountMenu app={app} v={v} />}
       {st.copyMenu && <CopyMenu app={app} v={v} />}
       {st.renameFor && st.items[st.renameFor] && <RenameDialog app={app} v={v} />}
       {st.confirmBox && <ConfirmDialog app={app} v={v} />}
       {st.shareFor && <ShareDialog app={app} v={v} />}
+      {st.promptBox && <PromptDialog app={app} v={v} />}
+      {st.shortcuts && <ShortcutsDialog app={app} v={v} />}
       {v.showJump && (
         <button type="button" className="btn primary jump-btn" onClick={() => app.revealLine(st.activeLine)}>
           <Icon icon={ICONS.jump} size={16} /><span className="btn-label">Back to line {v.activeNum}</span>
@@ -53,6 +56,16 @@ function ItemMenu({ app }: P) {
       : [{ id: 'open', label: 'Open', icon: ICONS.open }, { id: 'rename', label: 'Rename', icon: ICONS.rename }, { id: 'dup', label: 'Duplicate', icon: ICONS.duplicate },
         { id: 'share', label: 'Share…', icon: ICONS.share }, { id: 'export', label: 'Download .md', icon: ICONS.download }];
     if (!st.cloud) items = items.filter((m) => m.id !== 'share');
+    /* the touch / keyboard way to change the order (desktop can also drag) */
+    if (app._view && app._view.canDrag) {
+      const sibs = app.sortedChildren(it.parentId || 'root');
+      const i = sibs.indexOf(id);
+      const same = (j: number) => j >= 0 && j < sibs.length && (!st.settings.foldersFirst || (st.items[sibs[j]].type === 'folder') === (it.type === 'folder'));
+      const order: MenuItem[] = [];
+      if (same(i - 1)) order.push({ id: 'up', label: 'Move up', icon: ICONS.up });
+      if (same(i + 1)) order.push({ id: 'down', label: 'Move down', icon: ICONS.down });
+      if (order.length) items.push({ divider: true }, ...order);
+    }
     const desc = app.descendants(id);
     const folders = Object.keys(st.items).filter((k) => st.items[k].type === 'folder' && !st.items[k].trashed && desc.indexOf(k) < 0 && k !== it.parentId);
     if (folders.length || (it.parentId && it.parentId !== 'root')) {
@@ -162,7 +175,7 @@ function ShareDialog({ app, v }: P) {
   const members = Object.keys(rec.members || {});
   const close = () => app.setState({ shareFor: null });
   return (
-    <Dialog onClose={close} className="share-dialog" sheet={v.mob}>
+    <Dialog onClose={close} className="share-dialog">
       <div className="share-head">
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="dialog-title">Share “{item.name}”</div>
@@ -237,5 +250,100 @@ function ShareDialog({ app, v }: P) {
         </div>
       </div>
     </Dialog>
+  );
+}
+
+function PromptDialog({ app }: P) {
+  const p = app.state.promptBox;
+  const close = () => app.setState({ promptBox: null });
+  return (
+    <Dialog onClose={close}>
+      <div className="dialog-head">{p.title}</div>
+      <div className="dialog-body col">
+        <label className="label" htmlFor="prompt-input">{p.label}</label>
+        <div className="input">
+          <input id="prompt-input" autoFocus value={p.value} onFocus={(e) => e.currentTarget.select()}
+            onChange={(e) => app.setState({ promptBox: { ...p, value: e.currentTarget.value } })}
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); app.commitPrompt(); } if (e.key === 'Escape') { e.preventDefault(); close(); } }} />
+        </div>
+      </div>
+      <div className="dialog-foot">
+        <Button variant="ghost" onClick={close}>Cancel</Button>
+        <Button variant="primary" icon={ICONS.save} onClick={app.commitPrompt} disabled={!String(p.value || '').trim()}>Save</Button>
+      </div>
+    </Dialog>
+  );
+}
+
+const SHORTCUTS: [string[], string][] = [
+  [['/'], 'Search the script'],
+  [['Enter'], 'Next match while searching'],
+  [['Shift', 'Enter'], 'Previous match'],
+  [['J', '↓'], 'Next line'],
+  [['K', '↑'], 'Previous line'],
+  [['Enter', 'Space'], 'Tick the active line as ready'],
+  [['F'], 'Focus mode on or off'],
+  [['Ctrl', 'S'], 'Save & render in the raw editor'],
+  [['Esc'], 'Close a menu, dialog or the drawer'],
+  [['?'], 'This list'],
+];
+
+function ShortcutsDialog({ app }: P) {
+  const close = () => app.setState({ shortcuts: false });
+  return (
+    <Dialog onClose={close} className="keys-dialog">
+      <div className="dialog-head">Keyboard shortcuts</div>
+      <div className="dialog-body col">
+        <div className="keys-list">
+          {SHORTCUTS.map(([keys, what]) => (
+            <div key={what} className="keys-row">
+              <span className="keys">{keys.map((k, i) => <span key={k}>{i > 0 && <span className="muted"> {keys.length === 2 && (k === 'Space' || k === '↓' || k === '↑') ? 'or' : '+'} </span>}<kbd className="kbd">{k}</kbd></span>)}</span>
+              <span>{what}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="dialog-foot">
+        <Button variant="primary" onClick={close}>Got it</Button>
+      </div>
+    </Dialog>
+  );
+}
+
+/* the profile menu: who is signed in, the app's own screens, and sign out last in red */
+function AccountMenu({ app, v }: P) {
+  const st = app.state;
+  const m = st.accountMenu;
+  const u = v.user;
+  const close = () => app.setState({ accountMenu: null });
+  const go = (fn: () => void) => { close(); app.setState({ drawer: false }); fn(); };
+  const items: (MenuItem & { run?: () => void; kbd?: string })[] = [];
+  if (!v.signedIn) items.push({ id: 'signin', label: 'Sign in with Google', icon: ICONS.person, run: app.showLogin });
+  if (!v.viewing) {
+    items.push({ id: 'design', label: 'Card editor', icon: ICONS.design, run: () => app.setMode('design') });
+    items.push({ id: 'settings', label: 'Settings', icon: ICONS.settings, run: () => app.setMode('settings') });
+  }
+  if (!v.mob) items.push({ id: 'keys', label: 'Keyboard shortcuts', icon: ICONS.keyboard, kbd: '?', run: () => app.setState({ shortcuts: true }) });
+  if (v.signedIn) items.push({ divider: true }, { id: 'out', label: 'Sign out', icon: ICONS.signOut, danger: true, run: app.signOut });
+  return (
+    <Backdrop onClose={close}>
+      <div className={`popup menu account-menu ${m.from}`} role="menu" aria-label="Profile menu" style={{ left: m.left, bottom: m.bottom, width: m.width }} onClick={(e) => e.stopPropagation()}>
+        <div className="acct-head">
+          <span className="menu-label flat">{v.signedIn ? 'Signed in as' : 'Not signed in'}</span>
+          {v.signedIn
+            ? <><b>{u.displayName || u.email}</b>{u.displayName && <small>{u.email}</small>}</>
+            : <small>Sign in to sync your scripts and share links.</small>}
+        </div>
+        <div className="menu-sep" />
+        {items.map((it, i) => (it.divider ? <div key={'d' + i} className="menu-sep" /> : (
+          <div key={it.id} role="menuitem" tabIndex={0} className={`menu-item${it.danger ? ' danger' : ''}`} onClick={() => go(it.run)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(it.run); } }}>
+            <Icon icon={it.icon} size={18} color={it.danger ? 'red' : 'blue'} />
+            <span className="menu-text">{it.label}</span>
+            {it.kbd && <kbd className="kbd">{it.kbd}</kbd>}
+          </div>
+        )))}
+      </div>
+    </Backdrop>
   );
 }

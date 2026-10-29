@@ -11,10 +11,11 @@ export function isDark(theme: string) {
 export const colorOf = (key: string, dark: boolean) => (PALETTE[key] || PALETTE.slate)[dark ? 0 : 1];
 export const softOf = (key: string, dark: boolean) => colorOf(key, dark) + (dark ? '26' : '18');
 
-export function readerVars(s: any, dark: boolean, mobile: boolean, narrow: boolean): Record<string, string> {
+export function readerVars(s: any, dark: boolean, mobile: boolean, narrow: boolean, tablet = false): Record<string, string> {
   const accent = colorOf(s.accent || 'blue', dark);
   const pad = s.density === 'compact' ? 8 : s.density === 'comfortable' ? 13 : 10;
-  const k = (s.scale || 100) / 100;
+  /* phones get their own text size on top of the overall scale */
+  const k = ((s.scale || 100) / 100) * (mobile ? (s.phoneScale || 100) / 100 : 1);
   const px = (v: number) => Math.round(v * k * 100) / 100 + 'px';
   const ls = s.labelStyle || 'pill';
   /* Document view: same markup, different geometry — rows lose radius, gap and shadow
@@ -72,8 +73,8 @@ export function readerVars(s: any, dark: boolean, mobile: boolean, narrow: boole
     '--w-script': String(s.scriptWeight),
     '--sz-body': px(s.bodySize),
     '--sz-label': px(s.labelSize),
-    '--cols': narrow ? '1' : mobile ? 'auto' : s.guideColumns === 'auto' ? 'auto' : s.guideColumns,
-    '--colw': narrow ? 'auto' : mobile ? '260px' : s.guideColumns === 'auto' ? '250px' : 'auto',
+    '--cols': narrow ? '1' : mobile ? 'auto' : tablet && s.tabletCols && s.tabletCols !== 'same' ? s.tabletCols : s.guideColumns === 'auto' ? 'auto' : s.guideColumns,
+    '--colw': narrow ? 'auto' : mobile ? '260px' : tablet && s.tabletCols && s.tabletCols !== 'same' ? 'auto' : s.guideColumns === 'auto' ? '250px' : 'auto',
     '--col-rule': s.columnRule ? '1px solid var(--rule)' : 'none',
     '--chip-r': s.chipShape === 'pill' ? '20px' : s.chipShape === 'square' ? '3px' : '7px',
     '--maxw': mobile ? '100%' : s.maxWidth + 'px',
@@ -83,10 +84,10 @@ export function readerVars(s: any, dark: boolean, mobile: boolean, narrow: boole
 
 /* Fonts other than Inter come from Google Fonts — loaded only once one is picked. */
 let extraFontsLoaded = false;
-export function ensureFonts(s: any) {
+export function ensureFonts(s: any, all = false) {
   if (extraFontsLoaded) return;
   const used = [s.scriptFont, s.bodyFont, s.uiFont];
-  if (used.every((f) => !f || f === 'inter' || f === 'system' || f === 'mono')) return;
+  if (!all && used.every((f) => !f || f === 'inter' || f === 'system' || f === 'mono')) return;
   extraFontsLoaded = true;
   const l = document.createElement('link');
   l.rel = 'stylesheet';

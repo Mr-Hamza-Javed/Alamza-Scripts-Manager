@@ -13,7 +13,8 @@ import {
   GKEY, KEY, LOCAL_SCHEMA, VKEY, download, ekey, hashOf, legacyCopy, loadGuestChoice, loadLocal, loadViewerPrefs,
   now, readHashToken, safeFileName, tagsForFirebase, tagsFromFirebase, tok, uid,
 } from './lib/util';
-import { derive, type View } from './view';
+import { derive, treeCompare, type View } from './view';
+import { cardValues, defaultCard } from './lib/design';
 import { Layout } from './components/Layout';
 
 export type FlatLine = Line & { id: string; si: number };
@@ -53,7 +54,7 @@ export default class App extends Component<object, any> {
     this.state = {
       items: d.items, raws: d.raws, doneMap: d.doneMap, activeId: d.activeId,
       settings: d.settings, tags: d.tags, openFolders: d.openFolders,
-      mode: 'normal', tab: 'appearance', query: '', treeQuery: '', treeSearchOpen: false, mobileSearch: false,
+      mode: 'normal', tab: 'general', query: '', treeQuery: '', treeSearchOpen: false, mobileSearch: false,
       filter: 'all', collapsed: {}, filtersOpen: false,
       activeLine: d.activeLine, draft: null, toast: null, newTag: '', mounted: 40, offScreen: false,
       exitingLine: null, promotedLine: null, achievement: null,
@@ -64,6 +65,7 @@ export default class App extends Component<object, any> {
       shares: {}, grants: {}, shareEmail: '', shareRole: d.settings.defaultShareRole || 'viewer',
       user: null, authReady: false, dataReady: false, cloud: false, viewer: null, viewerToken: vt, shareLoadingToken: null,
       viewerPrefs: loadViewerPrefs(),
+      promptBox: null, shortcuts: false, dragOver: false, accountMenu: null, dropAt: null, dragRow: null, sideAnim: null, movedRow: null,
     };
   }
 
@@ -74,6 +76,9 @@ export default class App extends Component<object, any> {
     window.addEventListener('hashchange', this.onHash);
     document.addEventListener('scroll', this.onScroll, true);
     window.addEventListener('resize', this.onResize);
+    window.addEventListener('dragover', this.onDragOver);
+    window.addEventListener('dragleave', this.onDragLeave);
+    window.addEventListener('drop', this.onDrop);
     this._mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
     if (this._mq) this._mq.addEventListener('change', this.onSystemTheme);
     this.applyTheme();
@@ -86,6 +91,9 @@ export default class App extends Component<object, any> {
     window.removeEventListener('hashchange', this.onHash);
     document.removeEventListener('scroll', this.onScroll, true);
     window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('dragover', this.onDragOver);
+    window.removeEventListener('dragleave', this.onDragLeave);
+    window.removeEventListener('drop', this.onDrop);
     if (this._mq) this._mq.removeEventListener('change', this.onSystemTheme);
     Object.values(this._timers).forEach((t) => clearTimeout(t));
     clearTimeout(this._growT);
@@ -138,7 +146,7 @@ export default class App extends Component<object, any> {
     const tag = (t.tagName || '').toLowerCase();
     const formControl = tag === 'input' || tag === 'textarea' || tag === 'select' || tag === 'button' || tag === 'a';
     const st = this.state;
-    const anyOverlay = st.menu || st.copyMenu || st.shareFor || st.loginOpen || st.renameFor || st.confirmBox;
+    const anyOverlay = st.menu || st.accountMenu || st.copyMenu || st.shareFor || st.loginOpen || st.renameFor || st.confirmBox || st.promptBox || st.shortcuts;
     if (formControl) {
       if (e.key === 'Escape') {
         if (st.copyMenu || st.menu) this.setState({ copyMenu: null, menu: null });
@@ -149,10 +157,11 @@ export default class App extends Component<object, any> {
     if (e.key === 'Escape') {
       if (anyOverlay || st.drawer) {
         e.preventDefault();
-        this.setState({ menu: null, copyMenu: null, shareFor: null, drawer: false, loginOpen: false, renameFor: null, renameValue: '', confirmBox: null });
+        this.setState({ menu: null, copyMenu: null, shareFor: null, drawer: false, loginOpen: false, renameFor: null, renameValue: '', confirmBox: null, promptBox: null, shortcuts: false, accountMenu: null });
       }
       return;
     }
+    if (e.key === '?' && !anyOverlay) { e.preventDefault(); this.setState({ shortcuts: true }); return; }
     if (st.mode !== 'normal' || anyOverlay) return;
     if (e.key === '/') {
       e.preventDefault();
@@ -606,14 +615,16 @@ export default class App extends Component<object, any> {
     if (!section) return;
     const key = String(si);
     const collapsed = this.state.collapsed[key] !== undefined ? this.state.collapsed[key] : this.effS().collapseDefault;
-    const patch: any = { offScreen: !!this.state.activeLine, drawer: false };
+    /* jumping to a section from Settings or Raw goes back to the script first */
+    const leaving = this.state.mode !== 'normal';
+    const patch: any = { offScreen: !!this.state.activeLine, drawer: false, ...(leaving ? { mode: 'normal', mounted: Math.max(this.state.mounted || 40, 40) } : {}) };
     if (collapsed) {
       patch.collapsed = { ...this.state.collapsed, [key]: false };
       let throughTarget = 0;
       this.visibleLines().forEach((line, i) => { if (line.si <= si) throughTarget = i + 1; });
       patch.mounted = Math.max(this.state.mounted || 40, throughTarget + 40);
     }
-    this.setState(patch, () => setTimeout(() => this.scrollWhenReady('sec-' + si), collapsed ? 35 : 0));
+    this.setState(patch, () => setTimeout(() => this.scrollWhenReady('sec-' + si), collapsed || leaving ? 60 : 0));
   };
   setActiveLine = (id: string) => { if (id !== this.state.activeLine) this.setState({ activeLine: id }, this.save); };
   toggleSection = (si: number) => {
@@ -836,7 +847,8 @@ export default class App extends Component<object, any> {
     this.setState({
       activeId: id, viewer: null, viewerToken: null, shareLoadingToken: null, activeLine: null, filter: 'all', query: '',
       treeQuery: '', treeSearchOpen: false, draft: null, collapsed: {}, mounted: 40, drawer: false,
-      mode: this.state.mode === 'settings' ? 'settings' : 'normal',
+      /* picking a script always shows it — from Settings or the card editor too (Raw stays Raw) */
+      mode: this.state.mode === 'raw' ? 'raw' : 'normal',
     }, () => { this.save(); this.watchDone(); });
   };
   openScript = (id: string) => this.setState({ activeId: id, mode: 'normal', draft: null, activeLine: null, collapsed: {}, mounted: 40 }, () => { this.save(); this.watchDone(); });
@@ -896,15 +908,16 @@ export default class App extends Component<object, any> {
     if (a === 'newIn') return this.create('script', id);
     if (a === 'newFolderIn') return this.create('folder', id);
     if (a === 'export') { const it = this.state.items[id]; return download(safeFileName(it.name, 'script') + '.md', this.state.raws[id] || '', 'text/markdown'); }
-    if (a === 'moveRoot') return this.putItem(id, { parentId: 'root' });
-    if (a.indexOf('move:') === 0) return this.putItem(id, { parentId: a.slice(5) });
+    if (a === 'up' || a === 'down') return this.nudgeItem(id, a === 'up' ? -1 : 1);
+    if (a === 'moveRoot') return this.moveItem(id, '@root', 'inside');
+    if (a.indexOf('move:') === 0) return this.moveItem(id, a.slice(5), 'inside');
   };
   create = (type: 'script' | 'folder', parentId?: string) => {
     if (this.isViewing()) return;
     const id = uid();
     const pid = parentId && this.state.items[parentId] && this.state.items[parentId].type === 'folder' ? parentId : 'root';
     const name = type === 'folder' ? 'New folder' : 'Untitled script';
-    this.putItem(id, { type, name, parentId: pid, order: now(), createdAt: now() });
+    this.putItem(id, { type, name, parentId: pid, order: now(), createdAt: now(), ...this.endPos(pid) });
     if (type === 'script') {
       this.putRaw(id, NEW_SCRIPT_MD);
       this.setState({ treeQuery: '', treeSearchOpen: false, activeId: id, mode: 'raw', draft: NEW_SCRIPT_MD, viewer: null, drawer: false }, () => this.watchDone());
@@ -915,7 +928,8 @@ export default class App extends Component<object, any> {
   };
   setMode = (m: string) => {
     /* Settings never open in a shared view; Raw only with edit rights */
-    if (m === 'settings' && this.isViewing()) return;
+    if ((m === 'settings' || m === 'design') && this.isViewing()) return;
+    if (m === 'design' && this.state.mode !== 'design') this._designSnap = cardValues(this.state.settings);
     if (m === 'raw' && this.isViewing() && !this.can('edit')) return;
     if (m === 'raw') { this.setState({ mode: 'raw', mobileSearch: false, drawer: false, draft: this.state.draft === null ? this.active().raw : this.state.draft }); return; }
     if (this.state.mode === 'raw' && this.state.draft !== null && this.state.draft !== this.active().raw) this.flash('Raw changes are kept — press Save & render to apply them');
@@ -1001,7 +1015,7 @@ export default class App extends Component<object, any> {
       const r = new FileReader();
       r.onload = () => {
         const id = uid();
-        this.putItem(id, { type: 'script', name: f.name.replace(/\.[^.]+$/, ''), parentId: parent, order: now(), createdAt: now() });
+        this.putItem(id, { type: 'script', name: f.name.replace(/\.[^.]+$/, ''), parentId: parent, order: now(), createdAt: now(), ...this.endPos(parent) });
         this.putRaw(id, String(r.result));
         this.setState({ activeId: id, mode: 'normal', viewer: null, drawer: false }, () => this.watchDone());
         this.flash('Loaded ' + f.name);
@@ -1030,7 +1044,7 @@ export default class App extends Component<object, any> {
     this.descendants(id).forEach((k) => {
       const it = this.state.items[k];
       if (!it || it.trashed) return;
-      items[k] = { type: it.type, name: it.name, parentId: k === id ? 'root' : it.parentId, order: it.order || 0 };
+      items[k] = { type: it.type, name: it.name, parentId: k === id ? 'root' : it.parentId, order: it.order || 0, ...(typeof it.pos === 'number' ? { pos: it.pos } : {}) };
       if (it.type === 'script') raw[k] = this.state.raws[k] || '';
     });
     const u = this.state.user || {};
@@ -1262,6 +1276,167 @@ export default class App extends Component<object, any> {
     const r = row.getBoundingClientRect();
     const w = Math.max(260, Math.round(r.width));
     this.setState({ copyMenu: { x: Math.max(8, Math.min(r.left, window.innerWidth - w - 8)), y: Math.max(8, Math.min(r.bottom + 6, window.innerHeight - 270)), w } });
+  };
+
+  /* ------------------------------------------------------------------ manual order (drag and drop) */
+
+  /** live children of a folder, in tree order */
+  sortedChildren(parent: string, skip?: string) {
+    const items = this.state.items;
+    return Object.keys(items).filter((k) => k !== skip && !items[k].trashed && (items[k].parentId || 'root') === parent).sort(treeCompare(items, this.state.settings.foldersFirst));
+  }
+  /** a new item lands at the end of a folder the user has already put in order */
+  endPos(parent: string) {
+    const items = this.state.items;
+    const kids = this.sortedChildren(parent);
+    if (!kids.some((k) => typeof items[k].pos === 'number')) return {};
+    return { pos: kids.reduce((m, k) => Math.max(m, typeof items[k].pos === 'number' ? items[k].pos : -1), -1) + 1 };
+  }
+  /* write a whole new sibling order (and the moved item's new folder) in one go */
+  writeOrder(parent: string, ids: string[], moved?: string) {
+    const items = { ...this.state.items };
+    const patches: Record<string, any> = {};
+    ids.forEach((k, i) => {
+      const patch: any = { pos: i };
+      if (k === moved) patch.parentId = parent;
+      if (items[k].pos !== i || patch.parentId !== undefined) { items[k] = { ...items[k], ...patch }; patches[k] = patch; }
+    });
+    if (!Object.keys(patches).length) return;
+    this.setState({ items }, this.save);
+    const u = this.state.user;
+    if (u && this.state.cloud) {
+      const updates: Record<string, any> = {};
+      Object.keys(patches).forEach((k) => Object.keys(patches[k]).forEach((f) => { updates['users/' + u.uid + '/items/' + k + '/' + f] = patches[k][f]; }));
+      dbRef().update(updates).catch(() => {});
+    }
+    if (moved) this.refreshPubFor(moved);
+  }
+  /** drop `id` before / after `target`, inside a folder, or at the end of the top level ('@root') */
+  moveItem = (id: string, target: string, where: 'before' | 'after' | 'inside') => {
+    const items = this.state.items;
+    if (!items[id] || id === target) return;
+    const parent = target === '@root' ? 'root' : where === 'inside' ? target : items[target] ? items[target].parentId || 'root' : 'root';
+    if (parent !== 'root' && (!items[parent] || items[parent].type !== 'folder')) return;
+    if (this.descendants(id).indexOf(parent) >= 0) { this.flash('A folder cannot go inside itself', 'error'); return; }
+    const sibs = this.sortedChildren(parent, id);
+    let at = sibs.length;
+    if (where !== 'inside' && target !== '@root') {
+      const i = sibs.indexOf(target);
+      at = i < 0 ? sibs.length : where === 'before' ? i : i + 1;
+    }
+    sibs.splice(at, 0, id);
+    const changedFolder = (items[id].parentId || 'root') !== parent;
+    this.writeOrder(parent, sibs, id);
+    this.markMoved(id);
+    if (changedFolder) {
+      if (parent !== 'root') this.setState({ openFolders: { ...this.state.openFolders, [parent]: true } }, this.save);
+      this.flash('Moved to ' + (parent === 'root' ? 'the top level' : '“' + items[parent].name + '”'));
+    }
+  };
+  /* the moved row flashes once so the eye finds where it landed */
+  markMoved(id: string) { this.setState({ movedRow: id }); this.later('moved', () => this.setState({ movedRow: null }), 1200); }
+  /** move one step up or down among its siblings (the keyboard / touch way to reorder) */
+  nudgeItem = (id: string, dir: number) => {
+    const it = this.state.items[id];
+    if (!it) return;
+    const parent = it.parentId || 'root';
+    const sibs = this.sortedChildren(parent);
+    const i = sibs.indexOf(id), j = i + dir;
+    if (i < 0 || j < 0 || j >= sibs.length) return;
+    /* folders first: a script cannot jump above the folders */
+    if (this.state.settings.foldersFirst && (this.state.items[sibs[j]].type === 'folder') !== (it.type === 'folder')) return;
+    [sibs[i], sibs[j]] = [sibs[j], sibs[i]];
+    this.writeOrder(parent, sibs);
+    this.markMoved(id);
+  };
+
+  /* ------------------------------------------------------------------ sidebar */
+
+  /* fold the sidebar into the rail or open it again, with a short width animation */
+  setSidebar = (open: boolean) => {
+    this.setState({ sideAnim: open ? 'open' : 'close', accountMenu: null });
+    this.setMany({ showSidebar: open });
+    this.later('sideAnim', () => this.setState({ sideAnim: null }), 320);
+  };
+  openAccountMenu = (el: HTMLElement, beside?: boolean) => {
+    if (this.state.accountMenu) { this.setState({ accountMenu: null }); return; }
+    const r = el.getBoundingClientRect();
+    this.setState({ accountMenu: beside
+      ? { left: r.right + 10, bottom: Math.max(8, window.innerHeight - r.bottom), from: 'side' }
+      : { left: Math.max(8, r.left), bottom: Math.max(8, window.innerHeight - r.top + 8), width: Math.max(240, r.width), from: 'up' } });
+  };
+
+  /* ------------------------------------------------------------------ card editor */
+
+  _designSnap: Record<string, any> = defaultCard();
+  setMany = (patch: Record<string, any>) => {
+    if (this.isViewing()) return;
+    this.setState({ settings: { ...this.state.settings, ...patch } }, this.save);
+  };
+  openDesigner = () => this.setMode('design');
+  /* back to how the card looked when the editor was opened */
+  revertDesign = () => { this.setMany(this._designSnap); this.flash('Changes undone'); };
+  resetDesign = () => { this.setMany(defaultCard()); this.flash('Card set back to the default design'); };
+  applyDesign = (values: Record<string, any>, name: string) => { this.setMany({ ...defaultCard(), ...values }); this.flash(name + ' design applied'); };
+  promptSaveDesign = () => this.setState({ promptBox: { kind: 'saveDesign', title: 'Save as my design', label: 'Design name', value: 'My design ' + ((this.state.settings.myDesigns || []).length + 1) } });
+  deleteDesign = (id: string) => this.set('myDesigns', (this.state.settings.myDesigns || []).filter((d: any) => d.id !== id));
+  commitPrompt = () => {
+    const p = this.state.promptBox;
+    if (!p) return;
+    const name = String(p.value || '').trim();
+    if (!name) return;
+    if (p.kind === 'saveDesign') {
+      const list = (this.state.settings.myDesigns || []).concat([{ id: uid(), name, values: cardValues(this.state.settings) }]);
+      this.setState({ promptBox: null }, () => { this.set('myDesigns', list); this.flash('Saved “' + name + '” to your designs'); });
+      return;
+    }
+    if (p.kind === 'pasteName') {
+      this.setState({ promptBox: null }, () => this.createFromText(name, p.text));
+    }
+  };
+
+  /* ------------------------------------------------------------------ import: drop, paste */
+
+  _dragDepth = 0;
+  /* the tree row being dragged (kept off state so drag-over never waits for a render) */
+  _dragId: string | null = null;
+  dropAllowed() { return !this.isViewing() && this.state.authReady && !this._view?.showLogin; }
+  onDragOver = (e: DragEvent) => {
+    if (!e.dataTransfer || Array.from(e.dataTransfer.types || []).indexOf('Files') < 0 || !this.dropAllowed()) return;
+    e.preventDefault();
+    if (!this.state.dragOver) this.setState({ dragOver: true });
+    this.later('dragEnd', () => this.setState({ dragOver: false }), 400);
+  };
+  onDragLeave = () => this.later('dragEnd', () => this.setState({ dragOver: false }), 120);
+  onDrop = (e: DragEvent) => {
+    if (!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) return;
+    e.preventDefault();
+    this.setState({ dragOver: false });
+    if (!this.dropAllowed()) return;
+    const files = Array.from(e.dataTransfer.files).filter((f) => /\.(md|markdown|txt)$/i.test(f.name) || /^text\//.test(f.type));
+    if (!files.length) { this.flash('Only .md and .txt files can be imported', 'error'); return; }
+    this.onUpload(files);
+  };
+  createFromText(name: string, text: string) {
+    const id = uid();
+    const parent = this.state.items[this.state.activeId] ? this.state.items[this.state.activeId].parentId : 'root';
+    this.putItem(id, { type: 'script', name, parentId: parent, order: now(), createdAt: now(), ...this.endPos(parent) });
+    this.putRaw(id, text);
+    this.setState({ activeId: id, mode: 'normal', viewer: null, drawer: false, activeLine: null, collapsed: {}, mounted: 40 }, () => this.watchDone());
+    this.flash('Script created from the clipboard');
+  }
+  pasteScript = async () => {
+    if (this.isViewing()) return;
+    let text = '';
+    try { text = navigator.clipboard && navigator.clipboard.readText ? await navigator.clipboard.readText() : ''; } catch { text = ''; }
+    if (!text.trim()) {
+      /* no clipboard access: open an empty script in Raw so the user can paste there */
+      this.create('script', 'root');
+      this.flash('Paste the markdown here, then press Save & render');
+      return;
+    }
+    const first = (text.match(/^#{1,6}\s+(.+)$/m) || [])[1];
+    this.setState({ promptBox: { kind: 'pasteName', title: 'New script from the clipboard', label: 'Script name', value: stripMd(first || 'Pasted script').slice(0, 80), text } });
   };
 
   /* ------------------------------------------------------------------ render */

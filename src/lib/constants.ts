@@ -69,6 +69,7 @@ export const DEFAULTS = {
   autoDetect: true, defaultSplit: 'auto', unknownAs: 'auto',
   scriptCol: 'script line', visualCol: 'visual guide', showExtraCols: true,
   resolveNumRefs: true, resolveTitleRefs: true, keepBrokenCells: true,
+  phoneScale: 100, tabletCols: 'same', myDesigns: [] as { id: string; name: string; values: Record<string, any> }[],
 };
 export type Settings = typeof DEFAULTS & Record<string, any>;
 
@@ -87,22 +88,20 @@ export function migrateSettings(saved: any, localVersion?: number): Settings {
 export type SettingsTab = { id: string; label: string; title?: string; hint?: string; group?: string };
 
 export const TABS: SettingsTab[] = [
-  { id: 'appearance', label: 'Appearance', group: 'Display & layout', hint: 'Theme, colours and how tight the whole app feels.' },
-  { id: 'type', label: 'Typography', hint: 'Font, size and weight of script lines and guide text.' },
-  { id: 'layout', label: 'Layout', hint: 'Guide columns, labels and what each line shows.' },
-  { id: 'reading', label: 'Reading', group: 'Workflow', hint: 'Focus mode, the active line and how reading feels.' },
+  { id: 'general', label: 'General', group: 'App', hint: 'Theme, page tone, font and the sidebar.' },
+  { id: 'reading', label: 'Reading', hint: 'Sections, sticky headers and the active line.' },
   { id: 'search', label: 'Search', hint: 'What a search looks through and how matches show.' },
   { id: 'behavior', label: 'Copy & links', hint: 'What a click on a chip does and how links open.' },
-  { id: 'parsing', label: 'Parsing', hint: 'How the markdown is read: columns, splits and references.' },
+  { id: 'parsing', label: 'Parsing', group: 'Scripts', hint: 'How the markdown is read: columns, splits and references.' },
   { id: 'tags', label: 'Tags & labels', hint: 'How each tag renders, its colour and where it splits.' },
-  { id: 'library', label: 'Library', group: 'Workspace & sync', hint: 'Open, rename, duplicate or delete your scripts.' },
-  { id: 'account', label: 'Account & sync', hint: 'Google sign-in, cloud sync and where settings are saved.' },
+  { id: 'library', label: 'Library', hint: 'Open, rename, duplicate or delete your scripts.' },
+  { id: 'account', label: 'Account & sync', group: 'Account', hint: 'Google sign-in, cloud sync and where settings are saved.' },
   { id: 'sharing', label: 'Sharing', hint: 'Defaults for share links and invites.' },
   { id: 'data', label: 'Data', hint: 'Downloads, exports and clean-up.' },
   { id: 'danger', label: 'Danger zone', group: 'System', hint: 'Resets that cannot be undone.' },
 ];
 
-const FONT_OPTIONS: [string, string][] = [
+export const FONT_OPTIONS: [string, string][] = [
   ['inter', 'Inter'], ['sans', 'Instrument Sans'], ['plex', 'IBM Plex Sans'], ['manrope', 'Manrope'],
   ['atkinson', 'Atkinson Hyperlegible'], ['serif', 'Newsreader (serif)'], ['literata', 'Literata (serif)'],
   ['source', 'Source Serif 4 (serif)'], ['lora', 'Lora (serif)'], ['mono', 'JetBrains Mono'],
@@ -114,68 +113,16 @@ export type FieldDef = {
 };
 
 export const FIELDS: Record<string, FieldDef[]> = {
-  appearance: [
+  general: [
     { key: 'theme', type: 'select', label: 'Theme', options: [['system', 'Same as Windows / macOS'], ['light', 'Light'], ['dark', 'Dark']] },
     { key: 'paper', type: 'select', label: 'Page tone', hint: 'Light theme only', options: [['cool', 'Calm blue'], ['neutral', 'Neutral grey'], ['warm', 'Warm paper']] },
-    { key: 'accent', type: 'swatch', label: 'Reading accent colour', hint: 'Active line, progress bars and search highlights' },
-    { key: 'scale', type: 'range', label: 'Script view scale', hint: 'Makes the whole script view smaller or larger', min: 70, max: 160, step: 2, unit: '%' },
-    { key: 'viewStyle', type: 'select', label: 'Script view style', hint: 'Cards = one card per line · Document = one continuous table', options: [['cards', 'Cards'], ['doc', 'Document (table)']] },
-    { key: 'docTight', type: 'range', label: 'Document · row padding', hint: 'Document view only', min: 0.55, max: 1.3, step: 0.05 },
-    { key: 'docHeadTint', type: 'toggle', label: 'Document · tinted section rows' },
-    { key: 'docZebra', type: 'toggle', label: 'Document · alternating row tint' },
-    { key: 'docGuideIndent', type: 'toggle', label: 'Document · guide indented under the script line' },
-    { key: 'density', type: 'select', label: 'Density', options: [['comfortable', 'Comfortable'], ['cozy', 'Cozy'], ['compact', 'Compact']] },
-    { key: 'radius', type: 'range', label: 'Corner radius', min: 0, max: 20, step: 1, unit: 'px' },
-    { key: 'cardBorders', type: 'toggle', label: 'Card borders' },
-    { key: 'cardShadow', type: 'toggle', label: 'Card shadow' },
-    { key: 'maxWidth', type: 'range', label: 'Content width', min: 820, max: 1800, step: 20, unit: 'px' },
-  ],
-  type: [
-    { key: 'scriptFont', type: 'select', label: 'Script line font', options: FONT_OPTIONS },
-    { key: 'scriptSize', type: 'range', label: 'Script line size', hint: 'Keep it only a little larger than the guide text', min: 11, max: 26, step: 0.5, unit: 'px' },
-    { key: 'scriptWeight', type: 'range', label: 'Script line weight', min: 300, max: 800, step: 50 },
-    { key: 'scriptLeading', type: 'range', label: 'Script line height', min: 1.15, max: 1.9, step: 0.05 },
-    { key: 'bodyFont', type: 'select', label: 'Visual guide font', options: FONT_OPTIONS },
     { key: 'uiFont', type: 'select', label: 'App font', hint: 'Sidebar, buttons and labels', options: [['inter', 'Inter'], ['sans', 'Instrument Sans'], ['plex', 'IBM Plex Sans'], ['manrope', 'Manrope'], ['system', 'System UI'], ['serif', 'Newsreader']] },
-    { key: 'bodySize', type: 'range', label: 'Guide text size', min: 9, max: 17, step: 0.5, unit: 'px' },
-    { key: 'lhBody', type: 'range', label: 'Guide line height', min: 1.3, max: 2, step: 0.02 },
-    { key: 'labelSize', type: 'range', label: 'Tag label size', min: 6.5, max: 12, step: 0.5, unit: 'px' },
-    { key: 'lhChip', type: 'range', label: 'Chip row spacing', min: 1.5, max: 2.6, step: 0.05 },
-  ],
-  layout: [
-    { key: 'labelStyle', type: 'select', label: 'Tag label style', hint: 'The label starts the line and its data follows on the same line', options: [['pill', 'Filled pill'], ['outline', 'Outlined'], ['plain', 'Plain text']] },
-    { key: 'guideColumns', type: 'select', label: 'Guide columns', options: [['1', 'One column'], ['2', 'Two columns'], ['3', 'Three columns'], ['auto', 'Auto (fit width)']] },
-    { key: 'columnRule', type: 'toggle', label: 'Line between columns' },
-    { key: 'colGap', type: 'range', label: 'Column gap', min: 8, max: 40, step: 1, unit: 'px' },
-    { key: 'chipShape', type: 'select', label: 'Chip shape', options: [['pill', 'Pill'], ['rounded', 'Rounded'], ['square', 'Square']] },
-    { key: 'sourcesPosition', type: 'select', label: 'Sources position', options: [['flow', 'In the flow'], ['bottom', 'Always at the end']] },
-    { key: 'cardGap', type: 'range', label: 'Gap between lines', min: 2, max: 22, step: 1, unit: 'px' },
-    { key: 'itemGap', type: 'range', label: 'Gap between tags', min: 2, max: 18, step: 1, unit: 'px' },
-    { key: 'sectionGap', type: 'range', label: 'Gap between sections', min: 6, max: 48, step: 2, unit: 'px' },
-    { key: 'autoPad', type: 'toggle', label: 'Auto padding', hint: 'Smaller text gets smaller padding, larger text larger padding' },
-    { key: 'padTopRatio', type: 'range', label: 'Space above the script line', hint: 'Times the text size', min: 0, max: 1.4, step: 0.02, unit: '×' },
-    { key: 'padBottomRatio', type: 'range', label: 'Space below the script line', min: 0, max: 1.4, step: 0.02, unit: '×' },
-    { key: 'padRatio', type: 'range', label: 'Guide panel padding ratio', hint: 'Compared with the guide text size', min: 0.25, max: 1.3, step: 0.02, unit: '×' },
-    { key: 'padGuide', type: 'range', label: 'Guide panel padding', hint: 'Only when auto padding is off', min: 4, max: 22, step: 1, unit: 'px' },
-    { key: 'panelInset', type: 'toggle', label: 'Guide panel background' },
-    { key: 'panelBorder', type: 'toggle', label: 'Guide panel border' },
-    { key: 'showSidebar', type: 'toggle', label: 'Show sidebar' },
+    { key: 'showSidebar', type: 'toggle', label: 'Open sidebar', hint: 'Off shows a slim icon rail instead' },
     { key: 'sidebarWidth', type: 'range', label: 'Sidebar width', min: 220, max: 360, step: 2, unit: 'px' },
-    { key: 'showLineNumbers', type: 'toggle', label: 'Line numbers' },
-    { key: 'numStyle', type: 'select', label: 'Line number style', options: [['plain', 'Plain'], ['boxed', 'Boxed'], ['pill', 'Accent pill']] },
-    { key: 'numSize', type: 'range', label: 'Line number size', min: 7, max: 16, step: 0.5, unit: 'px' },
-    { key: 'numWeight', type: 'range', label: 'Line number weight', min: 400, max: 700, step: 100 },
-    { key: 'numColor', type: 'select', label: 'Line number colour', options: [['faint', 'Faint'], ['muted', 'Muted'], ['prose', 'Body'], ['ink', 'Strong'], ['accent', 'Accent']] },
-    { key: 'showChecks', type: 'toggle', label: 'Ready checkboxes' },
-    { key: 'showCopyBtn', type: 'toggle', label: 'Copy button on each line' },
-    { key: 'showTranscript', type: 'toggle', label: 'Show video transcripts' },
-    { key: 'stickyHeaders', type: 'toggle', label: 'Sticky section headers' },
-    { key: 'collapseDefault', type: 'toggle', label: 'Start with sections collapsed' },
   ],
   reading: [
-    { key: 'focusMode', type: 'toggle', label: 'Focus mode', hint: 'Only the active line stays fully lit' },
-    { key: 'dimAmount', type: 'range', label: 'Dim strength', min: 10, max: 85, step: 5, unit: '%' },
-    { key: 'activeStyle', type: 'select', label: 'Active line style', options: [['ring', 'Accent ring'], ['tint', 'Tinted background'], ['band', 'Solid band'], ['bar', 'Left bar only']] },
+    { key: 'stickyHeaders', type: 'toggle', label: 'Sticky section headers', hint: 'The section title stays at the top while you scroll' },
+    { key: 'collapseDefault', type: 'toggle', label: 'Start with sections collapsed' },
     { key: 'rememberLine', type: 'toggle', label: 'Remember the active line', hint: 'Come back to the same line next time' },
   ],
   search: [
@@ -191,8 +138,6 @@ export const FIELDS: Record<string, FieldDef[]> = {
     { key: 'copyFormat', type: 'select', label: 'Copy format', options: [['plain', 'Plain text'], ['quoted', 'In "quotes"'], ['prefixed', 'With tag prefix']] },
     { key: 'copyJoin', type: 'select', label: 'Copy-all separator', options: [['comma', 'Comma'], ['newline', 'New line'], ['pipe', 'Pipe |']] },
     { key: 'openNewTab', type: 'toggle', label: 'Open links in a new tab' },
-    { key: 'showFavicons', type: 'toggle', label: 'Source favicons' },
-    { key: 'showDomain', type: 'toggle', label: 'Show the domain on source chips' },
   ],
   parsing: [
     { key: 'autoDetect', type: 'toggle', label: 'Auto-detect unknown tags', hint: 'Guess the type of a new tag by itself' },

@@ -20,7 +20,22 @@ export type SectionView = {
 export type TreeRow = {
   id: string; header?: boolean; name: string; depth: number; folder: boolean; open: boolean; current: boolean;
   tag?: string; tagTone?: 'blue' | 'green' | 'orange' | 'purple' | 'red' | ''; tagTitle?: string; ready?: string; menu: boolean;
+  /** place among its siblings (rows rise in one after another) */
+  sib?: number;
 };
+
+/* Tree order: folders first (if chosen), then the order the user dragged into place
+   (`pos`), and anything never dragged by name after that. Used by the tree and by moves. */
+export function treeCompare(src: any, foldersFirst: boolean) {
+  return (x: string, y: string) => {
+    const a = src[x] || {}, b = src[y] || {};
+    if (foldersFirst && (a.type === 'folder') !== (b.type === 'folder')) return a.type === 'folder' ? -1 : 1;
+    const pa = typeof a.pos === 'number', pb = typeof b.pos === 'number';
+    if (pa && pb && a.pos !== b.pos) return a.pos - b.pos;
+    if (pa !== pb) return pa ? -1 : 1;
+    return (a.name || '').localeCompare(b.name || '');
+  };
+}
 export type View = ReturnType<typeof derive>;
 
 export function derive(app: App) {
@@ -28,13 +43,21 @@ export function derive(app: App) {
   const S = app.effS();
   const dark = isDark(S.theme);
   const vw = st.vw;
-  /* phone < 760 · tablet / tiny laptop 760–1099 · laptop 1100–1439 · desktop 1440+ */
-  const mob = vw < 760, narrow = vw < 560, midW = vw >= 760 && vw < 1180;
-  const compact = !mob && vw < 1100;
-  /* the library is a drawer on phones, tablets, and whenever the user hid it */
-  const drawerMode = mob || compact || !S.showSidebar;
-  const sideW = vw < 1440 ? Math.min(S.sidebarWidth, 256) : S.sidebarWidth;
-  const mainW = vw - (drawerMode ? 0 : sideW + 14) - (mob ? 12 : 20);
+  /* the skill's size lines: phone ≤ 760 · tablet 761–1279 · laptop ≤ 1500 · desktop */
+  const mob = vw <= 760, narrow = vw < 560, midW = vw > 760 && vw < 1180;
+  const compact = !mob && vw < 1280;
+  /* sidebar width: a little narrower on small laptops, so the script keeps its room */
+  const sideW = vw < 1100 ? Math.min(S.sidebarWidth, 240) : vw <= 1500 ? Math.min(S.sidebarWidth, 256) : S.sidebarWidth;
+  /* the open sidebar may stay next to the script as long as the script lines still get a
+     readable width; below that it folds into the rail and opens over the page instead */
+  const MIN_READER = 600;
+  const sideFits = !mob && vw - sideW - 14 - 24 >= MIN_READER;
+  /* frame: full sidebar (the user's choice, when it fits), slim icon rail, or phone drawer.
+     The card editor folds the sidebar so its preview gets the room. */
+  const frame: 'full' | 'rail' | 'phone' = mob ? 'phone' : !S.showSidebar || st.mode === 'design' || !sideFits ? 'rail' : 'full';
+  /* the library panel opens over the page whenever there is no full sidebar */
+  const drawerMode = frame !== 'full';
+  const mainW = vw - (frame === 'full' ? sideW + 14 : frame === 'rail' ? 78 : 0) - (mob ? 16 : 24);
   /* the settings menu gets its own column only when there is room for it */
   const wideSettings = !mob && mainW >= 880;
   const viewing = app.isViewing();
@@ -63,23 +86,7 @@ export function derive(app: App) {
   if (m.itemSig !== dispSig) { m.items = {}; m.itemSig = dispSig; }
   const itemsFor = (l: FlatLine): ItemView[] => {
     if (m.items[l.id]) return m.items[l.id];
-    const out: ItemView[] = [], src: ItemView[] = [];
-    l.items.forEach((it) => {
-      const hl = hlFor(it.k);
-      const o: ItemView = { label: it.k, color: colorOf(it.color, dark), soft: softOf(it.color, dark), render: it.render };
-      if (it.render === 'links') {
-        o.links = (it.links || []).map((x) => ({
-          t: x.t, u: x.u, d: x.d || '', tHtml: markHits(x.t, hl),
-          fav: x.d && S.showFavicons ? 'https://www.google.com/s2/favicons?domain=' + x.d + '&sz=64' : '',
-        }));
-      } else if (it.render === 'chips' || it.render === 'overlay') {
-        o.chips = (it.chips || []).map((v) => ({ v, html: markHits(v, hl) }));
-      } else {
-        o.bodyHtml = markHits(it.body || '', hl);
-      }
-      if (it.render === 'links' && S.sourcesPosition === 'bottom') src.push(o); else out.push(o);
-    });
-    const res = out.concat(src);
+    const res = itemViews(l, S, dark, hlFor);
     m.items[l.id] = res;
     return res;
   };
@@ -182,13 +189,9 @@ export function derive(app: App) {
   const walk = (src: any, parent: string, depth: number, out: TreeRow[], term: string, menu: boolean) => {
     Object.keys(src)
       .filter((k) => !src[k].trashed && (src[k].parentId || 'root') === parent && (!term || branchHas(src, k, term)))
-      .sort((x, y) => {
-        const a1 = src[x], b1 = src[y];
-        if (S.foldersFirst && (a1.type === 'folder') !== (b1.type === 'folder')) return a1.type === 'folder' ? -1 : 1;
-        return (a1.name || '').localeCompare(b1.name || '');
-      })
-      .forEach((k) => {
-        out.push(rowFor(src, k, depth, menu));
+      .sort(treeCompare(src, S.foldersFirst))
+      .forEach((k, i) => {
+        out.push({ ...rowFor(src, k, depth, menu), sib: i });
         if (src[k].type === 'folder' && (term || st.openFolders[k])) walk(src, k, depth + 1, out, term, menu);
       });
     return out;
@@ -244,26 +247,24 @@ export function derive(app: App) {
   const activeNum = (() => { const f = lineById[activeLine]; return f ? String(f.n) : ''; })();
 
   /* reader variables, rebuilt only when the look changes */
-  const varSig = JSON.stringify([S, dark, mob, narrow]);
-  if (m.varSig !== varSig) { m.vars = readerVars(S, dark, mob, narrow); m.varSig = varSig; }
+  const varSig = JSON.stringify([S, dark, mob, narrow, compact]);
+  if (m.varSig !== varSig) { m.vars = readerVars(S, dark, mob, narrow, compact); m.varSig = varSig; }
   const dispSig2 = [S.showLineNumbers, S.showChecks, S.showCopyBtn, S.showTranscript, S.showDomain, S.openNewTab, S.chipClick].join('|');
-  if (m.dispSig !== dispSig2) {
-    m.disp = {
-      nums: S.showLineNumbers, checks: S.showChecks, copyBtn: S.showCopyBtn, transcript: S.showTranscript,
-      domain: S.showDomain, target: S.openNewTab ? '_blank' : '_self', chipHint: S.chipClick === 'copy' ? 'Click to copy' : S.chipClick === 'search' ? 'Click to search' : 'Click to copy and search',
-    };
-    m.dispSig = dispSig2;
-  }
+  if (m.dispSig !== dispSig2) { m.disp = dispOf(S); m.dispSig = dispSig2; }
 
   return {
-    S, dark, mob, narrow, midW, compact, drawerMode, sideW, wideSettings, viewing, a, doc, total, doneCount, pct, searching, hlq,
+    S, dark, mob, narrow, midW, compact, frame, drawerMode, sideW, sideFits, wideSettings, viewing, a, doc, total, doneCount, pct, searching, hlq,
     sections, outline, allCollapsed, readySectionCount, sectionCount: doc.sections.length,
     primaryFilters, tagFilters, activeFilter,
-    tree, treeEmptyMsg, treeHeading, sharedMode, trashCount: trashIds.length, scriptCount,
+    tree, treeEmptyMsg, treeHeading, sharedMode,
+    /* scripts can be dragged into a new order only in the plain library view */
+    canDrag: !sharedMode && !st.showTrash && !treeQ, trashCount: trashIds.length, scriptCount,
     loading, showLogin, canEditRaw, modes, signedIn, user: u,
     activeNum, showJump: !!activeLine && st.mode === 'normal' && st.offScreen,
     vars: m.vars as Record<string, string>, disp: m.disp as Disp,
     noResults: vis.length === 0 && total > 0,
+    hits: vis.length,
+    flowIds,
     empty: !a.id,
     canShare: !viewing && !!st.cloud && !!a.id,
     isPublic: !!(shares[a.id] && shares[a.id].public),
@@ -272,3 +273,33 @@ export function derive(app: App) {
 }
 
 export type Disp = { nums: boolean; checks: boolean; copyBtn: boolean; transcript: boolean; domain: boolean; target: string; chipHint: string };
+
+/* guide items of one line, ready to draw (also used by the card editor preview) */
+export function itemViews(l: { items: any[] }, S: any, dark: boolean, hlFor: (k: string) => string = () => ''): ItemView[] {
+  const out: ItemView[] = [], src: ItemView[] = [];
+  l.items.forEach((it) => {
+    const hl = hlFor(it.k);
+    const o: ItemView = { label: it.k, color: colorOf(it.color, dark), soft: softOf(it.color, dark), render: it.render };
+    if (it.render === 'links') {
+      o.links = (it.links || []).map((x) => ({
+        t: x.t, u: x.u, d: x.d || '', tHtml: markHits(x.t, hl),
+        fav: x.d && S.showFavicons ? 'https://www.google.com/s2/favicons?domain=' + x.d + '&sz=64' : '',
+      }));
+    } else if (it.render === 'chips' || it.render === 'overlay') {
+      o.chips = (it.chips || []).map((v) => ({ v, html: markHits(v, hl) }));
+    } else {
+      o.bodyHtml = markHits(it.body || '', hl);
+    }
+    if (it.render === 'links' && S.sourcesPosition === 'bottom') src.push(o); else out.push(o);
+  });
+  return out.concat(src);
+}
+
+/* display flags for line cards */
+export function dispOf(S: any): Disp {
+  return {
+    nums: S.showLineNumbers, checks: S.showChecks, copyBtn: S.showCopyBtn, transcript: S.showTranscript,
+    domain: S.showDomain, target: S.openNewTab ? '_blank' : '_self',
+    chipHint: S.chipClick === 'copy' ? 'Click to copy' : S.chipClick === 'search' ? 'Click to search' : 'Click to copy and search',
+  };
+}
