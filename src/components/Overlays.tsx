@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { FluentIcon } from '@fluentui/react-icons';
 import { ROLES, ROLE_HINT, ROLE_SHORT } from '../lib/constants';
 import { shareUrlFor } from '../lib/util';
+import { installMode } from '../lib/pwa';
 import { ICONS } from '../ui/icons';
 import { Button, Icon, IconButton, Toggle } from '../ui/kit';
 import type { P } from './Layout';
@@ -20,6 +21,7 @@ export function Overlays({ app, v }: P) {
       {st.shareFor && <ShareDialog app={app} v={v} />}
       {st.promptBox && <PromptDialog app={app} v={v} />}
       {st.shortcuts && <ShortcutsDialog app={app} v={v} />}
+      {st.installHelp && <InstallHelp app={app} v={v} />}
       {v.showJump && (
         <button type="button" className="btn primary jump-btn" onClick={() => app.revealLine(st.activeLine)}>
           <Icon icon={ICONS.jump} size={16} /><span className="btn-label">Back to line {v.activeNum}</span>
@@ -310,6 +312,27 @@ function ShortcutsDialog({ app }: P) {
   );
 }
 
+/* iPhone and iPad have no install prompt: Share → Add to Home Screen */
+function InstallHelp({ app }: P) {
+  const close = () => app.setState({ installHelp: false });
+  return (
+    <Dialog onClose={close} className="install-dialog">
+      <div className="dialog-head">Install Alamza Scripts</div>
+      <div className="dialog-body col">
+        <p className="install-lead">Add it to your Home Screen and it opens like an app, full screen, with its own icon.</p>
+        <ol className="install-steps">
+          <li><span className="msg-icon blue sm"><Icon icon={ICONS.shareIos} size={18} /></span><span>Tap <b>Share</b> in Safari's toolbar</span></li>
+          <li><span className="msg-icon blue sm"><Icon icon={ICONS.addSquare} size={18} /></span><span>Choose <b>Add to Home Screen</b>, then <b>Add</b></span></li>
+        </ol>
+        <p className="muted install-note">On iPhone and iPad this works in Safari.</p>
+      </div>
+      <div className="dialog-foot">
+        <Button variant="primary" onClick={close}>Got it</Button>
+      </div>
+    </Dialog>
+  );
+}
+
 /* the profile menu: who is signed in, the app's own screens, and sign out last in red */
 function AccountMenu({ app, v }: P) {
   const st = app.state;
@@ -324,6 +347,8 @@ function AccountMenu({ app, v }: P) {
     items.push({ id: 'settings', label: 'Settings', icon: ICONS.settings, run: () => app.setMode('settings') });
   }
   if (!v.mob) items.push({ id: 'keys', label: 'Keyboard shortcuts', icon: ICONS.keyboard, kbd: '?', run: () => app.setState({ shortcuts: true }) });
+  const im = installMode();
+  if (im === 'prompt' || im === 'ios') items.push({ id: 'install', label: 'Install app', icon: ICONS.install, run: app.installApp });
   if (v.signedIn) items.push({ divider: true }, { id: 'out', label: 'Sign out', icon: ICONS.signOut, danger: true, run: app.signOut });
   return (
     <Backdrop onClose={close}>

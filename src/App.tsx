@@ -15,6 +15,7 @@ import {
 } from './lib/util';
 import { derive, treeCompare, type View } from './view';
 import { CARD_KEYS, cardValues, defaultCard } from './lib/design';
+import { installMode, onPwaChange, promptInstall } from './lib/pwa';
 import { clearOverrides, deviceLabel, deviceOf, settingsFor, writeSettings, type Device, type DevScope } from './lib/devices';
 import { Layout } from './components/Layout';
 
@@ -72,7 +73,16 @@ export default class App extends Component<object, any> {
 
   /* ------------------------------------------------------------------ lifecycle */
 
+  _pwaOff: (() => void) | null = null;
+  _wasInstalled = installMode() === 'installed';
   componentDidMount() {
+    /* the install button follows the browser: offer, installed, or nothing */
+    this._pwaOff = onPwaChange(() => {
+      const now = installMode() === 'installed';
+      if (now && !this._wasInstalled) this.flash('Alamza Scripts is installed — open it from your apps');
+      this._wasInstalled = now;
+      this.forceUpdate();
+    });
     window.addEventListener('keydown', this.onKey);
     window.addEventListener('hashchange', this.onHash);
     document.addEventListener('scroll', this.onScroll, true);
@@ -88,6 +98,7 @@ export default class App extends Component<object, any> {
     if (this.state.viewerToken && !auth.currentUser) signInAnon().catch(() => {});
   }
   componentWillUnmount() {
+    if (this._pwaOff) this._pwaOff();
     window.removeEventListener('keydown', this.onKey);
     window.removeEventListener('hashchange', this.onHash);
     document.removeEventListener('scroll', this.onScroll, true);
@@ -156,7 +167,7 @@ export default class App extends Component<object, any> {
   _appliedTheme = '';
   applyTheme() {
     const S = this.effS();
-    const sig = S.theme + '|' + S.paper + '|' + S.uiFont;
+    const sig = S.theme + '|' + S.paper + '|' + S.uiFont + '|' + isDark(S.theme);
     if (sig === this._appliedTheme) return;
     const first = !this._appliedTheme;
     this._appliedTheme = sig;
@@ -170,6 +181,10 @@ export default class App extends Component<object, any> {
     root.setAttribute('data-paper', S.paper || 'cool');
     const fam = S.uiFont && S.uiFont !== 'inter' ? (FONT_UI[S.uiFont] || '') : '';
     if (fam) root.style.setProperty('--font', fam); else root.style.removeProperty('--font');
+    /* the installed app's title bar (and the phone's status bar) takes the page colour */
+    const bg = getComputedStyle(root).getPropertyValue('--bg').trim();
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta && bg) meta.setAttribute('content', bg);
     ensureFonts(S);
   }
 
@@ -1424,6 +1439,16 @@ export default class App extends Component<object, any> {
   setMany = (patch: Record<string, any>) => {
     if (this.isViewing()) return;
     this.setState({ settings: writeSettings(this.state.settings, this.state.devScope || 'all', patch) }, this.save);
+  };
+
+  /* ---- install the app ---- */
+  installApp = async () => {
+    const m = installMode();
+    this.setState({ accountMenu: null });
+    if (m === 'ios') { this.setState({ installHelp: true }); return; }
+    if (m !== 'prompt') return;
+    const r = await promptInstall();
+    if (r === 'dismissed') this.flash('You can install it any time from the profile menu');
   };
 
   /* ---- per-device settings ---- */

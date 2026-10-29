@@ -1310,3 +1310,11 @@ button.dev-tag:hover { border-color: var(--primary); color: var(--primary); }
    and progress bar just like a real phone, and the section name keeps its room */
 .pv-frame { container: reader / inline-size; }
 .sec-title { min-width: 2.5em; }
+
+/* ---------- v15: install the app ---------- */
+.install-dialog { max-width: 420px; }
+.install-lead { margin: 0; color: var(--text-2); line-height: 1.5; }
+.install-steps { display: flex; flex-direction: column; gap: 10px; margin: 4px 0 0; padding: 0; list-style: none; counter-reset: step; }
+.install-steps li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); font-size: 13.5px; }
+.install-steps .msg-icon { flex: none; }
+.install-note { margin: 2px 0 0; font-size: 12px; }

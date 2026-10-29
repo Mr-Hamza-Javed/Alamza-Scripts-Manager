@@ -6,6 +6,7 @@ import { ICONS } from '../ui/icons';
 import { Badge, Button, Card, Icon, IconButton, IconTile, Tabs, Toggle, type Tone } from '../ui/kit';
 import { canVary, deviceLabel, overridesOf, tabCanVary } from '../lib/devices';
 import { DeviceScope, DeviceTags } from './DeviceScope';
+import { installMode, isIos } from '../lib/pwa';
 import type { P } from './Layout';
 
 const TAB_LOOK: Record<string, { icon: FluentIcon; tile: FluentIcon; tone: Tone }> = {
@@ -73,6 +74,7 @@ export function SettingsScreen({ app, v }: P) {
             </div>
           )}
           {tab === 'general' && <DesignCard app={app} v={v} />}
+          {tab === 'general' && <InstallCard app={app} v={v} />}
           {tab === 'tags' ? <TagsTab app={app} v={v} look={look} hint={def.hint} />
             : tab === 'library' ? <LibraryTab app={app} v={v} look={look} hint={def.hint} />
               : tab === 'danger' ? <DangerTab app={app} look={look} hint={def.hint} />
@@ -93,6 +95,21 @@ export function SettingsScreen({ app, v }: P) {
 }
 
 /* the script cards are designed in their own editor; this card points there */
+/* install the app: the browser's prompt, the iPhone steps, or where it can be done */
+function InstallCard({ app }: P) {
+  const m = installMode();
+  const sub = m === 'installed' ? 'You are using the installed app.'
+    : m === 'prompt' ? 'Open it from your desktop, Start menu or home screen, in its own window.'
+      : m === 'ios' ? 'Add it to your Home Screen from Safari.'
+        : isIos() ? 'Open this page in Safari to add it to your Home Screen.' : 'Open this page in Chrome or Edge on a computer, or Chrome on Android, to install it.';
+  return (
+    <Card title="Install the app" subtitle={sub} icon={ICONS.installTile} tone="blue"
+      extra={m === 'installed'
+        ? <Badge tone="green">Installed</Badge>
+        : (m === 'prompt' || m === 'ios') && <Button variant="primary" icon={ICONS.install} onClick={app.installApp}>Install app</Button>} />
+  );
+}
+
 function DesignCard({ app }: P) {
   const S = app.scopeS();
   const mine = (S.myDesigns || []).find((d: any) => sameCard(S, presetValues(d)));
