@@ -141,7 +141,7 @@ function PresetCard({ p, app, on, mine }: { p: Preset; app: P['app']; on: boolea
         {on && <span className="badge blue">In use</span>}
         {mine && (
           <button type="button" className="pt-del" aria-label={'Delete ' + p.name} title="Delete this design"
-            onClick={(e) => { e.stopPropagation(); app.deleteDesign(p.id); }}>
+            onClick={(e) => { e.stopPropagation(); app.askDeleteDesign(p.id, p.name); }}>
             <Icon icon={ICONS.closeSm} size={14} />
           </button>
         )}
@@ -189,7 +189,8 @@ function Control({ c, app, dark }: { c: CtlDef; app: P['app']; dark: boolean }) 
   );
   if (c.type === 'range') {
     const step = c.step || 1;
-    const clamp = (x: number) => Math.min(c.max, Math.max(c.min, Math.round(x / step) * step));
+    const places = (String(step).split('.')[1] || '').length;
+    const clamp = (x: number) => Math.min(c.max, Math.max(c.min, Number((Math.round(x / step) * step).toFixed(places))));
     const pct = ((val - c.min) / (c.max - c.min)) * 100;
     return (
       <div className="ctl">
@@ -299,7 +300,7 @@ function Preview({ app, v, device, setDevice, focusPart, onPick }: P & { device:
     } as SectionView;
   }, [doc, S, v.dark]);
 
-  const vars = useMemo(() => ({ ...readerVars(S, v.dark, device === 'phone', device === 'phone', device === 'tablet'), '--maxw': '100%' }), [S, v.dark, device]);
+  const vars = useMemo(() => readerVars(S, v.dark, device === 'phone', device === 'phone', device === 'tablet'), [S, v.dark, device]);
 
   /* fit the chosen screen width into the preview box */
   useLayoutEffect(() => {

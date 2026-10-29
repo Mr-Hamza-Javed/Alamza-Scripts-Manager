@@ -1054,7 +1054,8 @@ export default class App extends Component<object, any> {
       if (c.kind === 'trash') this.trash(c.id, true);
       else if (c.kind === 'purge') this.purge(c.id, true);
       else if (c.kind === 'emptyTrash') this.emptyTrash(true);
-      else if (c.kind === 'resetSettings') this.setState({ settings: migrateSettings({}), tags: { ...DEFAULT_TAGS }, tab: 'appearance' }, () => { this.save(); this.flash('Settings reset'); });
+      else if (c.kind === 'resetSettings') this.setState({ settings: migrateSettings({}), tags: { ...DEFAULT_TAGS }, tab: 'general' }, () => { this.save(); this.flash('Settings reset'); });
+      else if (c.kind === 'deleteDesign') { this.deleteDesign(c.id); this.flash('Design deleted'); }
       else if (c.kind === 'clearDone') { this.clearCompletionFeedback(); this.setDone(this.active().id, {}); this.flash('Ready marks cleared'); }
     });
   };
@@ -1468,6 +1469,7 @@ export default class App extends Component<object, any> {
   applyDesign = (values: Record<string, any>, name: string) => { this.setMany({ ...defaultCard(), ...values }); this.flash(name + ' design applied'); };
   promptSaveDesign = () => this.setState({ promptBox: { kind: 'saveDesign', title: 'Save as my design', label: 'Design name', value: 'My design ' + ((this.state.settings.myDesigns || []).length + 1) } });
   deleteDesign = (id: string) => this.set('myDesigns', (this.state.settings.myDesigns || []).filter((d: any) => d.id !== id));
+  askDeleteDesign = (id: string, name: string) => this.setState({ confirmBox: { kind: 'deleteDesign', id, title: 'Delete “' + name + '”?', text: 'It is removed from your saved designs. Your cards keep the look they have now.', action: 'Delete design' } });
   commitPrompt = () => {
     const p = this.state.promptBox;
     if (!p) return;

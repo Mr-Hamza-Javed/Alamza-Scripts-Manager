@@ -1304,3 +1304,9 @@ button.dev-tag:hover { border-color: var(--primary); color: var(--primary); }
 .pv-scope-text small { font-size: 11.5px; color: var(--muted); }
 .pv-scope-reset { font-size: 12px; }
 .editor-preview .tab-count { min-width: 17px; height: 17px; padding: 0 5px; font-size: 10.5px; }
+
+/* ---------- v14: card editor preview follows the same width rules as the script view ---------- */
+/* the preview frame counts as a script area, so a 360 px phone preview drops the kicker
+   and progress bar just like a real phone, and the section name keeps its room */
+.pv-frame { container: reader / inline-size; }
+.sec-title { min-width: 2.5em; }
