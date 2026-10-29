@@ -101,6 +101,9 @@ export function derive(app: App) {
   /* FLOW = lines that reach the page, in page order (collapsed sections left out) */
   const openOf = (si: number) => (searching && S.searchExpand) || !(st.collapsed[si] !== undefined ? st.collapsed[si] : S.collapseDefault);
   const pruning = searching && S.searchHideEmpty;
+  /* Ready / Left / tag filter: a section with no matching line is left out,
+     closed or open, so the page shows only what the filter found */
+  const filtering = !!st.filter && st.filter !== 'all';
   const flowIds: string[] = [];
   doc.sections.forEach((s, si) => {
     if (!openOf(si)) return;
@@ -138,7 +141,7 @@ export function derive(app: App) {
       notes: s.notes.length && !searching ? s.notes.map((x) => stripMd(x)) : [],
       lines,
     };
-  }).filter((s: any) => (pruning ? s.visCount > 0 : !s.open || s.lines.length || s.notes.length));
+  }).filter((s: any) => (pruning || filtering ? s.visCount > 0 : !s.open || s.lines.length || s.notes.length));
 
   const allCollapsed = doc.sections.length > 0 && doc.sections.every((_s, i) => (st.collapsed[i] !== undefined ? st.collapsed[i] : S.collapseDefault));
   const readySectionCount = doc.sections.filter((s, si) => s.lines.length > 0 && s.lines.every((_l, li) => !!a.done['s' + si + 'r' + li])).length;

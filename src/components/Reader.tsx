@@ -35,7 +35,7 @@ export function Reader({ app, v }: P) {
   const cls = readerClass(S, !!app.state.activeLine && v.flowIds.indexOf(app.state.activeLine) >= 0);
   return (
     <div className="reader-scroll" id="scrollmain">
-      <div className={cls} style={v.vars as CSSProperties}>
+      <div className={cls} style={v.vars as CSSProperties} key={(app.state.activeId || '') + '|' + (v.activeFilter || 'all')}>
         {v.empty && !v.sharedMode && <EmptyLibrary app={app} />}
         {v.noResults && (
           <div className="empty reader-empty">
@@ -44,7 +44,7 @@ export function Reader({ app, v }: P) {
             <Button size="sm" icon={ICONS.closeSm} onClick={() => app.setState({ query: '', filter: 'all' })}>Clear search and filter</Button>
           </div>
         )}
-        {v.sections.map((s) => <SectionBlock key={s.si} s={s} app={app} disp={v.disp} hlq={v.hlq} />)}
+        {v.sections.map((s, i) => <SectionBlock key={s.si} s={s} app={app} disp={v.disp} hlq={v.hlq} order={i} />)}
       </div>
     </div>
   );
@@ -67,9 +67,9 @@ function EmptyLibrary({ app }: { app: App }) {
   );
 }
 
-export function SectionBlock({ s, app, disp, hlq }: { s: SectionView; app: App; disp: Disp; hlq: string }) {
+export function SectionBlock({ s, app, disp, hlq, order = 0 }: { s: SectionView; app: App; disp: Disp; hlq: string; order?: number }) {
   return (
-    <div id={'sec-' + s.si} className="section">
+    <div id={'sec-' + s.si} className="section" style={{ '--si': Math.min(order, 8) } as CSSProperties}>
       <div data-part="sec" className={`sec-head${s.achieved ? ' achieved' : ''}${s.open ? '' : ' closed'}`} onClick={() => app.toggleSection(s.si)} role="button" aria-expanded={s.open}>
         <span className="sec-chev"><Icon icon={ICONS.chevronDown} size={12} /></span>
         <span className="sec-kicker num">SEC {s.si + 1}</span>

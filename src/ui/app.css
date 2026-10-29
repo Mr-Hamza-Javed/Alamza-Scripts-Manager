@@ -1229,3 +1229,11 @@ html[data-head='compact'] .topbar .kbd { opacity: 0; }
     radial-gradient(ellipse 100% 70px at 0% 0%, color-mix(in srgb, var(--primary-soft) 85%, transparent), transparent 100%),
     var(--surface);
 }
+
+/* ---------- v11: the script area settles in when the script or the filter changes ---------- */
+.reader > .section { animation: sec-in 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards; animation-delay: calc(var(--si, 0) * 30ms); }
+@keyframes sec-in { from { opacity: 0; transform: translateY(8px); } }
+.reader > .reader-empty, .reader > .empty-card { animation: sec-in 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+@media (prefers-reduced-motion: reduce) {
+  .reader > .section, .reader > .reader-empty { animation: none; }
+}

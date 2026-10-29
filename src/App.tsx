@@ -647,6 +647,9 @@ export default class App extends Component<object, any> {
     /* jumping to a section from Settings or Raw goes back to the script first */
     const leaving = this.state.mode !== 'normal';
     const patch: any = { offScreen: !!this.state.activeLine, drawer: false, ...(leaving ? { mode: 'normal', mounted: Math.max(this.state.mounted || 40, 40) } : {}) };
+    /* the section has no line under the current filter or search: show everything again */
+    const narrowed = (this.state.filter && this.state.filter !== 'all') || (this.state.query || '').trim();
+    if (narrowed && section.lines.length && !this.visibleLines().some((l) => l.si === si)) { patch.filter = 'all'; patch.query = ''; }
     if (collapsed) {
       patch.collapsed = { ...this.state.collapsed, [key]: false };
       let throughTarget = 0;
