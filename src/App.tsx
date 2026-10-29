@@ -100,7 +100,9 @@ export default class App extends Component<object, any> {
     if (this._unsubAuth) this._unsubAuth();
     this.detach();
   }
-  componentDidUpdate() {
+  componentDidUpdate(_p: object, prev: any) {
+    /* a new screen or a new script starts with the full header */
+    if (prev && (prev.mode !== this.state.mode || prev.activeId !== this.state.activeId)) { this.setHeadCompact(false); this._headTop = 0; }
     this.syncTitle();
     this.growMount();
     this.applyTheme();
@@ -117,7 +119,34 @@ export default class App extends Component<object, any> {
     this.setState({ viewerToken: vt, shareLoadingToken: null, sideTab: vt ? 'review' : this.state.sideTab }, () => this.bootViewer());
   };
   /* scrolling must never trigger a render — only the "Back to line" check, debounced */
-  onScroll = () => this.later('scroll', () => this.checkOffScreen(), 180);
+  onScroll = (e: Event) => {
+    const t = e.target as HTMLElement;
+    if (t && t.id === 'scrollmain') this.headerFollow(t);
+    this.later('scroll', () => this.checkOffScreen(), 180);
+  };
+
+  /* Smart header: scrolling down into the script folds the top bar into a slim one,
+     scrolling back up (or reaching the top) brings the full bar back. It only flips an
+     attribute on <html>, so scrolling never re-renders the page. */
+  _headTop = 0;
+  _headCompact = false;
+  headerFollow(box: HTMLElement) {
+    const top = box.scrollTop;
+    const dy = top - this._headTop;
+    let next = this._headCompact;
+    if (top < 32) next = false;
+    else if (dy > 8) next = true;
+    else if (dy < -14) next = false;
+    /* small wiggles add up instead of flipping the bar back and forth */
+    if (Math.abs(dy) > 8 || top < 32) this._headTop = top;
+    this.setHeadCompact(next);
+  }
+  setHeadCompact(on: boolean) {
+    if (on === this._headCompact) return;
+    this._headCompact = on;
+    if (on) document.documentElement.setAttribute('data-head', 'compact');
+    else document.documentElement.removeAttribute('data-head');
+  }
   onResize = () => this.later('resize', () => { if (window.innerWidth !== this.state.vw) this.setState({ vw: window.innerWidth }); }, 120);
 
   /* theme, page tone and app font live on <html> so the whole page follows them */

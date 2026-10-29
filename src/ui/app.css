@@ -864,3 +864,44 @@ a { color: inherit; }
   .reader .sec-count .w-long { display: none; }
   .reader .line-tools { align-self: flex-start; gap: 4px; }
 }
+
+/* =====================================================================
+ * v6: smart header — full at the top, slim while reading down the script
+ * (App.headerFollow sets html[data-head='compact'])
+ * ===================================================================== */
+.topbar {
+  --head-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  transition: padding 260ms var(--head-ease), border-radius 260ms var(--head-ease), box-shadow 260ms var(--head-ease), background-color 260ms var(--head-ease), gap 260ms var(--head-ease);
+}
+.topbar .doc-name, .topbar .doc-name-text, .topbar .input, .topbar .tabs.pill, .topbar .tabs.pill .tab, .topbar .btn, .topbar .icon-btn, .topbar .badge, .topbar .kbd {
+  transition: height 260ms var(--head-ease), min-height 260ms var(--head-ease), width 260ms var(--head-ease), padding 260ms var(--head-ease), font-size 260ms var(--head-ease), opacity 200ms ease, background-color var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.topbar .tab-indicator { transition: transform 260ms var(--head-ease), width 260ms var(--head-ease), top 260ms var(--head-ease), bottom 260ms var(--head-ease) !important; }
+
+html[data-head='compact'] .topbar {
+  padding-top: 3px; padding-bottom: 3px; gap: 6px; border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: blur(12px) saturate(1.2);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 8px 22px -12px rgba(37, 70, 160, 0.25);
+}
+html[data-head='compact'] .topbar .doc-name { height: 30px; }
+html[data-head='compact'] .topbar .doc-name-text { font-size: 13.5px; }
+html[data-head='compact'] .topbar .badge { height: 19px; font-size: 10.5px; padding: 0 7px; }
+html[data-head='compact'] .topbar .kbd { opacity: 0; }
+/* mouse and trackpad: the controls get slimmer too (touch keeps its finger-sized targets) */
+@media (pointer: fine) {
+  html[data-head='compact'] .topbar .input { height: 30px; }
+  html[data-head='compact'] .topbar .topsearch { width: 220px; }
+  html[data-head='compact'] .topbar .tabs.pill { padding: 2px; }
+  html[data-head='compact'] .topbar .tabs.pill .tab { height: 25px; padding: 0 9px; font-size: 12.5px; }
+  html[data-head='compact'] .topbar .tabs.pill .tab-indicator { top: 2px; bottom: 2px; }
+  html[data-head='compact'] .topbar .btn.sm { height: 28px; padding: 0 9px; }
+  html[data-head='compact'] .topbar .share-btn .btn-label { display: none; }
+  html[data-head='compact'] .topbar .icon-btn { width: 28px; height: 28px; }
+}
+@media (pointer: coarse) {
+  html[data-head='compact'] .topbar { padding-top: 2px; padding-bottom: 2px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .topbar, .topbar * { transition: none !important; }
+}
