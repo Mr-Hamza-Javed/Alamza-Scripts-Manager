@@ -69,8 +69,10 @@ function EmptyLibrary({ app }: { app: App }) {
 
 export function SectionBlock({ s, app, disp, hlq, order = 0 }: { s: SectionView; app: App; disp: Disp; hlq: string; order?: number }) {
   return (
-    <div id={'sec-' + s.si} className="section" style={{ '--si': Math.min(order, 8) } as CSSProperties}>
-      <div data-part="sec" className={`sec-head${s.achieved ? ' achieved' : ''}${s.open ? '' : ' closed'}`} onClick={() => app.toggleSection(s.si)} role="button" aria-expanded={s.open}>
+    <div id={'sec-' + s.si} className={`section${s.exiting ? ' sec-exit' : ''}`} style={{ '--si': Math.min(order, 8) } as CSSProperties}>
+      <div data-part="sec" className={`sec-head${s.achieved ? ' achieved' : ''}${s.open ? '' : ' closed'}${s.allReady ? ' all-ready' : ''}`} onClick={() => app.toggleSection(s.si)}
+        role="button" tabIndex={0} aria-expanded={s.open} aria-label={(s.open ? 'Fold section ' : 'Open section ') + (s.si + 1) + ', ' + s.title}
+        onKeyDown={(e) => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); app.toggleSection(s.si); } }}>
         <span className="sec-chev"><Icon icon={ICONS.chevronDown} size={12} /></span>
         <span className="sec-kicker num">SEC {s.si + 1}</span>
         <span className="sec-title" title={s.title}>{s.title}</span>
@@ -85,7 +87,7 @@ export function SectionBlock({ s, app, disp, hlq, order = 0 }: { s: SectionView;
               aria-label={s.allReady ? 'Unmark section' : 'Mark section as ready'} onClick={(e) => { e.stopPropagation(); app.markSection(s.si); }}>
               <Icon icon={s.allReady ? ICONS.checkCircleOn : ICONS.checkCircle} size={16} />
             </button>
-            <span className="sec-count num">{s.count}<span className="w-long"> lines</span></span>
+            <span className="sec-count num">{s.count}<span className="w-long">{s.count === '1' || s.count.endsWith('/1') ? ' line' : ' lines'}</span></span>
             <span className="sec-bar"><span style={{ width: s.pct + '%' }} /></span>
           </>
         ) : (

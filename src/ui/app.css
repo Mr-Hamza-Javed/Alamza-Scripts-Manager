@@ -1237,3 +1237,22 @@ html[data-head='compact'] .topbar .kbd { opacity: 0; }
 @media (prefers-reduced-motion: reduce) {
   .reader > .section, .reader > .reader-empty { animation: none; }
 }
+
+/* =====================================================================
+ * v12: script area details
+ * ===================================================================== */
+/* a line card answers the pointer before it is clicked */
+.reader.bordered .line-card:not(.active):hover { border-color: var(--border-strong); }
+.reader.borderless .line-card:not(.active):hover { box-shadow: 0 0 0 1px var(--border); }
+.reader.shadowed .line-card:not(.active):hover { box-shadow: var(--shadow-sm), 0 0 0 1px var(--border); }
+/* a ready line: its number turns green, nothing else moves */
+.line-card.done .line-num { color: var(--success); transition: color 200ms var(--ease-out); }
+/* section headers: hover, keyboard focus, and a green bar once every line is ready */
+.sec-head { transition: border-color var(--dur-fast), background-color var(--dur-fast), box-shadow var(--dur-fast); }
+.sec-head:hover { background: color-mix(in srgb, var(--surface-hover) 55%, var(--sec-bg)); }
+.sec-head:focus-visible { outline: none; border-color: var(--primary); box-shadow: var(--ring); }
+.sec-head.all-ready .sec-bar > span { background: var(--success); }
+.sec-head.all-ready .sec-kicker { color: var(--success); }
+/* Left filter: when a section's last line leaves, the section folds away with it */
+.section.sec-exit { pointer-events: none; animation: line-out 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+@media (prefers-reduced-motion: reduce) { .section.sec-exit { animation: none; } }

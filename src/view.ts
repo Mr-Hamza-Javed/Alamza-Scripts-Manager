@@ -21,6 +21,8 @@ export type LineView = { l: FlatLine; items: ItemView[]; active: boolean; done: 
 export type SectionView = {
   si: number; title: string; badge: string; count: string; pct: number; allReady: boolean; achieved: boolean;
   open: boolean; hasLines: boolean; notes: string[]; lines: LineView[];
+  /** its last matching line is on its way out (Left filter): the section goes too */
+  exiting?: boolean;
 };
 export type TreeRow = {
   id: string; header?: boolean; name: string; depth: number; folder: boolean; open: boolean; current: boolean;
@@ -138,6 +140,7 @@ export function derive(app: App) {
       allReady: ids.length > 0 && dn === ids.length,
       achieved: !!(ach && (ach.level === 'section' || ach.level === 'script') && ach.sectionId === si),
       open, hasLines: s.lines.length > 0,
+      exiting: filtering && visCount === 1 && !!st.exitingLine && ids.indexOf(st.exitingLine) >= 0,
       notes: s.notes.length && !searching ? s.notes.map((x) => stripMd(x)) : [],
       lines,
     };
