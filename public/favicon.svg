@@ -2,8 +2,8 @@
   <title>Alamza Scripts</title>
   <defs>
     <linearGradient id="brand" x1="10" y1="8" x2="54" y2="58" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FF6B45"/>
-      <stop offset="1" stop-color="#CE3F16"/>
+      <stop stop-color="#4F8BFF"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="16" fill="url(#brand)"/>

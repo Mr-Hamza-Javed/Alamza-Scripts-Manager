@@ -1,0 +1,50 @@
+# Build the app and publish it to Firebase Hosting whenever main changes
+# (a merged pull request or a direct push). It can also be run by hand from the
+# Actions tab ("Run workflow").
+#
+# Needs one repository secret: FIREBASE_SERVICE_ACCOUNT_ALAMZA_SCRIPTS — the JSON key
+# of a Firebase service account that may deploy Hosting. See README.md → "Automatic deploys".
+# Only Hosting is deployed; database rules stay as they are.
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# one deploy at a time; a newer push waits for the running one instead of cutting it off
+concurrency:
+  group: firebase-hosting-live
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Type-check and build
+        run: npm run build
+
+      - name: Deploy to Firebase Hosting (live)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ALAMZA_SCRIPTS }}
+          projectId: alamza-scripts
+          channelId: live
