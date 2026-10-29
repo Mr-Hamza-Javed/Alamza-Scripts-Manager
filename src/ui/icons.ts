@@ -79,6 +79,7 @@ export const ICONS = {
   laptop: F.Laptop20Regular,
   tablet: F.Tablet20Regular,
   phone: F.Phone20Regular,
+  allDevices: F.PhoneLaptop20Regular,
   done: F.Checkmark20Regular,
   doneBold: F.Checkmark24Filled,
   resetSm: F.ArrowReset20Regular,

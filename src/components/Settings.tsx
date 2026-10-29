@@ -4,6 +4,8 @@ import { PRESETS, presetValues, sameCard } from '../lib/design';
 import { colorOf } from '../lib/tokens';
 import { ICONS } from '../ui/icons';
 import { Badge, Button, Card, Icon, IconButton, IconTile, Tabs, Toggle, type Tone } from '../ui/kit';
+import { canVary, deviceLabel, overridesOf, tabCanVary } from '../lib/devices';
+import { DeviceScope, DeviceTags } from './DeviceScope';
 import type { P } from './Layout';
 
 const TAB_LOOK: Record<string, { icon: FluentIcon; tile: FluentIcon; tone: Tone }> = {
@@ -42,6 +44,7 @@ export function SettingsScreen({ app, v }: P) {
           <Button icon={ICONS.design} onClick={() => app.setMode('design')} title="Fonts, sizes, colours and spacing of the script cards">Card editor</Button>
         </div>
       </div>
+      <DeviceScope app={app} />
       {!v.wideSettings && (
         <div className="settings-tabs">
           <Tabs label="Settings sections" idBase="set" value={tab} onChange={pick}
@@ -63,6 +66,12 @@ export function SettingsScreen({ app, v }: P) {
           </nav>
         )}
         <div className={`settings-body tab-panel${(app.state.tabDir || 1) < 0 ? ' from-prev' : ''}`} key={tab} role="tabpanel">
+          {app.state.devScope && app.state.devScope !== 'all' && !tabCanVary(tab) && (
+            <div className="note-bar info dev-shared-note">
+              <Icon icon={ICONS.allDevices} size={18} />
+              <span>These settings are the same on every device, so changes here apply everywhere — not only on {deviceLabel(app.state.devScope)}.</span>
+            </div>
+          )}
           {tab === 'general' && <DesignCard app={app} v={v} />}
           {tab === 'tags' ? <TagsTab app={app} v={v} look={look} hint={def.hint} />
             : tab === 'library' ? <LibraryTab app={app} v={v} look={look} hint={def.hint} />
@@ -85,7 +94,7 @@ export function SettingsScreen({ app, v }: P) {
 
 /* the script cards are designed in their own editor; this card points there */
 function DesignCard({ app }: P) {
-  const S = app.state.settings;
+  const S = app.scopeS();
   const mine = (S.myDesigns || []).find((d: any) => sameCard(S, presetValues(d)));
   const preset = PRESETS.find((p) => sameCard(S, presetValues(p)));
   const name = preset ? preset.name : mine ? mine.name : 'Custom';
@@ -102,7 +111,9 @@ function DesignCard({ app }: P) {
 }
 
 function FieldRow({ f, app, v }: { f: FieldDef } & P) {
-  const S = app.state.settings;
+  const S = app.scopeS();
+  const scope = app.state.devScope || 'all';
+  const own = scope !== 'all' && Object.prototype.hasOwnProperty.call(overridesOf(app.state.settings, scope), f.key);
   const val = S[f.key];
   const set = (x: any) => app.set(f.key, x);
   let ctl = null;
@@ -130,9 +141,9 @@ function FieldRow({ f, app, v }: { f: FieldDef } & P) {
   else if (f.type === 'text') ctl = <div className="input text-in"><input value={val} onChange={(e) => set(e.currentTarget.value)} aria-label={f.label} /></div>;
   else if (f.type === 'action') ctl = <Button size="sm" variant={f.danger ? 'danger' : 'default'} icon={f.danger ? ICONS.trash : ICONS.download} onClick={() => app.act(f.key)}>{f.actionLabel}</Button>;
   return (
-    <div className={`set-row t-${f.type}${f.type === 'toggle' ? ' click' : ''}`} onClick={f.type === 'toggle' ? () => set(!val) : undefined}>
+    <div className={`set-row t-${f.type}${f.type === 'toggle' ? ' click' : ''}${own ? ' dev-own' : ''}`} onClick={f.type === 'toggle' ? () => set(!val) : undefined}>
       <div className="set-text">
-        <div className="set-label">{f.label}</div>
+        <div className="set-label">{f.label}{canVary(f.key) && f.type !== 'action' && <DeviceTags app={app} k={f.key} />}</div>
         {f.hint && <div className="set-hint">{f.hint}</div>}
       </div>
       <div className="set-ctl" onClick={(e) => e.stopPropagation()}>{ctl}</div>

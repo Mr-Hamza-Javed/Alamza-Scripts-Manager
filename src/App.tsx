@@ -14,7 +14,8 @@ import {
   now, readHashToken, safeFileName, tagsForFirebase, tagsFromFirebase, tok, uid,
 } from './lib/util';
 import { derive, treeCompare, type View } from './view';
-import { cardValues, defaultCard } from './lib/design';
+import { CARD_KEYS, cardValues, defaultCard } from './lib/design';
+import { clearOverrides, deviceLabel, deviceOf, settingsFor, writeSettings, type Device, type DevScope } from './lib/devices';
 import { Layout } from './components/Layout';
 
 export type FlatLine = Line & { id: string; si: number };
@@ -58,7 +59,7 @@ export default class App extends Component<object, any> {
       filter: 'all', collapsed: {}, filtersOpen: false,
       activeLine: d.activeLine, draft: null, toast: null, newTag: '', mounted: 40, offScreen: false,
       exitingLine: null, promotedLine: null, achievement: null,
-      vw: window.innerWidth,
+      vw: window.innerWidth, devScope: 'all',
       drawer: false, loginOpen: false, loginBusy: false, loginError: '', loginTries: 0, skippedLogin: loadGuestChoice(),
       sideTab: vt ? 'review' : d.settings.defaultSideTab === 'review' ? 'review' : 'files',
       showTrash: false, menu: null, copyMenu: null, shareFor: null, renameFor: null, renameValue: '', confirmBox: null,
@@ -103,6 +104,8 @@ export default class App extends Component<object, any> {
   componentDidUpdate(_p: object, prev: any) {
     /* a new screen or a new script starts with the full header */
     if (prev && (prev.mode !== this.state.mode || prev.activeId !== this.state.activeId)) { this.setHeadCompact(false); this._headTop = 0; }
+    /* outside Settings and the Card editor, every change goes to all screens again */
+    if (prev && prev.mode !== this.state.mode && this.state.mode !== 'settings' && this.state.mode !== 'design' && this.state.devScope !== 'all') this.setState({ devScope: 'all' });
     this.syncTitle();
     this.growMount();
     this.applyTheme();
@@ -356,7 +359,7 @@ export default class App extends Component<object, any> {
   };
   set = (k: string, v: any) => {
     if (this.isViewing()) return;
-    this.setState({ settings: { ...this.state.settings, [k]: v } }, this.save);
+    this.setState({ settings: writeSettings(this.state.settings, this.state.devScope || 'all', { [k]: v }) }, this.save);
   };
 
   /* ---- data access: cloud when signed in, localStorage otherwise ---- */
@@ -439,11 +442,11 @@ export default class App extends Component<object, any> {
       const v = this.state.viewer;
       const own = this.state.settings || {};
       const vp = this.state.viewerPrefs || {};
-      const s: any = { ...migrateSettings(v.settings), ...vp };
+      const s: any = { ...settingsFor(migrateSettings(v.settings), this.device()), ...vp };
       s.theme = vp.theme !== undefined ? vp.theme : own.theme !== undefined ? own.theme : DEFAULTS.theme;
       return s;
     }
-    return this.state.settings;
+    return settingsFor(this.state.settings, this.device());
   }
   setViewerPref(k: string, val: any) {
     const viewerPrefs = { ...(this.state.viewerPrefs || {}), [k]: val };
@@ -452,7 +455,15 @@ export default class App extends Component<object, any> {
   }
   toggleFocus = () => {
     if (this.isViewing()) return this.setViewerPref('focusMode', !this.effS().focusMode);
-    return this.set('focusMode', !this.state.settings.focusMode);
+    this.setHere('focusMode', !this.effS().focusMode);
+  };
+  /* Quick switches outside Settings (focus, theme, sidebar) follow this screen: they change
+     its own value when it has one, otherwise the shared value. */
+  setHere = (k: string, val: any) => {
+    if (this.isViewing()) return;
+    const dev = this.device(), cur = this.state.settings;
+    const own = !!(cur.byDevice && cur.byDevice[dev] && Object.prototype.hasOwnProperty.call(cur.byDevice[dev], k));
+    this.setState({ settings: writeSettings(cur, own ? dev : 'all', { [k]: val }) }, this.save);
   };
   effT(): Record<string, TagDef> {
     const v = this.state.viewer;
@@ -967,11 +978,12 @@ export default class App extends Component<object, any> {
   setMode = (m: string) => {
     /* Settings never open in a shared view; Raw only with edit rights */
     if ((m === 'settings' || m === 'design') && this.isViewing()) return;
-    if (m === 'design' && this.state.mode !== 'design') this._designSnap = cardValues(this.state.settings);
+    if (m === 'design' && this.state.mode !== 'design') this._designSnap = this.state.settings;
     if (m === 'raw' && this.isViewing() && !this.can('edit')) return;
     if (m === 'raw') { this.setState({ mode: 'raw', mobileSearch: false, drawer: false, draft: this.state.draft === null ? this.active().raw : this.state.draft }); return; }
     if (this.state.mode === 'raw' && this.state.draft !== null && this.state.draft !== this.active().raw) this.flash('Raw changes are kept — press Save & render to apply them');
-    this.setState({ mode: m, mobileSearch: false, drawer: false, mounted: 40 });
+    const scoped = m === 'settings' || m === 'design';
+    this.setState({ mode: m, mobileSearch: false, drawer: false, mounted: 40, ...(scoped ? {} : { devScope: 'all' }) });
   };
   rename = (id: string) => {
     const it = this.state.items[id];
@@ -1235,7 +1247,7 @@ export default class App extends Component<object, any> {
     const next = cur === 'dark' ? 'light' : 'dark';
     /* in a shared view the theme is a reader-only choice saved on their device */
     if (this.isViewing()) { this.setViewerPref('theme', next); return; }
-    this.set('theme', next);
+    this.setHere('theme', next);
   };
 
   /* ------------------------------------------------------------------ raw editor + data actions */
@@ -1394,7 +1406,7 @@ export default class App extends Component<object, any> {
   /* fold the sidebar into the rail or open it again, with a short width animation */
   setSidebar = (open: boolean) => {
     this.setState({ sideAnim: open ? 'open' : 'close', accountMenu: null });
-    this.setMany({ showSidebar: open });
+    this.setHere('showSidebar', open);
     this.later('sideAnim', () => this.setState({ sideAnim: null }), 320);
   };
   openAccountMenu = (el: HTMLElement, beside?: boolean) => {
@@ -1407,14 +1419,51 @@ export default class App extends Component<object, any> {
 
   /* ------------------------------------------------------------------ card editor */
 
-  _designSnap: Record<string, any> = defaultCard();
+  _designSnap: any = DEFAULTS;
   setMany = (patch: Record<string, any>) => {
     if (this.isViewing()) return;
-    this.setState({ settings: { ...this.state.settings, ...patch } }, this.save);
+    this.setState({ settings: writeSettings(this.state.settings, this.state.devScope || 'all', patch) }, this.save);
+  };
+
+  /* ---- per-device settings ---- */
+  /** the screen size of this window */
+  device(): Device { return deviceOf(this.state.vw); }
+  /** where a change goes: every screen, or one screen size only */
+  setDevScope = (d: DevScope) => this.setState({ devScope: d });
+  /** the values the settings screens show: the shared ones, or one device's */
+  scopeS(): any {
+    const sc: DevScope = this.state.devScope || 'all';
+    return sc === 'all' ? this.state.settings : settingsFor(this.state.settings, sc);
+  }
+  /** one device back on the shared values (some keys, or all of them) */
+  clearDevice = (d: Device, keys?: string[]) => {
+    this.setState({ settings: clearOverrides(this.state.settings, d, keys) }, () => {
+      this.save();
+      this.flash(keys && keys.length === 1 ? 'Back to the shared value on ' + deviceLabel(d) : deviceLabel(d) + ' now uses the shared settings');
+    });
   };
   openDesigner = () => this.setMode('design');
   /* back to how the card looked when the editor was opened */
-  revertDesign = () => { this.setMany(this._designSnap); this.flash('Changes undone'); };
+  revertDesign = () => {
+    const snap = this._designSnap || {}, cur = this.state.settings;
+    const next: any = { ...cur, ...cardValues(snap) };
+    const by: any = {};
+    const devs = new Set([...Object.keys(cur.byDevice || {}), ...Object.keys(snap.byDevice || {})]);
+    devs.forEach((d) => {
+      const own = { ...((cur.byDevice || {})[d] || {}) };
+      const was = (snap.byDevice || {})[d] || {};
+      CARD_KEYS.forEach((k) => { if (k in was) own[k] = was[k]; else delete own[k]; });
+      if (Object.keys(own).length) by[d] = own;
+    });
+    if (Object.keys(by).length) next.byDevice = by; else delete next.byDevice;
+    this.setState({ settings: next }, () => { this.save(); this.flash('Changes undone'); });
+  };
+  /** the card changed since the editor opened (on any device) */
+  designChanged() {
+    const snap = this._designSnap || {}, cur = this.state.settings;
+    const pick = (x: any) => JSON.stringify([cardValues(x), ...['desktop', 'laptop', 'tablet', 'phone'].map((d) => cardValues(settingsFor(x, d as Device)))]);
+    return pick(cur) !== pick(snap);
+  }
   resetDesign = () => { this.setMany(defaultCard()); this.flash('Card set back to the default design'); };
   applyDesign = (values: Record<string, any>, name: string) => { this.setMany({ ...defaultCard(), ...values }); this.flash(name + ' design applied'); };
   promptSaveDesign = () => this.setState({ promptBox: { kind: 'saveDesign', title: 'Save as my design', label: 'Design name', value: 'My design ' + ((this.state.settings.myDesigns || []).length + 1) } });
@@ -1425,7 +1474,7 @@ export default class App extends Component<object, any> {
     const name = String(p.value || '').trim();
     if (!name) return;
     if (p.kind === 'saveDesign') {
-      const list = (this.state.settings.myDesigns || []).concat([{ id: uid(), name, values: cardValues(this.state.settings) }]);
+      const list = (this.state.settings.myDesigns || []).concat([{ id: uid(), name, values: cardValues(this.scopeS()) }]);
       this.setState({ promptBox: null }, () => { this.set('myDesigns', list); this.flash('Saved “' + name + '” to your designs'); });
       return;
     }

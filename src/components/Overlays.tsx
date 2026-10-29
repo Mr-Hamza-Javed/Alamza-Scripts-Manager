@@ -60,7 +60,7 @@ function ItemMenu({ app }: P) {
     if (app._view && app._view.canDrag) {
       const sibs = app.sortedChildren(it.parentId || 'root');
       const i = sibs.indexOf(id);
-      const same = (j: number) => j >= 0 && j < sibs.length && (!st.settings.foldersFirst || (st.items[sibs[j]].type === 'folder') === (it.type === 'folder'));
+      const same = (j: number) => j >= 0 && j < sibs.length && (!app.effS().foldersFirst || (st.items[sibs[j]].type === 'folder') === (it.type === 'folder'));
       const order: MenuItem[] = [];
       if (same(i - 1)) order.push({ id: 'up', label: 'Move up', icon: ICONS.up });
       if (same(i + 1)) order.push({ id: 'down', label: 'Move down', icon: ICONS.down });

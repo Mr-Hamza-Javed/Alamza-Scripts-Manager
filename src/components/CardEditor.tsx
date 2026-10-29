@@ -15,8 +15,9 @@ import { Button, Icon, IconTile, Tabs, TabPanel, Toggle, useTabs } from '../ui/k
 import { dispOf, itemViews, type SectionView } from '../view';
 import type { P } from './Layout';
 import { readerClass, SectionBlock } from './Reader';
+import { overrideCount, settingsFor, type Device } from '../lib/devices';
+import { DeviceTags } from './DeviceScope';
 
-type Device = 'desktop' | 'laptop' | 'tablet' | 'phone';
 const DEVICES: { key: Device; label: string; icon: any; width: number }[] = [
   { key: 'desktop', label: 'Desktop', icon: ICONS.desktop, width: 1180 },
   { key: 'laptop', label: 'Laptop', icon: ICONS.laptop, width: 960 },
@@ -27,14 +28,18 @@ const GROUP_KEYS = EDITOR_GROUPS.map((g) => g.id);
 const GROUP_ICONS: Record<string, any> = { style: ICONS.appearance, script: ICONS.type, guide: ICONS.layout, tags: ICONS.tag, active: ICONS.focus, sizes: ICONS.desktop };
 
 export function CardEditor({ app, v }: P) {
-  const S = app.state.settings;
+  const S = app.scopeS();
   const tabs = useTabs(GROUP_KEYS, 'style', 'alamza.editor.tab');
   /* start on the size of the screen you are using */
-  const [device, setDevice] = useState<Device>(v.mob ? 'phone' : v.compact ? 'tablet' : app.state.vw <= 1500 ? 'laptop' : 'desktop');
+  const [picked, setPicked] = useState<Device>(app.device());
+  /* while one device is being changed, the preview shows that device (and follows it) */
+  const scope = app.state.devScope || 'all';
+  const device: Device = scope !== 'all' ? scope : picked;
+  const setDevice = (d: Device) => { setPicked(d); if (scope !== 'all') app.setDevScope(d); };
   const [focusPart, setFocusPart] = useState<string | null>(null);
   const focusT = useRef(0);
   useEffect(() => { ensureFonts(S, true); }, []); // the font picker shows every font in its own face
-  const changed = !sameCard(S, app._designSnap);
+  const changed = app.designChanged();
   const isDefault = sameCard(S, presetValues(PRESETS[0]));
   const group = EDITOR_GROUPS.find((g) => g.id === tabs.value) || EDITOR_GROUPS[0];
 
@@ -98,7 +103,7 @@ export function CardEditor({ app, v }: P) {
 /* ---------------------------------------------------------------- designs (presets + saved) */
 
 function Designs({ app, isDefault }: { app: P['app']; isDefault: boolean }) {
-  const S = app.state.settings;
+  const S = app.scopeS();
   const mine: { id: string; name: string; values: Record<string, any> }[] = S.myDesigns || [];
   return (
     <div className="ctl-section">
@@ -154,7 +159,8 @@ function fmt(c: CtlDef, val: number) {
 }
 
 function Control({ c, app, dark }: { c: CtlDef; app: P['app']; dark: boolean }) {
-  const S = app.state.settings;
+  const S = app.scopeS();
+  const tags = <DeviceTags app={app} k={c.key} />;
   const val = S[c.key];
   const def = (DEFAULTS as any)[c.key];
   const set = (x: any) => app.set(c.key, x);
@@ -168,7 +174,7 @@ function Control({ c, app, dark }: { c: CtlDef; app: P['app']; dark: boolean }) 
   if (c.type === 'toggle') {
     return (
       <div className="ctl ctl-toggle" onClick={() => set(!val)}>
-        <div className="ctl-text"><span className="ctl-label">{c.label}</span>{c.hint && <span className="ctl-hint">{c.hint}</span>}</div>
+        <div className="ctl-text"><span className="ctl-label">{c.label}{tags}</span>{c.hint && <span className="ctl-hint">{c.hint}</span>}</div>
         {reset}
         <span onClick={(e) => e.stopPropagation()}><Toggle label={c.label} checked={!!val} onChange={set} /></span>
       </div>
@@ -176,7 +182,7 @@ function Control({ c, app, dark }: { c: CtlDef; app: P['app']; dark: boolean }) 
   }
   const head = (extra?: any) => (
     <div className="ctl-head">
-      <span className="ctl-label">{c.label}</span>
+      <span className="ctl-label">{c.label}{tags}</span>
       {extra}
       {reset}
     </div>
@@ -240,10 +246,37 @@ function Control({ c, app, dark }: { c: CtlDef; app: P['app']; dark: boolean }) 
   );
 }
 
+/* ---------------------------------------------------------------- only this device */
+
+/* Off: a change goes to every screen. On: it goes to the screen size in the preview only. */
+function PreviewScope({ app, device }: Pick<P, 'app'> & { device: Device }) {
+  const scope = app.state.devScope || 'all';
+  const only = scope !== 'all';
+  const dev = DEVICES.find((d) => d.key === device);
+  const n = overrideCount(app.state.settings, device);
+  const flip = () => app.setDevScope(only ? 'all' : device);
+  return (
+    <div className={`pv-scope${only ? ' on' : ''}`}>
+      <div className="pv-scope-main" onClick={flip}>
+        <span onClick={(e) => e.stopPropagation()}><Toggle label={'Change only ' + dev.label} checked={only} onChange={flip} /></span>
+        <div className="pv-scope-text">
+          <b>{only ? 'Changing ' + dev.label + ' only' : 'Changing every screen size'}</b>
+          <small>{only ? 'Other screen sizes keep the shared design.' : 'Turn on to give ' + dev.label + ' its own look.'}</small>
+        </div>
+      </div>
+      {n > 0 && (
+        <button type="button" className="link-btn pv-scope-reset" onClick={() => app.clearDevice(device)} title={'Put ' + dev.label + ' back on the shared settings'}>
+          <Icon icon={ICONS.resetSm} size={14} /> {n} {dev.label.toLowerCase()} {n === 1 ? 'change' : 'changes'} · reset
+        </button>
+      )}
+    </div>
+  );
+}
+
 /* ---------------------------------------------------------------- live preview */
 
 function Preview({ app, v, device, setDevice, focusPart, onPick }: P & { device: Device; setDevice(d: Device): void; focusPart: string | null; onPick(part: string): void }) {
-  const S = app.state.settings;
+  const S = settingsFor(app.state.settings, device);
   const stageRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const [box, setBox] = useState({ w: 0, h: 0 });
@@ -298,9 +331,10 @@ function Preview({ app, v, device, setDevice, focusPart, onPick }: P & { device:
         </div>
         <div className="card-extra">
           <Tabs variant="pill" label="Screen size" idBase="pvd" value={device} onChange={setDevice}
-            items={DEVICES.map((d) => ({ key: d.key, label: <span className="dev-label">{d.label}</span>, icon: d.icon, title: d.label + ' · ' + d.width + ' px' }))} />
+            items={DEVICES.map((d) => ({ key: d.key, label: <span className="dev-label">{d.label}</span>, icon: d.icon, title: d.label + ' · ' + d.width + ' px' + (overrideCount(app.state.settings, d.key) ? ' · has its own changes' : ''), count: overrideCount(app.state.settings, d.key) || undefined }))} />
         </div>
       </div>
+      <PreviewScope app={app} device={device} />
       <div className="pv-stage" ref={stageRef}>
         <div className="pv-sizer" style={{ width: dev.width * scale, height: box.h ? box.h * scale : undefined }}>
           <div ref={frameRef} className={`pv-frame dev-${device}${focusPart ? ' pv-hl pv-hl-' + focusPart : ''}`}
